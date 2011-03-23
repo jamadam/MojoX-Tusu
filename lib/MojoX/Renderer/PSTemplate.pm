@@ -9,34 +9,27 @@ use parent qw(Mojo::Base);
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
     
-    __PACKAGE__->attr('pstemplate');
+    __PACKAGE__->attr('engine');
     
-    sub build {
+    sub new {
         my $self = shift->SUPER::new(@_);
-        $self->_init(@_);
-        return sub { $self->_render(@_) };
+        my (%args) = @_;
+        my $app = $args{mojo} || $args{app};
+        return $self->engine(Text::PSTemplate::Plugable->new);
     }
     
-    sub _init {
-        my ($self, %args) = @_;
-    
-        my $app = $args{mojo} || $args{app};
-        my $pst = $args{pst} || Text::PSTemplate::Plugable->new;
-        $self->pstemplate($pst);
-    
-        return $self;
+    sub build {
+        my $self = shift;
+        return sub { $self->_render(@_) };
     }
     
     sub _render {
         my ($self, $renderer, $c, $output, $options) = @_;
-    
-        my $name = $c->stash->{'template_name'}
-            || $renderer->template_name($options);
-        
-        $self->pstemplate->set_var(%{$c->stash});
+        my $name = $renderer->template_name($options);
+        $self->engine->set_var(%{$c->stash});
         
         try {
-            $$output = $self->pstemplate->parse_file($name);
+            $$output = $self->engine->parse_file($name);
         }
         catch {
             my $err = $_;
@@ -45,7 +38,6 @@ $VERSION = eval $VERSION;
             $$output = '';
             return 0;
         };
-        
         return 1;
     }
 
@@ -63,24 +55,30 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
     sub startup {
         ....
 
-        # Via mojolicious plugin
-        $self->plugin('pstemplate_renderer');
-
-        # or manually
         use MojoX::Renderer::PSTemplate;
-        my $pst = MojoX::Renderer::PSTemplate->build(
-            mojo             => $self,
-            template_options => { },
-        );
-        $self->renderer->add_handler(tx => $pst);
+        my $pst = MojoX::Renderer::PSTemplate->build(mojo => $self);
+        
+        # initialize Text::PSTemplate::Plugable if necessary
+        # $pst->engine->plug('some_plugin');
+        # $pst->engine->set_...();
+        
+        $self->renderer->add_handler(pst => $pst->mk_handler);
     }
 
 =head1 DESCRIPTION
 
-The C<MojoX::Renderer::PSTemplate> module is called by C<MojoX::Renderer> for
-any matching template.
+The C<MojoX::Renderer::PSTemplate> is a Text::PSTemplate::Plugable renderer
+for mojo.
 
 =head1 METHODS
+
+=head2 new
+
+Constractor. This returns MojoX::Renderer::PSTemplate instance.
+
+=head2 engine
+    
+This method returns Text::PSTemplate::Plugable instance.
 
 =head2 build
 
