@@ -56,13 +56,13 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
         ....
 
         use MojoX::Renderer::PSTemplate;
-        my $pst = MojoX::Renderer::PSTemplate->build(mojo => $self);
+        my $pst = MojoX::Renderer::PSTemplate->new(mojo => $self);
         
         # initialize Text::PSTemplate::Plugable if necessary
         # $pst->engine->plug('some_plugin');
         # $pst->engine->set_...();
         
-        $self->renderer->add_handler(pst => $pst->mk_handler);
+        $self->renderer->add_handler(pst => $pst->build);
     }
 
 =head1 DESCRIPTION
