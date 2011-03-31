@@ -17,7 +17,7 @@ $VERSION = eval $VERSION;
         my (%args) = @_;
         my $app = $args{mojo} || $args{app};
         my $engine = Text::PSTemplate::Plugable->new;
-		$engine->plug('MojoX::Renderer::PSTemplate::_Plugin', 'Mojo');
+        $engine->plug('MojoX::Renderer::PSTemplate::_Plugin', 'Mojo');
         return $self->engine($engine);
     }
     
