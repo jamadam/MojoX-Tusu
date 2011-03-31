@@ -6,27 +6,35 @@ use warnings;
 use Try::Tiny;
 use Text::PSTemplate::Plugable;
 use parent qw(Mojo::Base);
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
     
     sub new {
+        
         my $self = shift->SUPER::new(@_);
         my (%args) = @_;
         my $app = $args{mojo} || $args{app};
-        return $self->engine(Text::PSTemplate::Plugable->new);
+        my $engine = Text::PSTemplate::Plugable->new;
+		$engine->plug('MojoX::Renderer::PSTemplate::_Plugin', 'Mojo');
+        return $self->engine($engine);
     }
     
     sub build {
+        
         my $self = shift;
         return sub { $self->_render(@_) };
     }
     
     sub _render {
+        
         my ($self, $renderer, $c, $output, $options) = @_;
+        
+        local $MojoX::Renderer::PSTemplate::controller = $c;
+        
         my $name = $renderer->template_name($options);
-        $self->engine->set_var(%{$c->stash});
+        $self->engine->set_var(%{$c->stash->{vars}});
         
         try {
             $$output = $self->engine->parse_file($name);
@@ -41,6 +49,22 @@ $VERSION = eval $VERSION;
         return 1;
     }
 
+package MojoX::Renderer::PSTemplate::_Plugin;
+use strict;
+use warnings;
+use base qw(Text::PSTemplate::PluginBase);
+    
+    sub param : TplExport {
+        
+        my $self = shift;
+        return $MojoX::Renderer::PSTemplate::controller->param(@_);
+    }
+    
+    sub url_for : TplExport {
+        
+        my $self = shift;
+        return $MojoX::Renderer::PSTemplate::controller->url_for(@_);
+    }
 
 1;
 
@@ -59,8 +83,8 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
         my $pst = MojoX::Renderer::PSTemplate->new(mojo => $self);
         
         # initialize Text::PSTemplate::Plugable if necessary
-        # $pst->engine->plug('some_plugin');
-        # $pst->engine->set_...();
+        $pst->engine->plug('some_plugin');
+        $pst->engine->set_...();
         
         $self->renderer->add_handler(pst => $pst->build);
     }
@@ -68,7 +92,7 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
 =head1 DESCRIPTION
 
 The C<MojoX::Renderer::PSTemplate> is a Text::PSTemplate::Plugable renderer
-for mojo.
+for mojo. An helper plugin for PSTemplate will automatically be pluged.
 
 =head1 METHODS
 
@@ -100,6 +124,18 @@ object (C<Mojo>).
 A hash reference of options that are passed to Text::PSTemplate->new().
 
 =back
+
+=head1 HELPERS
+
+Following template functions(helper) will automatically be activated.
+
+=head2 param
+
+    <% Mojo::param('key') %>
+
+=head2 url_for
+
+    <% Mojo::url_for('/path/to/file') %>
 
 =head1 SEE ALSO
 
