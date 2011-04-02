@@ -28,7 +28,7 @@ $VERSION = eval $VERSION;
     sub _render {
         
         my ($self, $renderer, $c, $output, $options) = @_;
-        warn caller;
+        
         local $MojoX::Renderer::PSTemplate::controller = $c;
         
         my $name = $renderer->template_name($options);
