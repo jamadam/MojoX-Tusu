@@ -14,8 +14,6 @@ $VERSION = eval $VERSION;
     sub new {
         
         my $self = shift->SUPER::new(@_);
-        my (%args) = @_;
-        my $app = $args{mojo} || $args{app};
         my $engine = Text::PSTemplate::Plugable->new;
         $engine->plug('MojoX::Renderer::PSTemplate::_Plugin', 'Mojo');
         return $self->engine($engine);
@@ -30,7 +28,7 @@ $VERSION = eval $VERSION;
     sub _render {
         
         my ($self, $renderer, $c, $output, $options) = @_;
-        
+        warn caller;
         local $MojoX::Renderer::PSTemplate::controller = $c;
         
         my $name = $renderer->template_name($options);
@@ -92,7 +90,7 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
 =head1 DESCRIPTION
 
 The C<MojoX::Renderer::PSTemplate> is a Text::PSTemplate::Plugable renderer
-for mojo. An helper plugin for PSTemplate will automatically be pluged.
+for mojo. A helper plugin for PSTemplate will automatically be pluged.
 
 =head1 METHODS
 
@@ -101,7 +99,7 @@ for mojo. An helper plugin for PSTemplate will automatically be pluged.
 Constractor. This returns MojoX::Renderer::PSTemplate instance.
 
 =head2 engine
-    
+
 This method returns Text::PSTemplate::Plugable instance.
 
 =head2 build
@@ -127,7 +125,7 @@ A hash reference of options that are passed to Text::PSTemplate->new().
 
 =head1 HELPERS
 
-Following template functions(helper) will automatically be activated.
+Following template functions(helper) will automatically be available.
 
 =head2 param
 
