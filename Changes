@@ -2,3 +2,9 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.01 2011/03/23
   - initial release
+
+0.02 2011/03/31
+  - some natie helpers available
+
+0.03 2011/04/22
+  - Improved error logging

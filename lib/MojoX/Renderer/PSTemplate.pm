@@ -6,7 +6,7 @@ use warnings;
 use Try::Tiny;
 use Text::PSTemplate::Plugable;
 use parent qw(Mojo::Base);
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
@@ -34,11 +34,14 @@ $VERSION = eval $VERSION;
         my $name = $renderer->template_name($options);
         $self->engine->set_var(%{$c->stash->{vars}});
         
+        local $SIG{__DIE__} = undef;
+        
         try {
             $$output = $self->engine->parse_file($name);
         }
         catch {
-            my $err = $_;
+            my $err = $_ || 'Unknown Error';
+            $name ||= '';
             $c->app->log->error(qq(Template error in "$name": $err));
             $c->render_exception($err);
             $$output = '';
