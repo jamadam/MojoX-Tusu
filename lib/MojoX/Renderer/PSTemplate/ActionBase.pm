@@ -89,9 +89,9 @@ Text::PSTemplate::PluginBase.
 
 =head2 preceding_args
 
-This method overrides the super class method for prepends controller into
-template functions. This is internal use only so you don't have to worry about
-it.
+This method overrides the super class method for prepending controller instance
+into template function arguments. This is internal use only so you don't have to
+worry about it.
 
 =head2 get 
 =head2 post
