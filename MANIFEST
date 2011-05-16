@@ -1,5 +1,6 @@
 Changes
 lib/MojoX/Renderer/PSTemplate.pm
+lib/MojoX/Renderer/PSTemplate/ActionBase.pm
 Makefile.PL
 MANIFEST
 README

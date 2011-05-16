@@ -1,19 +1,18 @@
 package MojoX::Renderer::PSTemplate;
 use strict;
 use warnings;
-#use File::Spec ();
-#use Mojo::Command;
 use Try::Tiny;
 use Text::PSTemplate::Plugable;
-use parent qw(Mojo::Base);
-our $VERSION = '0.03';
+use base qw(Mojo::Base);
+our $VERSION = '0.04';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
     
     sub new {
         
-        my $self = shift->SUPER::new(@_);
+        my ($class) = @_;
+        my $self = $class->SUPER::new;
         my $engine = Text::PSTemplate::Plugable->new;
         $engine->plug('MojoX::Renderer::PSTemplate::_Plugin', 'Mojo');
         return $self->engine($engine);
@@ -32,12 +31,19 @@ $VERSION = eval $VERSION;
         local $MojoX::Renderer::PSTemplate::controller = $c;
         
         my $name = $renderer->template_name($options);
-        $self->engine->set_var(%{$c->stash->{vars}});
+        
+        my $engine = Text::PSTemplate::Plugable->new($self->engine);
+        my $base_dir = $c->app->home->rel_file('templates');
+		$engine->set_filename_trans_coderef(sub {
+			_filename_trans($base_dir, @_);
+		});
+        $engine->set_var(%{$c->stash->{vars}});
+        $engine->set_var(controller => $c);
         
         local $SIG{__DIE__} = undef;
         
         try {
-            $$output = $self->engine->parse_file($name);
+            $$output = $engine->parse_file($name);
         }
         catch {
             my $err = $_ || 'Unknown Error';
@@ -49,22 +55,50 @@ $VERSION = eval $VERSION;
         };
         return 1;
     }
+    
+	### ---
+	### foo/bar.html.pst -> template/foo/bar.html
+	### foo/.html.pst -> template/foo/index.html
+	### ---
+	sub _filename_trans {
+		
+		my ($template_base, $name) = @_;
+		if (defined $name) {
+			$name =~ s{\.pst$}{};
+			my $ext = ($name =~ s{/\.(\w+)$}{/}) ? $1 : 'html';
+			$name =~ s{/$}(/index);
+			my $full_name = ($name =~ m{[a-zA-Z0-9_]\..+$}) ? $name : "$name.$ext";
+			my $file_path;
+			my $parent_tpl = Text::PSTemplate->get_current_filename;
+			if (! $parent_tpl || substr($full_name, 0, 1) eq '/') {
+				$full_name =~ s{^/}{};
+				$file_path = File::Spec->catfile($template_base, $full_name);
+			} else {
+				my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
+				$file_path = File::Spec->catfile($dir, $full_name);
+			}
+			if (-e $file_path) {
+				return $file_path;
+			}
+		}
+		return File::Spec->catfile($template_base, 'index.html');
+	}
 
 package MojoX::Renderer::PSTemplate::_Plugin;
 use strict;
 use warnings;
-use base qw(Text::PSTemplate::PluginBase);
+use base qw(MojoX::Renderer::PSTemplate::ActionBase);
     
     sub param : TplExport {
         
-        my $self = shift;
-        return $MojoX::Renderer::PSTemplate::controller->param(@_);
+        my ($self, $c) = @_;
+        return $MojoX::Renderer::PSTemplate::controller->param(@_[2.. scalar (@_)]);
     }
     
     sub url_for : TplExport {
         
-        my $self = shift;
-        return $MojoX::Renderer::PSTemplate::controller->url_for(@_);
+        my ($self, $c) = @_;
+        return $MojoX::Renderer::PSTemplate::controller->url_for(@_[2.. scalar (@_)]);
     }
 
 1;
@@ -92,7 +126,7 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
 
 =head1 DESCRIPTION
 
-The C<MojoX::Renderer::PSTemplate> is a Text::PSTemplate::Plugable renderer
+The C<MojoX::Renderer::PSTemplate> is a Text::PSTemplate renderer
 for mojo. A helper plugin for PSTemplate will automatically be pluged.
 
 =head1 METHODS
