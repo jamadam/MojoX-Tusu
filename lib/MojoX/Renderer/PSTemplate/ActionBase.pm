@@ -11,33 +11,33 @@ use base qw(Text::PSTemplate::PluginBase);
         
         return $MojoX::Renderer::PSTemplate::controller;
     }
-	
-	sub get {
-		
-		my ($self, $c) = @_;
-		my $template = $c->stash('template') || '';
-		$c->render(
-			handler => 'pst',
-			format	=> ($template =~ s{\.([^.]+)$}{}) ? $1 : 'html',
-			template => $template,
-		);
-	}
-	
-	sub post {
-		die 'Must be implemented by sub class';
-	}
-	
-	sub head {
-		die 'Must be implemented by sub class';
-	}
-	
-	sub put {
-		die 'Must be implemented by sub class';
-	}
-	
-	sub delete {
-		die 'Must be implemented by sub class';
-	}
+    
+    sub get {
+        
+        my ($self, $c) = @_;
+        my $template = $c->stash('template') || '';
+        $c->render(
+            handler => 'pst',
+            format  => ($template =~ s{\.([^.]+)$}{}) ? $1 : 'html',
+            template => $template,
+        );
+    }
+    
+    sub post {
+        die 'Must be implemented by sub class';
+    }
+    
+    sub head {
+        die 'Must be implemented by sub class';
+    }
+    
+    sub put {
+        die 'Must be implemented by sub class';
+    }
+    
+    sub delete {
+        die 'Must be implemented by sub class';
+    }
 
 1;
 
@@ -48,38 +48,38 @@ __END__
 MojoX::Renderer::PSTemplate::ActionBase - Base Action Class for PSTemplate WAF 
 
 =head1 SYNOPSIS
-	
-	package YourAction;
-	use strict;
-	use warnings;
-	use base qw(MojoX::Renderer::PSTemplate::ActionBase);
-	
-	sub get {
-		my ($self, $controller) = @_;
-		$controller->render(
-			handler => 'pst',
-			format	=> ($template =~ s{\.([^.]+)$}{}) ? $1 : 'html',
-			template => $template,
-		);
-	}
-	
-	sub post {
-		my ($self, $controller) = @_;
-		# ...
-	}
-	
-	sub put {
-		my ($self, $controller) = @_;
-		# ...
-	}
-	
-	sub some_func : TplExport {
-		my ($self, $controller, @your_args) = @_;
-		# ...
-		return '';
-	}
-	
-	<% some_func(@your_args) %>
+    
+    package YourAction;
+    use strict;
+    use warnings;
+    use base qw(MojoX::Renderer::PSTemplate::ActionBase);
+    
+    sub get {
+        my ($self, $controller) = @_;
+        $controller->render(
+            handler => 'pst',
+            format  => ($template =~ s{\.([^.]+)$}{}) ? $1 : 'html',
+            template => $template,
+        );
+    }
+    
+    sub post {
+        my ($self, $controller) = @_;
+        # ...
+    }
+    
+    sub put {
+        my ($self, $controller) = @_;
+        # ...
+    }
+    
+    sub some_func : TplExport {
+        my ($self, $controller, @your_args) = @_;
+        # ...
+        return '';
+    }
+    
+    <% some_func(@your_args) %>
 
 =head1 DESCRIPTION
 

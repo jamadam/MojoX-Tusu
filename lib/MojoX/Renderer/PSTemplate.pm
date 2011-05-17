@@ -35,9 +35,9 @@ $VERSION = eval $VERSION;
         
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
         my $base_dir = $c->app->home->rel_file('templates');
-		$engine->set_filename_trans_coderef(sub {
-			_filename_trans($base_dir, @_);
-		});
+        $engine->set_filename_trans_coderef(sub {
+            _filename_trans($base_dir, @_);
+        });
         $engine->set_var(%{$c->stash->{vars}});
         $engine->set_var(controller => $c);
         
@@ -57,34 +57,34 @@ $VERSION = eval $VERSION;
         return 1;
     }
     
-	### ---
-	### foo/bar.html.pst -> template/foo/bar.html
-	### foo/.html.pst -> template/foo/index.html
-	### ---
-	sub _filename_trans {
-		
-		my ($template_base, $name) = @_;
-		if (defined $name) {
-			$name =~ s{\.pst$}{};
-			my $ext = ($name =~ s{/\.(\w+)$}{/}) ? $1 : 'html';
-			$name =~ s{/$}(/index);
-			my $full_name = ($name =~ m{[a-zA-Z0-9_]\..+$}) ? $name : "$name.$ext";
-			my $file_path;
-			my $parent_tpl = Text::PSTemplate->get_current_filename;
-			if (! $parent_tpl || substr($full_name, 0, 1) eq '/') {
-				$full_name =~ s{^/}{};
-				$file_path = File::Spec->catfile($template_base, $full_name);
-			} else {
-				my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
-				$file_path = File::Spec->catfile($dir, $full_name);
-			}
-			if (-e $file_path) {
-				return $file_path;
-			}
-			croak "$file_path not found";
-		}
-		return File::Spec->catfile($template_base, 'index.html');
-	}
+    ### ---
+    ### foo/bar.html.pst -> template/foo/bar.html
+    ### foo/.html.pst -> template/foo/index.html
+    ### ---
+    sub _filename_trans {
+        
+        my ($template_base, $name) = @_;
+        if (defined $name) {
+            $name =~ s{\.pst$}{};
+            my $ext = ($name =~ s{/\.(\w+)$}{/}) ? $1 : 'html';
+            $name =~ s{/$}(/index);
+            my $full_name = ($name =~ m{[a-zA-Z0-9_]\..+$}) ? $name : "$name.$ext";
+            my $file_path;
+            my $parent_tpl = Text::PSTemplate->get_current_filename;
+            if (! $parent_tpl || substr($full_name, 0, 1) eq '/') {
+                $full_name =~ s{^/}{};
+                $file_path = File::Spec->catfile($template_base, $full_name);
+            } else {
+                my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
+                $file_path = File::Spec->catfile($dir, $full_name);
+            }
+            if (-e $file_path) {
+                return $file_path;
+            }
+            croak "$file_path not found";
+        }
+        return File::Spec->catfile($template_base, 'index.html');
+    }
 
 package MojoX::Renderer::PSTemplate::_Plugin;
 use strict;
@@ -103,12 +103,12 @@ use File::Spec;
         
         my ($self, $c) = @_;
         my $path = $c->url_for(@_[2.. scalar (@_)]);
-		if ($ENV{SCRIPT_NAME}) {
-			if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
-				$path =~ s{$rubbish/}{};
-			}
-		}
-		return $path;
+        if ($ENV{SCRIPT_NAME}) {
+            if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
+                $path =~ s{$rubbish/}{};
+            }
+        }
+        return $path;
     }
 
 1;
