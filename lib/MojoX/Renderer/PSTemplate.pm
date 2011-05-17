@@ -38,8 +38,8 @@ $VERSION = eval $VERSION;
         $engine->set_filename_trans_coderef(sub {
             _filename_trans($base_dir, @_);
         });
-        $engine->set_var(%{$c->stash->{vars}});
-        $engine->set_var(controller => $c);
+        $engine->set_var(%{$c->stash->{vars}}); ## not in use?
+        $engine->set_var(controller => $c); ## not in use?
         
         local $SIG{__DIE__} = undef;
         
