@@ -4,7 +4,8 @@ use warnings;
 use Try::Tiny;
 use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
-our $VERSION = '0.04';
+use Carp;
+our $VERSION = '0.05';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
@@ -80,6 +81,7 @@ $VERSION = eval $VERSION;
 			if (-e $file_path) {
 				return $file_path;
 			}
+			croak "$file_path not found";
 		}
 		return File::Spec->catfile($template_base, 'index.html');
 	}
@@ -92,13 +94,13 @@ use base qw(MojoX::Renderer::PSTemplate::ActionBase);
     sub param : TplExport {
         
         my ($self, $c) = @_;
-        return $MojoX::Renderer::PSTemplate::controller->param(@_[2.. scalar (@_)]);
+        return $c->param(@_[2.. scalar (@_)]);
     }
     
     sub url_for : TplExport {
         
         my ($self, $c) = @_;
-        return $MojoX::Renderer::PSTemplate::controller->url_for(@_[2.. scalar (@_)]);
+        return $c->url_for(@_[2.. scalar (@_)]);
     }
 
 1;

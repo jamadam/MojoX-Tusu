@@ -78,6 +78,8 @@ MojoX::Renderer::PSTemplate::ActionBase - Base Action Class for PSTemplate WAF
 		# ...
 		return '';
 	}
+	
+	<% some_func(@your_args) %>
 
 =head1 DESCRIPTION
 
