@@ -90,6 +90,8 @@ package MojoX::Renderer::PSTemplate::_Plugin;
 use strict;
 use warnings;
 use base qw(MojoX::Renderer::PSTemplate::ActionBase);
+use File::Basename 'basename';
+use File::Spec;
     
     sub param : TplExport {
         
@@ -100,7 +102,13 @@ use base qw(MojoX::Renderer::PSTemplate::ActionBase);
     sub url_for : TplExport {
         
         my ($self, $c) = @_;
-        return $c->url_for(@_[2.. scalar (@_)]);
+        my $path = $c->url_for(@_[2.. scalar (@_)]);
+		if ($ENV{SCRIPT_NAME}) {
+			if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
+				$path =~ s{$rubbish/}{};
+			}
+		}
+		return $path;
     }
 
 1;
