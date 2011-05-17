@@ -11,3 +11,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.04 2011/05/16
   - ActionBase class added for frameworking
+
+0.05 2011/05/17
+  - Template not found now causes die
