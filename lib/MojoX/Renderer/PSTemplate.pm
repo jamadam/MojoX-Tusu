@@ -163,7 +163,7 @@ __END__
 
 =head1 NAME
 
-MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
+MojoX::Renderer::PSTemplate - Meta framework on Mojolicious & PSTemplate
 
 =head1 SYNOPSIS
 
@@ -178,13 +178,24 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
         $pst->engine->set_...();
         
         $self->renderer->add_handler(pst => $pst->build);
+
+		my $cb = sub {
+			my ($c) = @_;
+			if (my $x = $c->req->query_params->param('x')) {
+				$pst->bootstrap($c, $x);
+			} else {
+				$pst->bootstrap($c);
+			}
+		};
+        $r->route('/(*template)')->to(cb => $cb);
+        $r->route('/')->to(cb => $cb);
     }
 
 =head1 DESCRIPTION
 
 The C<MojoX::Renderer::PSTemplate> is a Text::PSTemplate renderer
-for mojo. Also it allows you to work on meta frameworking which suitable for
-PSTemplate. A helper plugin for PSTemplate will automatically be pluged.
+for mojolicious. Also it allows you to work on meta frameworking which suitable
+for PSTemplate. A helper plugin for PSTemplate will automatically be pluged.
 
 =head1 METHODS
 
