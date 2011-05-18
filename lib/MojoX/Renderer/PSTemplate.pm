@@ -94,7 +94,7 @@ $VERSION = eval $VERSION;
 	
 		my ($self, $c, $plugin) = @_;
 		
-		$plugin ||= 'MojoX::Renderer::PSTemplate::ActionBase';
+		$plugin ||= 'MojoX::Renderer::PSTemplate::ComponentBase';
 		my $plugin_obj = $c->app->pst->get_plugin($plugin);
 		
         switch ($c->req->method) {
@@ -135,7 +135,7 @@ $VERSION = eval $VERSION;
 package MojoX::Renderer::PSTemplate::_Plugin;
 use strict;
 use warnings;
-use base qw(MojoX::Renderer::PSTemplate::ActionBase);
+use base qw(MojoX::Renderer::PSTemplate::ComponentBase);
 use File::Basename 'basename';
 use File::Spec;
     
