@@ -5,23 +5,26 @@ use Try::Tiny;
 use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
 use Carp;
-our $VERSION = '0.05';
+use Switch;
+our $VERSION = '0.06';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
     
     sub new {
         
-        my ($class) = @_;
+        my ($class, $app) = @_;
         my $self = $class->SUPER::new;
         my $engine = Text::PSTemplate::Plugable->new;
         $engine->plug('MojoX::Renderer::PSTemplate::_Plugin', 'Mojo');
+		$app->attr('pst');
+		$app->pst($engine);
         return $self->engine($engine);
     }
     
     sub build {
         
-        my $self = shift;
+        my ($self) = @_;
         return sub { $self->_render(@_) };
     }
     
@@ -35,9 +38,9 @@ $VERSION = eval $VERSION;
         
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
         my $base_dir = $c->app->home->rel_file('templates');
-        $engine->set_filename_trans_coderef(sub {
-            _filename_trans($base_dir, @_);
-        });
+		$engine->set_filename_trans_coderef(sub {
+			_filename_trans($base_dir, @_);
+		});
         $engine->set_var(%{$c->stash->{vars}}); ## not in use?
         $engine->set_var(controller => $c); ## not in use?
         
@@ -57,34 +60,79 @@ $VERSION = eval $VERSION;
         return 1;
     }
     
-    ### ---
-    ### foo/bar.html.pst -> template/foo/bar.html
-    ### foo/.html.pst -> template/foo/index.html
-    ### ---
-    sub _filename_trans {
-        
-        my ($template_base, $name) = @_;
-        if (defined $name) {
-            $name =~ s{\.pst$}{};
-            my $ext = ($name =~ s{/\.(\w+)$}{/}) ? $1 : 'html';
-            $name =~ s{/$}(/index);
-            my $full_name = ($name =~ m{[a-zA-Z0-9_]\..+$}) ? $name : "$name.$ext";
-            my $file_path;
-            my $parent_tpl = Text::PSTemplate->get_current_filename;
-            if (! $parent_tpl || substr($full_name, 0, 1) eq '/') {
-                $full_name =~ s{^/}{};
-                $file_path = File::Spec->catfile($template_base, $full_name);
-            } else {
-                my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
-                $file_path = File::Spec->catfile($dir, $full_name);
+	### ---
+	### foo/bar.html.pst -> template/foo/bar.html
+	### foo/.html.pst -> template/foo/index.html
+	### ---
+	sub _filename_trans {
+		
+		my ($template_base, $name) = @_;
+		if (defined $name) {
+			$name =~ s{\.pst$}{};
+			my $ext = ($name =~ s{/\.(\w+)$}{/}) ? $1 : 'html';
+			$name =~ s{/$}(/index);
+			my $full_name = ($name =~ m{[a-zA-Z0-9_]\..+$}) ? $name : "$name.$ext";
+			my $file_path;
+			my $parent_tpl = Text::PSTemplate->get_current_filename;
+			if (! $parent_tpl || substr($full_name, 0, 1) eq '/') {
+				$full_name =~ s{^/}{};
+				$file_path = File::Spec->catfile($template_base, $full_name);
+			} else {
+				my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
+				$file_path = File::Spec->catfile($dir, $full_name);
+			}
+			if (-e $file_path) {
+				return $file_path;
+			}
+			croak "$file_path not found";
+		}
+		return File::Spec->catfile($template_base, 'index.html');
+	}
+    
+	### --------------
+	### bootstrap for frameworking
+	### --------------
+	sub bootstrap {
+	
+		my ($self, $c, $plugin) = @_;
+		
+		$plugin ||= 'MojoX::Renderer::PSTemplate::ActionBase';
+		my $plugin_obj = $c->app->pst->get_plugin($plugin);
+		
+        switch ($c->req->method) {
+            case 'GET'  {
+                return $plugin_obj->get($c);
             }
-            if (-e $file_path) {
-                return $file_path;
+            case 'HEAD'  {
+                return $plugin_obj->head($c);
             }
-            croak "$file_path not found";
+            case 'POST' {
+                return $plugin_obj->post($c);
+            }
+            case 'DELETE'  {
+                return $plugin_obj->delete($c);
+            }
+            case 'PUT'  {
+                return $plugin_obj->put($c);
+            }
+			case 'OPTIONS' {
+                return $plugin_obj->options($c);
+			}
+			case 'TRACE' {
+                return $plugin_obj->trace($c);
+			}
+			case 'PATCH' {
+                return $plugin_obj->patch($c);
+			}
+			case 'LINK' {
+                return $plugin_obj->link($c);
+			}
+			case 'UNLINK' {
+                return $plugin_obj->unlink($c);
+			}
         }
-        return File::Spec->catfile($template_base, 'index.html');
-    }
+		return $plugin_obj->get($c);
+	}
 
 package MojoX::Renderer::PSTemplate::_Plugin;
 use strict;
@@ -103,12 +151,12 @@ use File::Spec;
         
         my ($self, $c) = @_;
         my $path = $c->url_for(@_[2.. scalar (@_)]);
-        if ($ENV{SCRIPT_NAME}) {
-            if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
-                $path =~ s{$rubbish/}{};
-            }
-        }
-        return $path;
+		if ($ENV{SCRIPT_NAME}) {
+			if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
+				$path =~ s{$rubbish/}{};
+			}
+		}
+		return $path;
     }
 
 1;
@@ -125,7 +173,7 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
         ....
 
         use MojoX::Renderer::PSTemplate;
-        my $pst = MojoX::Renderer::PSTemplate->new(mojo => $self);
+        my $pst = MojoX::Renderer::PSTemplate->new($self);
         
         # initialize Text::PSTemplate::Plugable if necessary
         $pst->engine->plug('some_plugin');
@@ -137,39 +185,36 @@ MojoX::Renderer::PSTemplate - Text::PSTemplate renderer for Mojo
 =head1 DESCRIPTION
 
 The C<MojoX::Renderer::PSTemplate> is a Text::PSTemplate renderer
-for mojo. A helper plugin for PSTemplate will automatically be pluged.
+for mojo. Also it allows you to work on meta frameworking which suitable for
+PSTemplate. A helper plugin for PSTemplate will automatically be pluged.
 
 =head1 METHODS
 
-=head2 new
+=head2 MojoX::Renderer::PSTemplate->new($app)
 
 Constractor. This returns MojoX::Renderer::PSTemplate instance.
+    
+    $instance = MojoX::Renderer::PSTemplate->new($app)
 
-=head2 engine
+=head2 $instance->engine
 
 This method returns Text::PSTemplate::Plugable instance.
 
-=head2 build
-
-    $renderer = MojoX::Renderer::PSTemplate->build(...)
+=head2 $instance->build()
 
 This method returns a handler for the Mojo renderer.
 
-Supported parameters are:
+    my $renderer = $instance->build()
+    $self->renderer->add_handler(pst => $pst->build);
 
-=over
+=head2 $instance->bootstrap($controller, [$plugin])
 
-=item mojo
+Not written yet.
 
-C<build> currently uses a C<mojo> parameter pointing to the base class
-object (C<Mojo>).
-
-=item template_options
-
-A hash reference of options that are passed to Text::PSTemplate->new().
-
-=back
-
+    $r->route('/')->to(cb => sub {
+        $pst->bootstrap($c, $plugin);
+    });
+    
 =head1 HELPERS
 
 Following template functions(helper) will automatically be available.
