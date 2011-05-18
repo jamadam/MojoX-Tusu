@@ -17,3 +17,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.06 2011/05/18
   - API got simple
+
+0.07 2011/05/18
+  - ComponentBase got some utility functions for template
