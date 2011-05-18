@@ -38,6 +38,26 @@ use base qw(Text::PSTemplate::PluginBase);
 	sub delete {
 		die 'Must be implemented by sub class';
 	}
+	
+	sub options {
+		die 'Must be implemented by sub class';
+	}
+	
+	sub trace {
+		die 'Must be implemented by sub class';
+	}
+	
+	sub patch {
+		die 'Must be implemented by sub class';
+	}
+	
+	sub link {
+		die 'Must be implemented by sub class';
+	}
+	
+	sub unlink {
+		die 'Must be implemented by sub class';
+	}
 
 1;
 
@@ -45,14 +65,14 @@ __END__
 
 =head1 NAME
 
-MojoX::Renderer::PSTemplate::ActionBase - Base Action Class for PSTemplate WAF 
+MojoX::Renderer::PSTemplate::ComponentBase - Base Class for WAF component
 
 =head1 SYNOPSIS
 	
-	package YourAction;
+	package YourComponent;
 	use strict;
 	use warnings;
-	use base qw(MojoX::Renderer::PSTemplate::ActionBase);
+	use base qw(MojoX::Renderer::PSTemplate::ComponentBase);
 	
 	sub get {
 		my ($self, $controller) = @_;
@@ -62,17 +82,15 @@ MojoX::Renderer::PSTemplate::ActionBase - Base Action Class for PSTemplate WAF
 			template => $template,
 		);
 	}
-	
 	sub post {
 		my ($self, $controller) = @_;
 		# ...
 	}
-	
 	sub put {
 		my ($self, $controller) = @_;
 		# ...
 	}
-	
+	# ...
 	sub some_func : TplExport {
 		my ($self, $controller, @your_args) = @_;
 		# ...
@@ -83,9 +101,9 @@ MojoX::Renderer::PSTemplate::ActionBase - Base Action Class for PSTemplate WAF
 
 =head1 DESCRIPTION
 
-C<MojoX::Renderer::PSTemplate::ActionBase> is a Mojo Action Base class for
-MojoX::Renderer::PSTemplate. This class inherits all method from
-Text::PSTemplate::PluginBase.
+C<MojoX::Renderer::PSTemplate::ActionBase> is a Component Base class for
+MojoX::Renderer::PSTemplate meta framework on mojolicious. This class inherits
+all method from Text::PSTemplate::PluginBase.
 
 =head1 METHODS
 
@@ -100,6 +118,11 @@ worry about it.
 =head2 head
 =head2 delete
 =head2 put
+=head2 options
+=head2 patch
+=head2 trace
+=head2 link
+=head2 unlinke
 
 These methods must be overridden by sub classes to act as a MVC Controller
 for to treats corresponding HTTP methods.
