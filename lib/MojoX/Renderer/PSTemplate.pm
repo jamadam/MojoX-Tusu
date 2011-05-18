@@ -18,8 +18,8 @@ $VERSION = eval $VERSION;
         my $engine = Text::PSTemplate::Plugable->new;
         $engine->plug('MojoX::Renderer::PSTemplate::ComponentBase', '');
         $engine->plug('MojoX::Renderer::PSTemplate::_Plugin', 'Mojo');
-		$app->attr('pst');
-		$app->pst($engine);
+        $app->attr('pst');
+        $app->pst($engine);
         return $self->engine($engine);
     }
     
@@ -39,9 +39,9 @@ $VERSION = eval $VERSION;
         
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
         my $base_dir = $c->app->home->rel_file('templates');
-		$engine->set_filename_trans_coderef(sub {
-			_filename_trans($base_dir, @_);
-		});
+        $engine->set_filename_trans_coderef(sub {
+            _filename_trans($base_dir, @_);
+        });
         
         local $SIG{__DIE__} = undef;
         
@@ -59,45 +59,45 @@ $VERSION = eval $VERSION;
         return 1;
     }
     
-	### ---
-	### foo/bar.html.pst -> template/foo/bar.html
-	### foo/.html.pst -> template/foo/index.html
-	### ---
-	sub _filename_trans {
-		
-		my ($template_base, $name) = @_;
-		if (defined $name) {
-			$name =~ s{\.pst$}{};
-			my $ext = ($name =~ s{/\.(\w+)$}{/}) ? $1 : 'html';
-			$name =~ s{/$}(/index);
-			my $full_name = ($name =~ m{[a-zA-Z0-9_]\..+$}) ? $name : "$name.$ext";
-			my $file_path;
-			my $parent_tpl = Text::PSTemplate->get_current_filename;
-			if (! $parent_tpl || substr($full_name, 0, 1) eq '/') {
-				$full_name =~ s{^/}{};
-				$file_path = File::Spec->catfile($template_base, $full_name);
-			} else {
-				my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
-				$file_path = File::Spec->catfile($dir, $full_name);
-			}
-			if (-e $file_path) {
-				return $file_path;
-			}
-			croak "$file_path not found";
-		}
-		return File::Spec->catfile($template_base, 'index.html');
-	}
+    ### ---
+    ### foo/bar.html.pst -> template/foo/bar.html
+    ### foo/.html.pst -> template/foo/index.html
+    ### ---
+    sub _filename_trans {
+        
+        my ($template_base, $name) = @_;
+        if (defined $name) {
+            $name =~ s{\.pst$}{};
+            my $ext = ($name =~ s{/\.(\w+)$}{/}) ? $1 : 'html';
+            $name =~ s{/$}(/index);
+            my $full_name = ($name =~ m{[a-zA-Z0-9_]\..+$}) ? $name : "$name.$ext";
+            my $file_path;
+            my $parent_tpl = Text::PSTemplate->get_current_filename;
+            if (! $parent_tpl || substr($full_name, 0, 1) eq '/') {
+                $full_name =~ s{^/}{};
+                $file_path = File::Spec->catfile($template_base, $full_name);
+            } else {
+                my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
+                $file_path = File::Spec->catfile($dir, $full_name);
+            }
+            if (-e $file_path) {
+                return $file_path;
+            }
+            croak "$file_path not found";
+        }
+        return File::Spec->catfile($template_base, 'index.html');
+    }
     
-	### --------------
-	### bootstrap for frameworking
-	### --------------
-	sub bootstrap {
-	
-		my ($self, $c, $plugin) = @_;
-		
-		$plugin ||= 'MojoX::Renderer::PSTemplate::ComponentBase';
-		my $plugin_obj = $c->app->pst->get_plugin($plugin);
-		
+    ### --------------
+    ### bootstrap for frameworking
+    ### --------------
+    sub bootstrap {
+    
+        my ($self, $c, $plugin) = @_;
+        
+        $plugin ||= 'MojoX::Renderer::PSTemplate::ComponentBase';
+        my $plugin_obj = $c->app->pst->get_plugin($plugin);
+        
         switch ($c->req->method) {
             case 'GET'  {
                 return $plugin_obj->get($c);
@@ -114,25 +114,25 @@ $VERSION = eval $VERSION;
             case 'PUT'  {
                 return $plugin_obj->put($c);
             }
-			case 'OPTIONS' {
+            case 'OPTIONS' {
                 return $plugin_obj->options($c);
-			}
-			case 'TRACE' {
+            }
+            case 'TRACE' {
                 return $plugin_obj->trace($c);
-			}
-			case 'PATCH' {
+            }
+            case 'PATCH' {
                 return $plugin_obj->patch($c);
-			}
-			case 'LINK' {
+            }
+            case 'LINK' {
                 return $plugin_obj->link($c);
-			}
-			case 'UNLINK' {
+            }
+            case 'UNLINK' {
                 return $plugin_obj->unlink($c);
-			}
+            }
         }
-		return $plugin_obj->get($c);
-	}
-	
+        return $plugin_obj->get($c);
+    }
+    
 package MojoX::Renderer::PSTemplate::_Plugin;
 use strict;
 use warnings;
@@ -150,12 +150,12 @@ use File::Spec;
         
         my ($self, $c) = @_;
         my $path = $c->url_for(@_[2.. scalar (@_)]);
-		if ($ENV{SCRIPT_NAME}) {
-			if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
-				$path =~ s{$rubbish/}{};
-			}
-		}
-		return $path;
+        if ($ENV{SCRIPT_NAME}) {
+            if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
+                $path =~ s{$rubbish/}{};
+            }
+        }
+        return $path;
     }
 
 1;
@@ -180,14 +180,14 @@ MojoX::Renderer::PSTemplate - Meta framework on Mojolicious & PSTemplate
         
         $self->renderer->add_handler(pst => $pst->build);
 
-		my $cb = sub {
-			my ($c) = @_;
-			if (my $x = $c->req->query_params->param('x')) {
-				$pst->bootstrap($c, $x);
-			} else {
-				$pst->bootstrap($c);
-			}
-		};
+        my $cb = sub {
+            my ($c) = @_;
+            if (my $x = $c->req->query_params->param('x')) {
+                $pst->bootstrap($c, $x);
+            } else {
+                $pst->bootstrap($c);
+            }
+        };
         $r->route('/(*template)')->to(cb => $cb);
         $r->route('/')->to(cb => $cb);
     }

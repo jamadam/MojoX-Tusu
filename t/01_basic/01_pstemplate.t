@@ -8,8 +8,8 @@ use Test::Mojo;
 
     __PACKAGE__->runtests;
     
-	sub constractor : Test(5) {
-		
+    sub constractor : Test(5) {
+        
         my $app = Test::App->new;
         my $r = MojoX::Renderer::PSTemplate->new($app);
         is(ref $r, 'MojoX::Renderer::PSTemplate');
@@ -18,7 +18,7 @@ use Test::Mojo;
         is(ref $engine, 'Text::PSTemplate::Plugable');
         is(ref $engine->get_plugin('MojoX::Renderer::PSTemplate::ComponentBase'), 'MojoX::Renderer::PSTemplate::ComponentBase');
         is(ref $engine->get_plugin('MojoX::Renderer::PSTemplate::_Plugin'), 'MojoX::Renderer::PSTemplate::_Plugin');
-	}
+    }
     
     sub constractor2 : Test(5) {
         $ENV{MOJO_MODE} = 'production';
@@ -48,12 +48,12 @@ sub startup {
     my $r = $self->routes;
 
     $r->route('/(*template)')->to(
-        controller 	=> 'Controller',
-        action 		=> 'bootstrap',
+        controller  => 'Controller',
+        action      => 'bootstrap',
     );
     $r->route('/')->to(
-        controller 	=> 'Controller',
-        action 		=> 'bootstrap',
+        controller  => 'Controller',
+        action      => 'bootstrap',
     );
 }
 
