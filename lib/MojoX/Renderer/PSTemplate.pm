@@ -6,7 +6,7 @@ use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
 use Carp;
 use Switch;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
@@ -94,6 +94,8 @@ $VERSION = eval $VERSION;
     sub bootstrap {
     
         my ($self, $c, $plugin) = @_;
+		
+        local $MojoX::Renderer::PSTemplate::controller = $c;
         
         $plugin ||= 'MojoX::Renderer::PSTemplate::ComponentBase';
         my $plugin_obj = $c->app->pst->get_plugin($plugin);
@@ -142,14 +144,16 @@ use File::Spec;
     
     sub param : TplExport {
         
-        my ($self, $c) = @_;
-        return $c->param(@_[2.. scalar (@_)]);
+        my ($self) = @_;
+		my $c = $self->controller;
+        return $c->param(@_[1.. scalar (@_)]);
     }
     
     sub url_for : TplExport {
         
-        my ($self, $c) = @_;
-        my $path = $c->url_for(@_[2.. scalar (@_)]);
+        my ($self) = @_;
+		my $c = $self->controller;
+        my $path = $c->url_for(@_[1.. scalar (@_)]);
         if ($ENV{SCRIPT_NAME}) {
             if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
                 $path =~ s{$rubbish/}{};

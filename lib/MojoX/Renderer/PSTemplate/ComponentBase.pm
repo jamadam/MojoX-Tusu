@@ -9,10 +9,10 @@ use base qw(Text::PSTemplate::PluginBase);
     
     sub param : TplExport {
         
-        my ($self, $c, $name, $escape) = @_;
-        
+        my ($self, $name, $escape) = @_;
+		my $c = $self->controller;
         my $val = $c->param($name);
-        if ($escape) {
+        if ($val && $escape) {
             $val = Text::PSTemplate::Plugin::HTML->escape($val);
         }
         return $val;
@@ -20,16 +20,16 @@ use base qw(Text::PSTemplate::PluginBase);
     
     sub post_param : TplExport {
         
-        my ($self, $c, $name, $escape) = @_;
-        warn 'test';
+        my ($self, $name, $escape) = @_;
+		my $c = $self->controller;
         my $val = $c->req->body_params->param($name);
-        if ($escape) {
+        if ($val && $escape) {
             $val = Text::PSTemplate::Plugin::HTML->escape($val);
         }
         return $val;
     }
     
-    sub preceding_args {
+    sub controller {
         
         return $MojoX::Renderer::PSTemplate::controller;
     }
@@ -139,11 +139,9 @@ Returns POST parameter value.
 
 =head1 METHODS
 
-=head2 preceding_args
+=head2 controller
 
-This method overrides the super class method for prepending controller instance
-into template function arguments. This is internal use only so you don't have to
-worry about it.
+Returns current Mojolicious::Controller instance.
 
 =head2 get 
 =head2 post
