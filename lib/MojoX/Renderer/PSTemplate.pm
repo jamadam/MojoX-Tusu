@@ -141,7 +141,7 @@ __END__
 
 =head1 NAME
 
-MojoX::Renderer::PSTemplate - Meta framework on Mojolicious & PSTemplate
+MojoX::Renderer::PSTemplate - Sub framework on Mojolicious & PSTemplate
 
 =head1 SYNOPSIS
 
@@ -172,7 +172,7 @@ MojoX::Renderer::PSTemplate - Meta framework on Mojolicious & PSTemplate
 =head1 DESCRIPTION
 
 The C<MojoX::Renderer::PSTemplate> is a Text::PSTemplate renderer
-for mojolicious. Also it allows you to work on meta frameworking which suitable
+for mojolicious. Also it allows you to work on Sub frameworking which suitable
 for PSTemplate. A helper plugin for PSTemplate will automatically be pluged.
 
 =head1 METHODS
