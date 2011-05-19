@@ -34,7 +34,6 @@ use MojoX::Renderer::PSTemplate;
     
     sub startup {
         my $self = shift;
-        $self->types->type(xsl => 'text/html');
     
         my $pst = MojoX::Renderer::PSTemplate->new($self);
         $pst->engine->plug('SomeComponent');
