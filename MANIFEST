@@ -6,6 +6,12 @@ Makefile.PL
 MANIFEST
 README
 t/00_load.t
-t/01_basic/01_pstemplate.t
+t/01_basic/01_constractor.t
+t/01_basic/02_practical.t
+t/01_basic/02_template_load.t
+t/01_basic/templates/01.html
+t/01_basic/templates/01/01_01.html
+t/01_basic/templates/01/index.html
+t/01_basic/templates/index.html
 t/99_pod.t
 t/99_podcoverage.t
