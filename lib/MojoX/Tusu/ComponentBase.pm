@@ -164,14 +164,23 @@ Returns POST parameter value.
 Returns current Mojolicious::Controller instance.
 
 =head2 get 
+
 =head2 post
+
 =head2 head
+
 =head2 delete
+
 =head2 put
+
 =head2 options
+
 =head2 patch
+
 =head2 trace
+
 =head2 link
+
 =head2 unlink
 
 These methods must be overridden by sub classes to act as a MVC Controller
