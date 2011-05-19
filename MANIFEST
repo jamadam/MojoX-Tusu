@@ -1,6 +1,7 @@
 Changes
 lib/MojoX/Renderer/PSTemplate.pm
 lib/MojoX/Renderer/PSTemplate/ComponentBase.pm
+lib/MojoX/Renderer/PSTemplate/Mojolicious.pm
 Makefile.PL
 MANIFEST
 README

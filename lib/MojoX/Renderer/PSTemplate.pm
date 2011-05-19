@@ -17,7 +17,7 @@ $VERSION = eval $VERSION;
         my $self = $class->SUPER::new;
         my $engine = Text::PSTemplate::Plugable->new;
         $engine->plug('MojoX::Renderer::PSTemplate::ComponentBase', '');
-        $engine->plug('MojoX::Renderer::PSTemplate::_Plugin', 'Mojo');
+        $engine->plug('MojoX::Renderer::PSTemplate::Mojolicious', 'Mojolicious');
         $app->attr('pst');
         $app->pst($engine);
         return $self->engine($engine);
@@ -134,33 +134,6 @@ $VERSION = eval $VERSION;
         }
         return $plugin_obj->get($c);
     }
-    
-package MojoX::Renderer::PSTemplate::_Plugin;
-use strict;
-use warnings;
-use base qw(MojoX::Renderer::PSTemplate::ComponentBase);
-use File::Basename 'basename';
-use File::Spec;
-    
-    sub param : TplExport {
-        
-        my ($self) = @_;
-		my $c = $self->controller;
-        return $c->param(@_[1.. scalar (@_)]);
-    }
-    
-    sub url_for : TplExport {
-        
-        my ($self) = @_;
-		my $c = $self->controller;
-        my $path = $c->url_for(@_[1.. scalar (@_)]);
-        if ($ENV{SCRIPT_NAME}) {
-            if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
-                $path =~ s{$rubbish/}{};
-            }
-        }
-        return $path;
-    }
 
 1;
 
@@ -228,18 +201,6 @@ Not written yet.
     $r->route('/')->to(cb => sub {
         $pst->bootstrap($c, $plugin);
     });
-    
-=head1 HELPERS
-
-Following template functions(helper) will automatically be available.
-
-=head2 param
-
-    <% Mojo::param('key') %>
-
-=head2 url_for
-
-    <% Mojo::url_for('/path/to/file') %>
 
 =head1 SEE ALSO
 

@@ -2,6 +2,8 @@ package MojoX::Renderer::PSTemplate::ComponentBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
+use File::Basename 'basename';
+use File::Spec;
     
     sub _dummy : TplExport {
         
@@ -27,6 +29,19 @@ use base qw(Text::PSTemplate::PluginBase);
             $val = Text::PSTemplate::Plugin::HTML->escape($val);
         }
         return $val;
+    }
+    
+    sub url_for : TplExport {
+        
+        my ($self) = @_;
+		my $c = $self->controller;
+        my $path = $c->url_for(@_[1.. scalar (@_)]);
+        if ($ENV{SCRIPT_NAME}) {
+            if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
+                $path =~ s{$rubbish/}{};
+            }
+        }
+        return $path;
     }
     
     sub controller {
@@ -128,6 +143,11 @@ MojoX::Renderer::PSTemplate meta framework on mojolicious. This class inherits
 all method from Text::PSTemplate::PluginBase.
 
 =head1 Template Functions
+
+=head2 url_for($path)
+
+Generate a portable Mojo::URL object with base for a route, path or URL. This
+also strips script name on CGI environment.
 
 =head2 param($name, [$escape])
 

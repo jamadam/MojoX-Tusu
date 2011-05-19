@@ -20,3 +20,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.07 2011/05/18
   - ComponentBase got some utility functions for template
+
+0.08 2011/05/19
+  - Controller no more given via second arg on tpl funcs

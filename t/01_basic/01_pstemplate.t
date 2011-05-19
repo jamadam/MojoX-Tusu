@@ -17,7 +17,7 @@ use Test::Mojo;
         my $engine = $r->engine;
         is(ref $engine, 'Text::PSTemplate::Plugable');
         is(ref $engine->get_plugin('MojoX::Renderer::PSTemplate::ComponentBase'), 'MojoX::Renderer::PSTemplate::ComponentBase');
-        is(ref $engine->get_plugin('MojoX::Renderer::PSTemplate::_Plugin'), 'MojoX::Renderer::PSTemplate::_Plugin');
+        is(ref $engine->get_plugin('MojoX::Renderer::PSTemplate::Mojolicious'), 'MojoX::Renderer::PSTemplate::Mojolicious');
     }
     
     sub constractor2 : Test(5) {
