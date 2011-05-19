@@ -23,3 +23,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.08 2011/05/19
   - Controller no more given via second arg on tpl funcs
+
+0.09 2011/05/19
+  - Distribution renamed

@@ -3,18 +3,16 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %params = (
-    NAME          => 'Mojolicious::Plugin::PstemplateRenderer',
-    AUTHOR        => 'Sugama Keita <sugama@jamadam.com>',
-    VERSION_FROM  => 'lib/Mojolicious/Plugin/PstemplateRenderer.pm',
-    ABSTRACT_FROM => 'lib/Mojolicious/Plugin/PstemplateRenderer.pm',
+    NAME          => 'MojoX::Tusu',
+    AUTHOR        => 'sugama <sugama@jamadam.com>',
+    VERSION_FROM  => 'lib/MojoX/Tusu.pm',
+    ABSTRACT_FROM => 'lib/MojoX/Tusu.pm',
     LICENSE       => 'perl',
     PREREQ_PM     => {
     },
     BUILD_REQUIRES => {
         'Test::More'          => '0.47',
         'Test::UseAllModules' => '0.10',
-        'Text::PSTemplate'    => '0.31',
-        'Mojolicious'         => '1.31',
     },
     META_MERGE => {
         resources => {

@@ -1,4 +1,4 @@
-Mojolicious-Plugin-PstemplateRenderer
+MojoX-Tusu
 
 INSTALLATION
 
@@ -11,7 +11,7 @@ To install this module, run the following commands:
 
 COPYRIGHT AND LICENSE
 
-Copyright (C) 2011 Sugama Keita
+Copyright (C) 2011 sugama
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.

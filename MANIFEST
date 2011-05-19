@@ -1,9 +1,9 @@
 Changes
-lib/MojoX/Renderer/PSTemplate.pm
-lib/MojoX/Renderer/PSTemplate/ComponentBase.pm
-lib/MojoX/Renderer/PSTemplate/Mojolicious.pm
+lib/MojoX/Tusu.pm
+lib/MojoX/Tusu/Component/Mojolicious.pm
+lib/MojoX/Tusu/ComponentBase.pm
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 README
 t/00_load.t
 t/01_basic/01_constractor.t

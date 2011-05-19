@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use base 'Test::Class';
 use Test::More;
-use MojoX::Renderer::PSTemplate;
+use MojoX::Tusu;
 use Test::Mojo;
 
     __PACKAGE__->runtests;
@@ -30,12 +30,12 @@ package SomeApp;
 use strict;
 use warnings;
 use base 'Mojolicious';
-use MojoX::Renderer::PSTemplate;
+use MojoX::Tusu;
     
     sub startup {
         my $self = shift;
     
-        my $pst = MojoX::Renderer::PSTemplate->new($self);
+        my $pst = MojoX::Tusu->new($self);
         $pst->engine->plug('SomeComponent');
         $self->renderer->add_handler(pst => $pst->build);
         
@@ -52,7 +52,7 @@ use MojoX::Renderer::PSTemplate;
 package SomeComponent;
 use strict;
 use warnings;
-use base 'MojoX::Renderer::PSTemplate::ComponentBase';
+use base 'MojoX::Tusu::ComponentBase';
 
     sub post {
         shift->get(@_);
