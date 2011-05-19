@@ -6,13 +6,13 @@ use base qw(Text::PSTemplate::PluginBase);
     sub param : TplExport {
         
         my ($self) = @_;
-        return $self->controller->param(@_[1.. scalar (@_)]);
+        return $self->controller->param(@_[1.. scalar (@_) - 1]);
     }
     
     sub url_for : TplExport {
         
         my ($self) = @_;
-        return $self->controller->url_for(@_[1.. scalar (@_)]);
+        return $self->controller->url_for(@_[1.. scalar (@_) - 1]);
     }
 
 1;

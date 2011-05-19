@@ -35,7 +35,7 @@ use File::Spec;
         
         my ($self) = @_;
 		my $c = $self->controller;
-        my $path = $c->url_for(@_[1.. scalar (@_)]);
+        my $path = $c->url_for(@_[1.. scalar (@_) - 1]);
         if ($ENV{SCRIPT_NAME}) {
             if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
                 $path =~ s{$rubbish/}{};
