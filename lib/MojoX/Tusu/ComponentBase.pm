@@ -4,6 +4,7 @@ use warnings;
 use base qw(Text::PSTemplate::PluginBase);
 use File::Basename 'basename';
 use File::Spec;
+use Mojo::Util;
     
     sub init {
         
@@ -13,13 +14,19 @@ use File::Spec;
         
     }
     
+    sub escape : TplExport {
+        my ($self, $val) = @_;
+        my $c = $self->controller;
+        return Mojo::Util::html_escape($val);
+    }
+    
     sub param : TplExport {
         
         my ($self, $name, $escape) = @_;
         my $c = $self->controller;
         my $val = $c->param($name);
         if ($val && $escape) {
-            $val = Text::PSTemplate::Plugin::HTML->escape($val);
+            $val = Mojo::Util::html_escape($val);
         }
         return $val;
     }
@@ -30,7 +37,7 @@ use File::Spec;
         my $c = $self->controller;
         my $val = $c->req->body_params->param($name);
         if ($val && $escape) {
-            $val = Text::PSTemplate::Plugin::HTML->escape($val);
+            $val = Mojo::Util::html_escape($val);
         }
         return $val;
     }
@@ -133,12 +140,16 @@ MojoX::Tusu::ComponentBase - Base Class for WAF component
     }
     # ...
     sub some_func : TplExport {
-        my ($self, $controller, @your_args) = @_;
+        my ($self, @your_args) = @_;
         # ...
         return '';
     }
     
-    <% some_func(@your_args) %>
+    <% YourComponent::some_func(@your_args) %>
+    <% param(@your_args) %>
+    <% post_param(@your_args) %>
+    <% url_for(@your_args) %>
+    <% escape(@your_args) %>
 
 =head1 DESCRIPTION
 
@@ -160,6 +171,10 @@ Returns GET parameter value.
 =head2 post_param($name, [$escape])
 
 Returns POST parameter value.
+
+=head2 escape($val)
+
+Returns HTML escaped string.
 
 =head1 METHODS
 
