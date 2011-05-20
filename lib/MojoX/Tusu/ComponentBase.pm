@@ -2,50 +2,13 @@ package MojoX::Tusu::ComponentBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
-use Mojo::Util;
     
     sub init {
-        
+        ### Must be implemented on sub classes.
     }
     
     sub _dummy : TplExport {
         
-    }
-    
-    sub escape : TplExport {
-        my ($self, $val) = @_;
-        my $c = $self->controller;
-        return Mojo::Util::html_escape($val);
-    }
-    
-    sub param : TplExport {
-        
-        my ($self, $name, $escape) = @_;
-        my $c = $self->controller;
-        my $val = $c->param($name);
-        if ($val && $escape) {
-            $val = Mojo::Util::html_escape($val);
-        }
-        return $val;
-    }
-    
-    sub post_param : TplExport {
-        
-        my ($self, $name, $escape) = @_;
-        my $c = $self->controller;
-        my $val = $c->req->body_params->param($name);
-        if ($val && $escape) {
-            $val = Mojo::Util::html_escape($val);
-        }
-        return $val;
-    }
-    
-    sub url_for : TplExport {
-        
-        my ($self) = @_;
-        my $c = $self->controller;
-        my $path = $c->url_for(@_[1.. scalar (@_) - 1]);
-        return bless $path, 'MojoX::Tusu::ComponentBase::URL';
     }
     
     sub controller {
@@ -100,30 +63,6 @@ use Mojo::Util;
         die 'Must be implemented by sub class';
     }
 
-package MojoX::Tusu::ComponentBase::URL;
-use strict;
-use warnings;
-use Mojo::Base -base;
-use base qw(Mojo::URL);
-use File::Basename 'basename';
-has base => sub { (ref $_[0])->new };
-    
-    sub clone {
-        my $self = shift;
-        return bless $self->SUPER::clone, ref $self;
-    }
-    
-    sub to_string {
-        my $self = shift;
-        my $path = $self->SUPER::to_string;
-        if ($ENV{SCRIPT_NAME}) {
-            if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
-                $path =~ s{$rubbish/}{};
-            }
-        }
-        return $path;
-    }
-
 1;
 
 __END__
@@ -163,35 +102,12 @@ MojoX::Tusu::ComponentBase - Base Class for WAF component
     }
     
     <% YourComponent::some_func(@your_args) %>
-    <% param(@your_args) %>
-    <% post_param(@your_args) %>
-    <% url_for(@your_args) %>
-    <% escape(@your_args) %>
 
 =head1 DESCRIPTION
 
 C<MojoX::Tusu::ComponentBase> is a Component Base class for
 MojoX::Tusu sub framework on mojolicious. This class inherits
 all method from Text::PSTemplate::PluginBase.
-
-=head1 Template Functions
-
-=head2 url_for($path)
-
-Generate a portable Mojo::URL object with base for a route, path or URL. This
-also strips script name on CGI environment.
-
-=head2 param($name, [$escape])
-
-Returns GET parameter value.
-
-=head2 post_param($name, [$escape])
-
-Returns POST parameter value.
-
-=head2 escape($val)
-
-Returns HTML escaped string.
 
 =head1 METHODS
 

@@ -1,9 +1,10 @@
 Changes
 lib/MojoX/Tusu.pm
-lib/MojoX/Tusu/Component/Mojolicious.pm
 lib/MojoX/Tusu/ComponentBase.pm
+lib/MojoX/Tusu/Plugin/Mojolicious.pm
+lib/MojoX/Tusu/PluginBase.pm
 Makefile.PL
-MANIFEST			This list of files
+MANIFEST
 README
 t/00_load.t
 t/01_basic/01_constractor.t
