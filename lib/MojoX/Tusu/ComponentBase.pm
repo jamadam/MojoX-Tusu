@@ -2,8 +2,6 @@ package MojoX::Tusu::ComponentBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
-use File::Basename 'basename';
-use File::Spec;
 use Mojo::Util;
     
     sub init {
@@ -47,12 +45,7 @@ use Mojo::Util;
         my ($self) = @_;
         my $c = $self->controller;
         my $path = $c->url_for(@_[1.. scalar (@_) - 1]);
-        if ($ENV{SCRIPT_NAME}) {
-            if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
-                $path =~ s{$rubbish/}{};
-            }
-        }
-        return $path;
+        return bless $path, 'MojoX::Tusu::ComponentBase::URL';
     }
     
     sub controller {
@@ -105,6 +98,30 @@ use Mojo::Util;
     
     sub unlink {
         die 'Must be implemented by sub class';
+    }
+
+package MojoX::Tusu::ComponentBase::URL;
+use strict;
+use warnings;
+use Mojo::Base -base;
+use base qw(Mojo::URL);
+use File::Basename 'basename';
+has base => sub { (ref $_[0])->new };
+    
+    sub clone {
+        my $self = shift;
+        return bless $self->SUPER::clone, ref $self;
+    }
+    
+    sub to_string {
+        my $self = shift;
+        my $path = $self->SUPER::to_string;
+        if ($ENV{SCRIPT_NAME}) {
+            if (my $rubbish = basename($ENV{SCRIPT_NAME})) {
+                $path =~ s{$rubbish/}{};
+            }
+        }
+        return $path;
     }
 
 1;
