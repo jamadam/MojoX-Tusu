@@ -197,38 +197,42 @@ Constractor. This returns MojoX::Tusu instance.
 
 =head2 $instance->engine
 
-This method returns Text::PSTemplate::Plugable instance.
+Returns Text::PSTemplate::Plugable instance.
 
 =head2 $instance->app
 
-This method returns Mojolicious app instance.
+Returns Mojolicious app instance.
 
-=head2 $instance->plug($plug_name, $namespace)
+=head2 $instance->plug($plug_name, [$namespace])
 
 This is delegate method for Text::PSTemplate::Plugable->plug method to hook
-MojoX::Tusu::ComponentBase->init.
+MojoX::Tusu::ComponentBase->init. $namespace default to full name of package.
 
     my $tusu = MojoX::Tusu->new($self);
     $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
 
 =head2 $instance->build()
 
-This method returns a handler for the Mojo renderer.
+Returns a handler for the Mojo renderer.
 
     my $renderer = $instance->build()
     $self->renderer->add_handler(pst => $tusu->build);
 
-=head2 $instance->bootstrap($controller, [$plugin])
+=head2 $instance->bootstrap($controller, [$component])
 
-Not written yet.
+This method is a sub dispacher method. Each HTTP request methods will be routed
+to corresponding mthods of given component class. $component default to
+'MojoX::Tusu::ComponentBase'.
 
     $r->route('/')->to(cb => sub {
-        $tusu->bootstrap($c, $plugin);
+        $tusu->bootstrap($c, 'Your::Component');
     });
+
+Each component classes must have methods such as get(), post() etc.
 
 =head1 SEE ALSO
 
-L<Text::PSTemplate>, L<MojoX::Renderer>
+L<Mojolicious>, L<Text::PSTemplate>, L<MojoX::Renderer>
 
 =head1 AUTHOR
 

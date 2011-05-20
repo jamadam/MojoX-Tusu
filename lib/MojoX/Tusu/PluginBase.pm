@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-MojoX::Tusu::ComponentBase - Base Class for WAF component
+MojoX::Tusu::PluginBase - Base Class for template plugins for MojoX::Tusu
 
 =head1 SYNOPSIS
     

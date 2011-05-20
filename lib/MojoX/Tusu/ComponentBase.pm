@@ -107,7 +107,7 @@ MojoX::Tusu::ComponentBase - Base Class for WAF component
 
 C<MojoX::Tusu::ComponentBase> is a Component Base class for
 MojoX::Tusu sub framework on mojolicious. This class inherits
-all method from Text::PSTemplate::PluginBase.
+all methods from Text::PSTemplate::PluginBase.
 
 =head1 METHODS
 
@@ -141,7 +141,7 @@ called from MojoX::Tusu->plug method.
 =head2 unlink
 
 These methods must be overridden by sub classes to act as a MVC Controller
-for to treats corresponding HTTP methods.
+to treats corresponding HTTP methods.
 
 =head1 SEE ALSO
 
