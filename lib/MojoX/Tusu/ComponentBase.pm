@@ -5,6 +5,10 @@ use base qw(Text::PSTemplate::PluginBase);
 use File::Basename 'basename';
 use File::Spec;
     
+    sub init {
+        
+    }
+    
     sub _dummy : TplExport {
         
     }
@@ -162,6 +166,11 @@ Returns POST parameter value.
 =head2 controller
 
 Returns current Mojolicious::Controller instance.
+
+=head2 $self->init($app)
+
+This is a hook method for initializing component. This will automatically be
+called from MojoX::Tusu->plug method.
 
 =head2 get 
 

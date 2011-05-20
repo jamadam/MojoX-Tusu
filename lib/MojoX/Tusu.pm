@@ -6,10 +6,11 @@ use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
 use Carp;
 use Switch;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
+    __PACKAGE__->attr('app');
     
     sub new {
         
@@ -20,7 +21,18 @@ $VERSION = eval $VERSION;
         $engine->plug('MojoX::Tusu::Component::Mojolicious', 'Mojolicious');
         $app->attr('pst');
         $app->pst($engine);
+        $self->app($app);
         return $self->engine($engine);
+    }
+    
+    sub plug {
+        
+        my ($self, $plugin_name, $as) = @_;
+        my $plugin = $self->engine->plug($plugin_name, $as);
+        if ($plugin->isa('MojoX::Tusu::ComponentBase')) {
+            $plugin->init($self->app);
+        }
+        return $plugin;
     }
     
     sub build {
@@ -149,20 +161,20 @@ MojoX::Tusu - Text::PSTemplate Framework on Mojolicious
         ....
 
         use MojoX::Tusu;
-        my $pst = MojoX::Tusu->new($self);
+        my $tusu = MojoX::Tusu->new($self);
         
         # initialize Text::PSTemplate::Plugable if necessary
-        $pst->engine->plug('some_plugin');
-        $pst->engine->set_...();
+        $tusu->plug('some_plugin');
+        $tusu->engine->set_...();
         
-        $self->renderer->add_handler(pst => $pst->build);
+        $self->renderer->add_handler(pst => $tusu->build);
 
         my $cb = sub {
             my ($c) = @_;
             if (my $x = $c->req->query_params->param('x')) {
-                $pst->bootstrap($c, $x);
+                $tusu->bootstrap($c, $x);
             } else {
-                $pst->bootstrap($c);
+                $tusu->bootstrap($c);
             }
         };
         $r->route('/(*template)')->to(cb => $cb);
@@ -186,19 +198,31 @@ Constractor. This returns MojoX::Tusu instance.
 
 This method returns Text::PSTemplate::Plugable instance.
 
+=head2 $instance->app
+
+This method returns Mojolicious app instance.
+
+=head2 $instance->plug($plug_name, $namespace)
+
+This is delegate method for Text::PSTemplate::Plugable->plug method to hook
+MojoX::Tusu::ComponentBase->init.
+
+    my $tusu = MojoX::Tusu->new($self);
+    $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
+
 =head2 $instance->build()
 
 This method returns a handler for the Mojo renderer.
 
     my $renderer = $instance->build()
-    $self->renderer->add_handler(pst => $pst->build);
+    $self->renderer->add_handler(pst => $tusu->build);
 
 =head2 $instance->bootstrap($controller, [$plugin])
 
 Not written yet.
 
     $r->route('/')->to(cb => sub {
-        $pst->bootstrap($c, $plugin);
+        $tusu->bootstrap($c, $plugin);
     });
 
 =head1 SEE ALSO
