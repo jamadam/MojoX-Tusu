@@ -26,7 +26,7 @@ $VERSION = eval $VERSION;
         $self->app($app);
         $self->engine($engine);
         
-        $self->document_root($app, $app->home->rel_dir('public_html'));
+        $self->document_root($app->home->rel_dir('public_html'));
         
         $app->on_process(\&_dispatch);
         
@@ -35,7 +35,8 @@ $VERSION = eval $VERSION;
     
     sub document_root {
         
-        my ($self, $app, $value) = @_;
+        my ($self, $value) = @_;
+        my $app = $self->app;
         if ($value) {
             my $static = Mojolicious::Static->new;
             $static->root($value);
