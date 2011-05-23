@@ -29,3 +29,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.10 2011/05/20
   - Mojo::Tusu::plug for hooking MojoX::Tusu::ComponentBase::init
+
+0.11 2011/05/23
+  - Template dir and static dir both now defaults to public_html

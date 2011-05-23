@@ -6,7 +6,8 @@ use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
 use Carp;
 use Switch;
-our $VERSION = '0.10';
+use Mojolicious::Static;
+our $VERSION = '0.11';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
@@ -23,7 +24,63 @@ $VERSION = eval $VERSION;
         $app->attr('pst');
         $app->pst($engine);
         $self->app($app);
-        return $self->engine($engine);
+        $self->engine($engine);
+        
+        $self->document_root($app, $app->home->rel_dir('public_html'));
+        
+        $app->on_process(\&_dispatch);
+        
+        return $self;
+    }
+    
+    sub document_root {
+        
+        my ($self, $app, $value) = @_;
+        if ($value) {
+            my $static = Mojolicious::Static->new;
+            $static->root($value);
+            $app->static($static);
+            $app->renderer->root($value);
+        }
+        return $app->renderer->root($value);
+    }
+    
+    sub _dispatch {
+        
+        my ($self, $c) = @_;
+        
+        my $tx = $c->tx;
+        if ($tx->is_websocket) {
+            $c->res->code(undef);
+        }
+        $self->sessions->load($c);
+        my $plugins = $self->plugins;
+        $plugins->run_hook(before_dispatch => $c);
+        
+        my $path = $tx->req->url->path->to_string;
+        if (! $path || $path !~ m{\.} || $path =~ m{((\.(html|htm|xml)))$}) {
+            my $res = $tx->res;
+            if (my $code = ($tx->req->error)[1]) {
+                $res->code($code)
+            } elsif ($tx->is_websocket) {
+                $res->code(426)
+            }
+            if ($self->routes->dispatch($c)) {
+                if (! $res->code) {
+                    $c->render_not_found
+                }
+            }
+        } elsif ($path =~ m{((\.(cgi|php|rb))|/)$}) {
+            $tx->res->code(401);
+            $c->render_exception('401');
+        } else {
+            if ($self->static->dispatch($c)) {
+                if (! $tx->res->code) {
+                    $c->render_not_found
+                }
+            }
+            $plugins->run_hook_reverse(after_static_dispatch => $c);
+        }
     }
     
     sub plug {
@@ -51,7 +108,7 @@ $VERSION = eval $VERSION;
         my $name = $renderer->template_name($options);
         
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
-        my $base_dir = $c->app->home->rel_file('templates');
+        my $base_dir = $c->app->renderer->root;
         $engine->set_filename_trans_coderef(sub {
             _filename_trans($base_dir, @_);
         });
@@ -194,6 +251,14 @@ for renderer.
 Constractor. This returns MojoX::Tusu instance.
     
     $instance = MojoX::Tusu->new($app)
+
+=head2 $instance->document_root($app, $directory)
+
+Set root directory for templates and static files. This defaults to
+'public_html'.
+
+    my $root = $tusu->root;
+    $tusu->root('www');
 
 =head2 $instance->engine
 
