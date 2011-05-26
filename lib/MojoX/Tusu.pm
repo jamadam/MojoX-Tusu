@@ -7,7 +7,7 @@ use base qw(Mojo::Base);
 use Carp;
 use Switch;
 use Mojolicious::Static;
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
@@ -123,7 +123,7 @@ $VERSION = eval $VERSION;
             my $err = $_ || 'Unknown Error';
             $name ||= '';
             $c->app->log->error(qq(Template error in "$name": $err));
-            $c->render_exception($err);
+            $c->render_exception("$err");
             $$output = '';
             return 0;
         };
