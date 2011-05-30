@@ -141,7 +141,7 @@ $VERSION = eval $VERSION;
             $name =~ s{\.pst$}{};
             $name =~ s{(?<=/)$}(index);
             $name =~ s{(?<=/)(?=\.)}(index);
-            $name =~ s{(^|/)(\w+)$}{$1$2.html};
+            $name =~ s{(^|/)([^\.]+)$}{$1$2.html};
             my $path;
             if (substr($name, 0, 1) eq '/') {
                 $name =~ s{^/}{};
