@@ -106,7 +106,7 @@ $VERSION = eval $VERSION;
         
         local $MojoX::Tusu::controller = $c;
         
-        my $name = $renderer->template_name($options);
+        my $name = $renderer->template_name($options) || '';
         
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
         my $base_dir = $c->app->renderer->root;
@@ -117,7 +117,7 @@ $VERSION = eval $VERSION;
         local $SIG{__DIE__} = undef;
         
         try {
-            $$output = $engine->parse_file($name);
+            $$output = $engine->parse_file('/'. $name);
         }
         catch {
             my $err = $_ || 'Unknown Error';
@@ -139,22 +139,22 @@ $VERSION = eval $VERSION;
         my ($template_base, $name) = @_;
         if (defined $name) {
             $name =~ s{\.pst$}{};
-            my $ext = ($name =~ s{/\.(\w+)$}{/}) ? $1 : 'html';
-            $name =~ s{/$}(/index);
-            my $full_name = ($name =~ m{[a-zA-Z0-9_]\..+$}) ? $name : "$name.$ext";
-            my $file_path;
-            my $parent_tpl = Text::PSTemplate->get_current_filename;
-            if (! $parent_tpl || substr($full_name, 0, 1) eq '/') {
-                $full_name =~ s{^/}{};
-                $file_path = File::Spec->catfile($template_base, $full_name);
+            $name =~ s{(?<=/)$}(index);
+            $name =~ s{(?<=/)(?=\.)}(index);
+            $name =~ s{(^|/)(\w+)$}{$1$2.html};
+            my $path;
+            if (substr($name, 0, 1) eq '/') {
+                $name =~ s{^/}{};
+                $path = File::Spec->catfile($template_base, $name);
             } else {
+                my $parent_tpl = Text::PSTemplate->get_current_filename;
                 my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
-                $file_path = File::Spec->catfile($dir, $full_name);
+                $path = File::Spec->catfile($dir, $name);
             }
-            if (-e $file_path) {
-                return $file_path;
+            if (-e $path) {
+                return $path;
             }
-            croak "$file_path not found";
+            croak "$path not found";
         }
         return File::Spec->catfile($template_base, 'index.html');
     }
