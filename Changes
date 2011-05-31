@@ -35,3 +35,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.12 2011/05/26
   - Exception object explicitly stringified
+
+0.13 2011/05/31
+  - extensions_to_render method added

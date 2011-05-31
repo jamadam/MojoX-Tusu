@@ -7,7 +7,7 @@ use base qw(Mojo::Base);
 use Carp;
 use Switch;
 use Mojolicious::Static;
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
@@ -21,8 +21,8 @@ $VERSION = eval $VERSION;
         $engine->plug('MojoX::Tusu::ComponentBase');
         $engine->plug('MojoX::Tusu::Plugin::Util', '');
         $engine->plug('MojoX::Tusu::Plugin::Mojolicious', 'Mojolicious');
-        $app->attr('pst');
-        $app->pst($engine);
+        $app->attr('pst', sub {$engine});
+        $app->attr('extensions_to_render', sub {[qw(html htm xml)]});
         $self->app($app);
         $self->engine($engine);
         
@@ -31,6 +31,12 @@ $VERSION = eval $VERSION;
         $app->on_process(\&_dispatch);
         
         return $self;
+    }
+    
+    sub extensions_to_render {
+        
+        my ($self, $value) = @_;
+        $self->app->extensions_to_render($value);
     }
     
     sub document_root {
@@ -48,34 +54,35 @@ $VERSION = eval $VERSION;
     
     sub _dispatch {
         
-        my ($self, $c) = @_;
+        my ($app, $c) = @_;
         
         my $tx = $c->tx;
         if ($tx->is_websocket) {
             $c->res->code(undef);
         }
-        $self->sessions->load($c);
-        my $plugins = $self->plugins;
+        $app->sessions->load($c);
+        my $plugins = $app->plugins;
         $plugins->run_hook(before_dispatch => $c);
         
         my $path = $tx->req->url->path->to_string;
-        if (! $path || $path !~ m{\.} || $path =~ m{((\.(html|htm|xml)))$}) {
+        my $ext = join '|', @{$app->extensions_to_render};
+        if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
             my $res = $tx->res;
             if (my $code = ($tx->req->error)[1]) {
                 $res->code($code)
             } elsif ($tx->is_websocket) {
                 $res->code(426)
             }
-            if ($self->routes->dispatch($c)) {
+            if ($app->routes->dispatch($c)) {
                 if (! $res->code) {
                     $c->render_not_found
                 }
             }
-        } elsif ($path =~ m{((\.(cgi|php|rb))|/)$}) {
+        } elsif ($path =~ m{((\.(cgi|php|rb))|/)$}) {## This block never run
             $tx->res->code(401);
             $c->render_exception('401');
         } else {
-            if ($self->static->dispatch($c)) {
+            if ($app->static->dispatch($c)) {
                 if (! $tx->res->code) {
                     $c->render_not_found
                 }
@@ -293,6 +300,14 @@ to corresponding mthods of given component class. $component default to
     $r->route('/')->to(cb => sub {
         $tusu->bootstrap($c, 'Your::Component');
     });
+
+=head2 $instance->extensions_to_render($array_ref)
+
+This method sets the extensions to be parsed by tusu renderer. If request
+doesn't match any of extensions, patcher try to render it as static file.
+Following settting is the default.
+
+    $tusu->extensions_to_render(['html','htm','xml'])
 
 Each component classes must have methods such as get(), post() etc.
 
