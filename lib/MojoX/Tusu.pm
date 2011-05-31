@@ -7,7 +7,7 @@ use base qw(Mojo::Base);
 use Carp;
 use Switch;
 use Mojolicious::Static;
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
@@ -44,12 +44,10 @@ $VERSION = eval $VERSION;
         my ($self, $value) = @_;
         my $app = $self->app;
         if ($value) {
-            my $static = Mojolicious::Static->new;
-            $static->root($value);
-            $app->static($static);
+            $app->static->root($value);
             $app->renderer->root($value);
         }
-        return $app->renderer->root($value);
+        return $app->renderer->root;
     }
     
     sub _dispatch {

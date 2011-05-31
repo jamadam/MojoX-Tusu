@@ -38,3 +38,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.13 2011/05/31
   - Extensions_to_render method added
+
+0.14 2011/06/01
+  - document_root method optimized & bug fixed
