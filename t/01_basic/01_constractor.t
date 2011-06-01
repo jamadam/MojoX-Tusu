@@ -8,12 +8,11 @@ use Test::Mojo;
 
     __PACKAGE__->runtests;
     
-    sub constractor : Test(5) {
+    sub constractor : Test(4) {
         
         my $app = Test::App->new;
         my $r = MojoX::Tusu->new($app);
         is(ref $r, 'MojoX::Tusu');
-        is(ref $app->pst, 'Text::PSTemplate::Plugable');
         my $engine = $r->engine;
         is(ref $engine, 'Text::PSTemplate::Plugable');
         is(ref $engine->get_plugin('MojoX::Tusu::ComponentBase'), 'MojoX::Tusu::ComponentBase');
