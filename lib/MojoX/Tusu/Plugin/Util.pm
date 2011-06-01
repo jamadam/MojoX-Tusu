@@ -83,24 +83,30 @@ MojoX::Tusu::Plugin::Util - Utility functions for template
 
 =head1 Template Functions
 
-=head1 Template Functions
-
 =head2 url_for($path)
 
 Generate a portable Mojo::URL object with base for a route, path or URL. This
 also strips script name on CGI environment.
 
+    <% url_for('/path/to/file') %>
+
 =head2 param($name, [$escape])
 
 Returns GET parameter value.
+
+    <% param('key', 1) %>
 
 =head2 post_param($name, [$escape])
 
 Returns POST parameter value.
 
+    <% post_param('key', 1) %>
+
 =head2 escape($val)
 
 Returns HTML escaped string.
+
+    <% escape($value) %>
 
 =head1 SEE ALSO
 

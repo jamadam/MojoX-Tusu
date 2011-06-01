@@ -263,8 +263,7 @@ Constractor. This returns MojoX::Tusu instance.
 Set root directory for templates and static files. This defaults to
 'public_html'.
 
-    my $root = $tusu->root;
-    $tusu->root('www');
+    $tusu->document_root('www');
 
 =head2 $instance->engine
 
@@ -277,7 +276,7 @@ Returns Mojolicious app instance.
 =head2 $instance->plug($plug_name, [$namespace])
 
 This is delegate method for Text::PSTemplate::Plugable->plug method to hook
-MojoX::Tusu::ComponentBase->init. $namespace default to full name of package.
+MojoX::Tusu::ComponentBase->init. $namespace defaults to full name of package.
 
     my $tusu = MojoX::Tusu->new($self);
     $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
@@ -285,14 +284,15 @@ MojoX::Tusu::ComponentBase->init. $namespace default to full name of package.
 =head2 $instance->build()
 
 Returns a handler for the Mojo renderer.
-
-    my $renderer = $instance->build()
-    $self->renderer->add_handler(pst => $tusu->build);
+    
+    sub startup {
+        $self->renderer->add_handler(pst => $tusu->build);
+    }
 
 =head2 $instance->bootstrap($controller, [$component])
 
 This method is a sub dispacher method. Each HTTP request methods will be routed
-to corresponding mthods of given component class. $component default to
+to corresponding mthods of given component class. $component defaults to
 'MojoX::Tusu::ComponentBase'.
 
     $r->route('/')->to(cb => sub {
@@ -302,7 +302,7 @@ to corresponding mthods of given component class. $component default to
 =head2 $instance->extensions_to_render($array_ref)
 
 This method sets the extensions to be parsed by tusu renderer. If request
-doesn't match any of extensions, patcher try to render it as static file.
+doesn't match any of extensions, dispatcher try to render it as static file.
 Following settting is the default.
 
     $tusu->extensions_to_render(['html','htm','xml'])
