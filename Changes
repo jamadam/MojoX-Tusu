@@ -44,3 +44,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.15 2011/06/01
   - plug method now capable of multiple plugins at once
+
+0.16 2011/06/01
+  - Reduce messign app attr namaspace

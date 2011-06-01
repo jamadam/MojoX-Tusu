@@ -7,24 +7,25 @@ use base qw(Mojo::Base);
 use Carp;
 use Switch;
 use Mojolicious::Static;
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
     __PACKAGE__->attr('app');
+    __PACKAGE__->attr('extensions_to_render', sub {[qw(html htm xml)]});
     
     sub new {
         
         my ($class, $app) = @_;
         my $self = $class->SUPER::new;
-        my $engine = Text::PSTemplate::Plugable->new;
         
-        $app->attr('pst', sub {$engine});
-        $app->attr('extensions_to_render', sub {[qw(html htm xml)]});
-        $app->on_process(\&_dispatch);
+        $app->on_process(sub {
+            my ($app, $c) = @_;
+            _dispatch($app, $c, $self->extensions_to_render);
+        });
         
         $self->app($app);
-        $self->engine($engine);
+        $self->engine(Text::PSTemplate::Plugable->new);
         $self->document_root($app->home->rel_dir('public_html'));
         
         $self->plug(
@@ -39,7 +40,7 @@ $VERSION = eval $VERSION;
     sub extensions_to_render {
         
         my ($self, $value) = @_;
-        $self->app->extensions_to_render($value);
+        $self->extensions_to_render($value);
     }
     
     sub document_root {
@@ -55,7 +56,7 @@ $VERSION = eval $VERSION;
     
     sub _dispatch {
         
-        my ($app, $c) = @_;
+        my ($app, $c, $extensions_to_render) = @_;
         
         my $tx = $c->tx;
         if ($tx->is_websocket) {
@@ -66,7 +67,7 @@ $VERSION = eval $VERSION;
         $plugins->run_hook(before_dispatch => $c);
         
         my $path = $tx->req->url->path->to_string;
-        my $ext = join '|', @{$app->extensions_to_render};
+        my $ext = join '|', @{$extensions_to_render};
         if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
             my $res = $tx->res;
             if (my $code = ($tx->req->error)[1]) {
@@ -182,7 +183,7 @@ $VERSION = eval $VERSION;
         local $MojoX::Tusu::controller = $c;
         
         $plugin ||= 'MojoX::Tusu::ComponentBase';
-        my $plugin_obj = $c->app->pst->get_plugin($plugin);
+        my $plugin_obj = $self->engine->get_plugin($plugin);
         
         switch ($c->req->method) {
             case 'GET'  {
