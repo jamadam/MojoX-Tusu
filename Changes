@@ -41,3 +41,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.14 2011/06/01
   - document_root method optimized & bug fixed
+
+0.15 2011/06/01
+  - plug method now capable of multiple plugins at once

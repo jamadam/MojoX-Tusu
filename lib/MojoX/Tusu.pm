@@ -7,7 +7,7 @@ use base qw(Mojo::Base);
 use Carp;
 use Switch;
 use Mojolicious::Static;
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
@@ -18,17 +18,20 @@ $VERSION = eval $VERSION;
         my ($class, $app) = @_;
         my $self = $class->SUPER::new;
         my $engine = Text::PSTemplate::Plugable->new;
-        $engine->plug('MojoX::Tusu::ComponentBase');
-        $engine->plug('MojoX::Tusu::Plugin::Util', '');
-        $engine->plug('MojoX::Tusu::Plugin::Mojolicious', 'Mojolicious');
+        
         $app->attr('pst', sub {$engine});
         $app->attr('extensions_to_render', sub {[qw(html htm xml)]});
+        $app->on_process(\&_dispatch);
+        
         $self->app($app);
         $self->engine($engine);
-        
         $self->document_root($app->home->rel_dir('public_html'));
         
-        $app->on_process(\&_dispatch);
+        $self->plug(
+            'MojoX::Tusu::ComponentBase' => undef,
+            'MojoX::Tusu::Plugin::Util' => '',
+            'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
+        );
         
         return $self;
     }
@@ -91,10 +94,15 @@ $VERSION = eval $VERSION;
     
     sub plug {
         
-        my ($self, $plugin_name, $as) = @_;
-        my $plugin = $self->engine->plug($plugin_name, $as);
-        if ($plugin->isa('MojoX::Tusu::ComponentBase')) {
-            $plugin->init($self->app);
+        my ($self, @plugins) = @_;
+        my $plugin;
+        while (scalar @plugins) {
+            my $plugin_name = shift @plugins;
+            my $as = shift @plugins;
+            $plugin = $self->engine->plug($plugin_name, $as);
+            if ($plugin->isa('MojoX::Tusu::ComponentBase')) {
+                $plugin->init($self->app);
+            }
         }
         return $plugin;
     }
@@ -280,6 +288,14 @@ MojoX::Tusu::ComponentBase->init. $namespace defaults to full name of package.
 
     my $tusu = MojoX::Tusu->new($self);
     $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
+
+You also can plug multiple plugins at once.
+
+    $tusu->plug(
+        'Namespace::A' => 'A',   # namespace is A
+        'Namespace::B' => '',    # namespace is ''
+        'Namespace::C' => undef, # namespace is Namespace::C
+    );
 
 =head2 $instance->build()
 
