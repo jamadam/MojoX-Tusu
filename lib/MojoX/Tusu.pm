@@ -58,6 +58,9 @@ $VERSION = eval $VERSION;
         if ($value) {
             $app->static->root($value);
             $app->renderer->root($value);
+            $self->engine->set_filename_trans_coderef(sub {
+                _filename_trans($value, @_);
+            });
         }
         return $app->renderer->root;
     }
@@ -131,10 +134,6 @@ $VERSION = eval $VERSION;
         my $name = $renderer->template_name($options) || '';
         
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
-        my $base_dir = $c->app->renderer->root;
-        $engine->set_filename_trans_coderef(sub {
-            _filename_trans($base_dir, @_);
-        });
         
         local $SIG{__DIE__} = undef;
         
