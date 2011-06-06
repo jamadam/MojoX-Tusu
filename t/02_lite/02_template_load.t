@@ -15,14 +15,6 @@ use Test::More tests => 12;
     my $pst = MojoX::Tusu->new(app);
     app->renderer->add_handler(pst => $pst->build);
     
-    my $cb = sub {
-        my ($c) = @_;
-        $pst->bootstrap($c);
-    };
-    
-    any '/(*template)' => $cb;
-    any '/' => $cb;
-    
     my $t = Test::Mojo->new;
     $t->get_ok('/')->status_is(200)->content_is('default');
     $t->get_ok('/02')->status_is(200)->content_is('ok');

@@ -13,6 +13,7 @@ $VERSION = eval $VERSION;
     __PACKAGE__->attr('engine');
     __PACKAGE__->attr('app');
     __PACKAGE__->attr('extensions_to_render', sub {[qw(html htm xml)]});
+    __PACKAGE__->attr('default_route_set');
     
     sub new {
         
@@ -21,6 +22,13 @@ $VERSION = eval $VERSION;
         
         $app->on_process(sub {
             my ($app, $c) = @_;
+            if (! $self->default_route_set) {
+                $self->default_route_set(1);
+                my $cb = sub {$self->bootstrap(@_)};
+                my $r = $app->routes;
+                $r->route('/(*template)')->to(cb => $cb);
+                $r->route('/')->to(cb => $cb);
+            }
             _dispatch($app, $c, $self->extensions_to_render);
         });
         
@@ -177,7 +185,7 @@ $VERSION = eval $VERSION;
     ### bootstrap for frameworking
     ### --------------
     sub bootstrap {
-    
+        
         my ($self, $c, $plugin) = @_;
         
         local $MojoX::Tusu::controller = $c;

@@ -27,15 +27,6 @@ sub startup {
     my $pst = MojoX::Tusu->new($self);
     $pst->document_root('t/01_basic/05_public_html');
     $self->renderer->add_handler(pst => $pst->build);
-    
-    my $cb = sub {
-        my ($c) = @_;
-        $pst->bootstrap($c);
-    };
-    
-    my $r = $self->routes;
-    $r->route('/(*template)')->to(cb => $cb);
-    $r->route('/')->to(cb => $cb);
 }
 
 __END__

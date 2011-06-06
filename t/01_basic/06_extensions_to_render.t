@@ -28,15 +28,6 @@ sub startup {
     $tusu->document_root('t/01_basic/05_public_html');
     $tusu->extensions_to_render([qw(html htm xml txt)]);
     $self->renderer->add_handler(pst => $tusu->build);
-    
-    my $cb = sub {
-        my ($c) = @_;
-        $tusu->bootstrap($c);
-    };
-    
-    my $r = $self->routes;
-    $r->route('/(*template)')->to(cb => $cb);
-    $r->route('/')->to(cb => $cb);
 }
 
 __END__
