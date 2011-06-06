@@ -12,13 +12,13 @@ use Test::More tests => 9;
     BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
     BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'development' }
 
-    my $pst = MojoX::Tusu->new(app);
-    $pst->engine->plug('SomeComponent');
-    app->renderer->add_handler(pst => $pst->build);
+    my $tusu = MojoX::Tusu->new(app);
+    $tusu->engine->plug('SomeComponent');
+    app->renderer->add_handler(pst => $tusu->build);
     
     my $cb = sub {
         my ($c) = @_;
-        $pst->bootstrap($c, 'SomeComponent');
+        $tusu->bootstrap($c, 'SomeComponent');
     };
     
     any '/(*template)' => $cb;

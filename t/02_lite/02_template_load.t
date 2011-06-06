@@ -12,8 +12,8 @@ use Test::More tests => 12;
     BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
     BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'development' }
 
-    my $pst = MojoX::Tusu->new(app);
-    app->renderer->add_handler(pst => $pst->build);
+    my $tusu = MojoX::Tusu->new(app);
+    app->renderer->add_handler(pst => $tusu->build);
     
     my $t = Test::Mojo->new;
     $t->get_ok('/')->status_is(200)->content_is('default');

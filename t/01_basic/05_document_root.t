@@ -24,9 +24,9 @@ use MojoX::Tusu;
 sub startup {
     my $self = shift;
 
-    my $pst = MojoX::Tusu->new($self);
-    $pst->document_root('t/01_basic/05_public_html');
-    $self->renderer->add_handler(pst => $pst->build);
+    my $tusu = MojoX::Tusu->new($self);
+    $tusu->document_root('t/01_basic/05_public_html');
+    $self->renderer->add_handler(pst => $tusu->build);
 }
 
 __END__

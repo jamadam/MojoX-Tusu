@@ -35,13 +35,13 @@ use MojoX::Tusu;
     sub startup {
         my $self = shift;
     
-        my $pst = MojoX::Tusu->new($self);
-        $pst->engine->plug('SomeComponent');
-        $self->renderer->add_handler(pst => $pst->build);
+        my $tusu = MojoX::Tusu->new($self);
+        $tusu->engine->plug('SomeComponent');
+        $self->renderer->add_handler(pst => $tusu->build);
         
         my $cb = sub {
             my ($c) = @_;
-            $pst->bootstrap($c, 'SomeComponent');
+            $tusu->bootstrap($c, 'SomeComponent');
         };
         
         my $r = $self->routes;

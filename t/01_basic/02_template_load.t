@@ -31,8 +31,8 @@ use MojoX::Tusu;
 sub startup {
     my $self = shift;
 
-    my $pst = MojoX::Tusu->new($self);
-    $self->renderer->add_handler(pst => $pst->build);
+    my $tusu = MojoX::Tusu->new($self);
+    $self->renderer->add_handler(pst => $tusu->build);
 }
 
 __END__
