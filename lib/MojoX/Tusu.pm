@@ -43,7 +43,8 @@ $VERSION = eval $VERSION;
             'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
         );
         
-        $app->renderer->add_handler(pst => sub { $self->_render(@_) });
+        $app->renderer->add_handler(pst => sub { $self->_render(@_) }); # deprecated
+        $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
         
         return $self;
     }
@@ -128,18 +129,16 @@ $VERSION = eval $VERSION;
         
         local $MojoX::Tusu::controller = $c;
         
-        my $name = $c->stash->{'mojo.captures'}->{template} || '';
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
         
         local $SIG{__DIE__} = undef;
         
         try {
-            $$output = $engine->parse_file('/'. $name);
+            $$output = $engine->parse_file('/'. $options->{template});
         }
         catch {
             my $err = $_ || 'Unknown Error';
-            $name ||= '';
-            $c->app->log->error(qq(Template error in "$name": $err));
+            $c->app->log->error(qq(Template error in "$options->{template}": $err));
             $c->render_exception("$err");
             $$output = '';
             return 0;

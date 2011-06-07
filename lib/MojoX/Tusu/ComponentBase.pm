@@ -19,12 +19,7 @@ use base qw(Text::PSTemplate::PluginBase);
     sub get {
         
         my ($self, $c) = @_;
-        my $template = $c->stash('template') || '';
-        $c->render(
-            handler => 'pst',
-            format  => ($template =~ s{\.([^.]+)$}{}) ? $1 : 'html',
-            template => $template,
-        );
+        $c->render(handler => 'tusu');
     }
     
     sub post {
@@ -82,8 +77,8 @@ MojoX::Tusu::ComponentBase - Base Class for WAF component
         my ($self, $controller) = @_;
         $controller->render(
             handler => 'pst',
-            format  => ($template =~ s{\.([^.]+)$}{}) ? $1 : 'html',
-            template => $template,
+            format  => 'html',
+            template => 'some_template',
         );
     }
     sub post {

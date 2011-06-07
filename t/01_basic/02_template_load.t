@@ -11,16 +11,16 @@ use Test::Mojo;
     sub template_render : Test(9) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        #$t->get_ok('/')->status_is(200)->content_is('default');
+        $t->get_ok('/')->status_is(200)->content_is('default');
         $t->get_ok('/02/')->status_is(200)->content_is('default');
-        #$t->get_ok('/02')->status_is(200)->content_is('default');
+        $t->get_ok('/02')->status_is(200)->content_is('default');
     }
     
     sub template_render_subdir : Test(6) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        #$t->get_ok('/02/')->status_is(200)->content_is('default');
-        #$t->get_ok('/02/02_02.html')->status_is(200)->content_is('ok02_02');
+        $t->get_ok('/02/')->status_is(200)->content_is('default');
+        $t->get_ok('/02/02_02.html')->status_is(200)->content_is('ok02_02');
     }
 
 package SomeApp;
