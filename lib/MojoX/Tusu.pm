@@ -11,7 +11,7 @@ our $VERSION = '0.17';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
-    __PACKAGE__->attr('app');
+    __PACKAGE__->attr('_app');
     __PACKAGE__->attr('extensions_to_render', sub {[qw(html htm xml)]});
     __PACKAGE__->attr('default_route_set');
     __PACKAGE__->attr('directory_index', sub {[qw(index.html index.htm)]});
@@ -33,7 +33,7 @@ $VERSION = eval $VERSION;
             _dispatch($app, $c, $self->extensions_to_render);
         });
         
-        $self->app($app);
+        $self->_app($app);
         $self->engine(Text::PSTemplate::Plugable->new);
         $self->document_root($app->home->rel_dir('public_html'));
         
@@ -52,7 +52,7 @@ $VERSION = eval $VERSION;
     sub document_root {
         
         my ($self, $value) = @_;
-        my $app = $self->app;
+        my $app = $self->_app;
         if ($value) {
             $app->static->root($value);
             $app->renderer->root($value);
@@ -111,7 +111,7 @@ $VERSION = eval $VERSION;
             my $as = shift @plugins;
             $plugin = $self->engine->plug($plugin_name, $as);
             if ($plugin->isa('MojoX::Tusu::ComponentBase')) {
-                $plugin->init($self->app);
+                $plugin->init($self->_app);
             }
         }
         return $plugin;
@@ -268,18 +268,18 @@ Constractor. This returns MojoX::Tusu instance.
     
     $instance = MojoX::Tusu->new($app)
 
-=head2 $instance->document_root($app, $directory)
+=head2 $instance->document_root($directory)
 
-Set root directory for templates and static files. This defaults to
-'public_html'.
+Set root directory for templates and static files. Following example is default
+setting.
 
-    $tusu->document_root('www');
+    $tusu->document_root($self->home->rel_dir('public_html'));
 
 =head2 directory_index($candidate1 [, $candidate2])
 
 This method sets default file names for searching files in directory when
-path_info is ending with directory name. Following example is the default
-setting for directory_index.
+path_info is ended with directory name. Following example is the default
+setting.
 
     $tusu->directory_index(['index.html', 'index.htm']);
 
@@ -287,14 +287,11 @@ setting for directory_index.
 
 Returns Text::PSTemplate::Plugable instance.
 
-=head2 $instance->app
-
-Returns Mojolicious app instance.
-
 =head2 $instance->plug($plug_name, [$namespace])
 
-This is delegate method for Text::PSTemplate::Plugable->plug method to hook
-MojoX::Tusu::ComponentBase->init. $namespace defaults to full name of package.
+This is delegate method for Text::PSTemplate::Plugable->plug to hook
+MojoX::Tusu::ComponentBase->init. All arguments are thrown at
+Text::PSTemplate::Plugable->plug. See L<Text::PSTemplate::Plugable>.
 
     my $tusu = MojoX::Tusu->new($self);
     $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
