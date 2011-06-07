@@ -25,9 +25,9 @@ use Test::More tests => 9;
     any '/' => $cb;
     
     my $t = Test::Mojo->new;
-    $t->get_ok('/03_ComponentBase01?key=value')->status_is(200)->content_is('value');
-    $t->post_form_ok('/03_ComponentBase02', {key => 'value2'})->status_is(200)->content_is('value2');
-    $t->get_ok('/03_ComponentBase03')->status_is(200)->content_is('/path/to/file path/to/file');
+    $t->get_ok('/03_ComponentBase01.html?key=value')->status_is(200)->content_is('value');
+    $t->post_form_ok('/03_ComponentBase02.html', {key => 'value2'})->status_is(200)->content_is('value2');
+    $t->get_ok('/03_ComponentBase03.html')->status_is(200)->content_is('/path/to/file path/to/file');
 
 package SomeComponent;
 use strict;

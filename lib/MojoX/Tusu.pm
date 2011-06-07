@@ -7,13 +7,14 @@ use base qw(Mojo::Base);
 use Carp;
 use Switch;
 use Mojolicious::Static;
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
     __PACKAGE__->attr('app');
     __PACKAGE__->attr('extensions_to_render', sub {[qw(html htm xml)]});
     __PACKAGE__->attr('default_route_set');
+    __PACKAGE__->attr('directory_index', sub {[qw(index.html index.htm)]});
     
     sub new {
         
@@ -59,7 +60,7 @@ $VERSION = eval $VERSION;
             $app->static->root($value);
             $app->renderer->root($value);
             $self->engine->set_filename_trans_coderef(sub {
-                _filename_trans($value, @_);
+                _filename_trans($value, $self->directory_index, @_);
             });
         }
         return $app->renderer->root;
@@ -131,8 +132,7 @@ $VERSION = eval $VERSION;
         
         local $MojoX::Tusu::controller = $c;
         
-        my $name = $renderer->template_name($options) || '';
-        
+        my $name = $c->stash->{'mojo.captures'}->{template} || '';
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
         
         local $SIG{__DIE__} = undef;
@@ -152,18 +152,20 @@ $VERSION = eval $VERSION;
     }
     
     ### ---
-    ### foo/bar.html.pst -> template/foo/bar.html
-    ### foo/.html.pst -> template/foo/index.html
+    ### foo/bar.html    -> public_html/foo/bar.html
+    ### foo/.html       -> public_html/foo/index.html
+    ### foo/            -> public_html/foo/index.html
+    ### foo             -> public_html/foo or public_html/foo/index.html
     ### ---
     sub _filename_trans {
         
-        my ($template_base, $name) = @_;
-        if (defined $name) {
-            $name =~ s{\.pst$}{};
-            $name =~ s{(?<=/)$}(index);
-            $name =~ s{(?<=/)(?=\.)}(index);
-            $name =~ s{(^|/)([^\.]+)$}{$1$2.html};
-            my $path;
+        my ($template_base, $directory_index, $name) = @_;
+        $name ||= '';
+        $name =~ s{(?<=/)(\.\w+)+$}{};
+        my $path;
+        for my $default (@{$directory_index}) {
+            my $name = $name;
+            $name =~ s{(^|/)$}($1$default);
             if (substr($name, 0, 1) eq '/') {
                 $name =~ s{^/}{};
                 $path = File::Spec->catfile($template_base, $name);
@@ -172,12 +174,14 @@ $VERSION = eval $VERSION;
                 my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
                 $path = File::Spec->catfile($dir, $name);
             }
-            if (-e $path) {
+            if (-f $path) {
                 return $path;
             }
-            croak "$path not found";
         }
-        return File::Spec->catfile($template_base, 'index.html');
+        if ($name !~ m{/$}) {
+            return _filename_trans($template_base, $directory_index, $name. '/');
+        }
+        croak "$path not found";
     }
     
     ### --------------
@@ -280,6 +284,14 @@ Set root directory for templates and static files. This defaults to
 'public_html'.
 
     $tusu->document_root('www');
+
+=head2 directory_index($candidate1 [, $candidate2])
+
+This method sets default file names for searching files in directory when
+path_info is ending with directory name. Following example is the default
+setting for directory_index.
+
+    $tusu->directory_index(['index.html', 'index.htm']);
 
 =head2 $instance->engine
 

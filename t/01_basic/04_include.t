@@ -12,8 +12,8 @@ use Test::Mojo;
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
         $t->get_ok('/04/')->status_is(200)->content_is('sub ok');
-        $t->get_ok('/04/index2')->status_is(200)->content_is('sub2 ok');
-        $t->get_ok('/04/index3')->status_is(200)->content_is('sub3 ok');
+        $t->get_ok('/04/index2.html')->status_is(200)->content_is('sub2 ok');
+        $t->get_ok('/04/index3.html')->status_is(200)->content_is('sub3 ok');
     }
 
 package SomeApp;

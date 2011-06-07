@@ -11,19 +11,19 @@ use Test::Mojo;
     sub param : Test(3) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        $t->get_ok('/03_ComponentBase01?key=value')->status_is(200)->content_is('value');
+        $t->get_ok('/03_ComponentBase01.html?key=value')->status_is(200)->content_is('value');
     }
     
     sub post_param : Test(3) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        $t->post_form_ok('/03_ComponentBase02', {key => 'value2'})->status_is(200)->content_is('value2');
+        $t->post_form_ok('/03_ComponentBase02.html', {key => 'value2'})->status_is(200)->content_is('value2');
     }
     
     sub url_for : Test(3) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        $t->get_ok('/03_ComponentBase03')->status_is(200)->content_is('/path/to/file path/to/file');
+        $t->get_ok('/03_ComponentBase03.html')->status_is(200)->content_is('/path/to/file path/to/file');
     }
 
 package SomeApp;
