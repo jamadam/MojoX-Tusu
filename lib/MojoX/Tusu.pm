@@ -49,12 +49,6 @@ $VERSION = eval $VERSION;
         return $self;
     }
     
-    sub extensions_to_render {
-        
-        my ($self, $value) = @_;
-        $self->extensions_to_render($value);
-    }
-    
     sub document_root {
         
         my ($self, $value) = @_;
