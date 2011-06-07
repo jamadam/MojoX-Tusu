@@ -133,19 +133,12 @@ $VERSION = eval $VERSION;
         
         local $SIG{__DIE__} = undef;
         
-        my $template = eval {
-            _filename_trans_front($renderer->root, $self->directory_index, '/'. $options->{template});
-        };
-        if ($@) {
-            $c->render_not_found();
-            return 0;
-        }
         try {
-            $$output = $engine->parse_file($template);
+            $$output = $engine->parse_file('/'. $options->{template});
         }
         catch {
             my $err = $_ || 'Unknown Error';
-            if (! $c->rendered) {
+            if (! $c->stash('mojo.rendered')) {
                 $c->app->log->error(qq(Template error in "$options->{template}": $err));
                 $c->render_exception("$err");
                 $$output = '';
@@ -153,33 +146,6 @@ $VERSION = eval $VERSION;
             return 0;
         };
         return 1;
-    }
-    
-    sub _filename_trans_front {
-        
-        my ($template_base, $directory_index, $name, $c) = @_;
-        $name ||= '';
-        $name =~ s{(?<=/)(\.\w+)+$}{};
-        my $path;
-        for my $default (@{$directory_index}) {
-            my $name = $name;
-            $name =~ s{(^|/)$}($1$default);
-            if (substr($name, 0, 1) eq '/') {
-                $name =~ s{^/}{};
-                $path = File::Spec->catfile($template_base, $name);
-            } else {
-                my $parent_tpl = Text::PSTemplate->get_current_filename;
-                my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
-                $path = File::Spec->catfile($dir, $name);
-            }
-            if (-f $path) {
-                return $path;
-            }
-        }
-        if ($name !~ m{/$}) {
-            return _filename_trans($template_base, $directory_index, $name. '/');
-        }
-        croak "$path not found";
     }
     
     ### ---
@@ -211,6 +177,10 @@ $VERSION = eval $VERSION;
         }
         if ($name !~ m{/$}) {
             return _filename_trans($template_base, $directory_index, $name. '/');
+        }
+        if (! Text::PSTemplate->get_current_filename) {
+            $MojoX::Tusu::controller->render_not_found();
+            $MojoX::Tusu::controller->rendered;
         }
         croak "$path not found";
     }

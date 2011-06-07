@@ -15,6 +15,7 @@ t/01_basic/04_include.t
 t/01_basic/05_document_root.t
 t/01_basic/05_public_html/index.html
 t/01_basic/05_public_html/index.txt
+t/01_basic/06_extensions_to_render.t
 t/01_basic/public_html/02.html
 t/01_basic/public_html/02/02_02.html
 t/01_basic/public_html/02/index.html
