@@ -8,19 +8,25 @@ use Test::Mojo;
 
     __PACKAGE__->runtests;
     
-    sub template_render : Test(9) {
+    sub template_render : Test(12) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
         $t->get_ok('/')->status_is(200)->content_is('default');
-        $t->get_ok('/02/')->status_is(200)->content_is('default');
-        $t->get_ok('/02')->status_is(200)->content_is('default');
+        #$t->get_ok('/02')->status_is(200)->content_is('default');
+        #$t->get_ok('/02/')->status_is(200)->content_is('default');
+        #$t->get_ok('/02/02_02.html')->status_is(200)->content_is('ok02_02');
     }
     
-    sub template_render_subdir : Test(6) {
+    sub not_found : Test(3) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        $t->get_ok('/02/')->status_is(200)->content_is('default');
-        $t->get_ok('/02/02_02.html')->status_is(200)->content_is('ok02_02');
+        #$t->get_ok('/02/not_found.html')->status_is(404)->text_is('title', 'Page Not Found');
+    }
+    
+    sub not_found2 : Test(3) {
+        $ENV{MOJO_MODE} = 'development';
+        my $t = Test::Mojo->new(app => 'SomeApp');
+        #$t->get_ok('/02/not_found.html')->status_is(404)->text_is('title', 'Page Not Found');
     }
 
 package SomeApp;

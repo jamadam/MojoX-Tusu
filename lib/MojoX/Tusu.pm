@@ -133,17 +133,53 @@ $VERSION = eval $VERSION;
         
         local $SIG{__DIE__} = undef;
         
+        my $template = eval {
+            _filename_trans_front($renderer->root, $self->directory_index, '/'. $options->{template});
+        };
+        if ($@) {
+            $c->render_not_found();
+            return 0;
+        }
         try {
-            $$output = $engine->parse_file('/'. $options->{template});
+            $$output = $engine->parse_file($template);
         }
         catch {
             my $err = $_ || 'Unknown Error';
-            $c->app->log->error(qq(Template error in "$options->{template}": $err));
-            $c->render_exception("$err");
-            $$output = '';
+            if (! $c->rendered) {
+                $c->app->log->error(qq(Template error in "$options->{template}": $err));
+                $c->render_exception("$err");
+                $$output = '';
+            }
             return 0;
         };
         return 1;
+    }
+    
+    sub _filename_trans_front {
+        
+        my ($template_base, $directory_index, $name, $c) = @_;
+        $name ||= '';
+        $name =~ s{(?<=/)(\.\w+)+$}{};
+        my $path;
+        for my $default (@{$directory_index}) {
+            my $name = $name;
+            $name =~ s{(^|/)$}($1$default);
+            if (substr($name, 0, 1) eq '/') {
+                $name =~ s{^/}{};
+                $path = File::Spec->catfile($template_base, $name);
+            } else {
+                my $parent_tpl = Text::PSTemplate->get_current_filename;
+                my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
+                $path = File::Spec->catfile($dir, $name);
+            }
+            if (-f $path) {
+                return $path;
+            }
+        }
+        if ($name !~ m{/$}) {
+            return _filename_trans($template_base, $directory_index, $name. '/');
+        }
+        croak "$path not found";
     }
     
     ### ---
@@ -154,7 +190,7 @@ $VERSION = eval $VERSION;
     ### ---
     sub _filename_trans {
         
-        my ($template_base, $directory_index, $name) = @_;
+        my ($template_base, $directory_index, $name, $c) = @_;
         $name ||= '';
         $name =~ s{(?<=/)(\.\w+)+$}{};
         my $path;
