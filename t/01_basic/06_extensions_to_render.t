@@ -27,7 +27,6 @@ sub startup {
     my $tusu = MojoX::Tusu->new($self);
     $tusu->document_root('t/01_basic/05_public_html');
     $tusu->extensions_to_render([qw(html htm xml txt)]);
-    $self->renderer->add_handler(pst => $tusu->build);
 }
 
 __END__

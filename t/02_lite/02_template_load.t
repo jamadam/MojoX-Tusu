@@ -13,7 +13,6 @@ use Test::More tests => 15;
     BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'development' }
 
     my $tusu = MojoX::Tusu->new(app);
-    app->renderer->add_handler(pst => $tusu->build);
     
     my $t = Test::Mojo->new;
     $t->get_ok('/')->status_is(200)->content_is('default');

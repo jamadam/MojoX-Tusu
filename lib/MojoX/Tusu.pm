@@ -43,6 +43,8 @@ $VERSION = eval $VERSION;
             'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
         );
         
+        $app->renderer->add_handler(pst => sub { $self->_render(@_) });
+        
         return $self;
     }
     
@@ -118,12 +120,6 @@ $VERSION = eval $VERSION;
             }
         }
         return $plugin;
-    }
-    
-    sub build {
-        
-        my ($self) = @_;
-        return sub { $self->_render(@_) };
     }
     
     sub _render {
@@ -247,22 +243,17 @@ MojoX::Tusu - Text::PSTemplate Framework on Mojolicious
         use MojoX::Tusu;
         my $tusu = MojoX::Tusu->new($self);
         
+        # following is optional
+        
+        $tusu->document_root($self->home->rel_dir('www2'));
+		$tusu->extensions_to_render([qw(html htm xml txt)]);
+        
         # initialize Text::PSTemplate::Plugable if necessary
-        $tusu->plug('some_plugin');
+        
+        my $plugin_instance = $tusu->plug('some_plugin');
         $tusu->engine->set_...();
         
-        $self->renderer->add_handler(pst => $tusu->build);
-
-        my $cb = sub {
-            my ($c) = @_;
-            if (my $x = $c->req->query_params->param('x')) {
-                $tusu->bootstrap($c, $x);
-            } else {
-                $tusu->bootstrap($c);
-            }
-        };
-        $r->route('/(*template)')->to(cb => $cb);
-        $r->route('/')->to(cb => $cb);
+        $r->route(...)->to(...);
     }
 
 =head1 DESCRIPTION
@@ -316,14 +307,6 @@ You also can plug multiple plugins at once.
         'Namespace::B' => '',    # namespace is ''
         'Namespace::C' => undef, # namespace is Namespace::C
     );
-
-=head2 $instance->build()
-
-Returns a handler for the Mojo renderer.
-    
-    sub startup {
-        $self->renderer->add_handler(pst => $tusu->build);
-    }
 
 =head2 $instance->bootstrap($controller, [$component])
 

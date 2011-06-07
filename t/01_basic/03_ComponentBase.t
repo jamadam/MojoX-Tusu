@@ -37,7 +37,6 @@ use MojoX::Tusu;
     
         my $tusu = MojoX::Tusu->new($self);
         $tusu->engine->plug('SomeComponent');
-        $self->renderer->add_handler(pst => $tusu->build);
         
         my $cb = sub {
             my ($c) = @_;

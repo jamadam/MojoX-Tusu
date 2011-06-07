@@ -14,7 +14,6 @@ use Test::More tests => 9;
 
     my $tusu = MojoX::Tusu->new(app);
     $tusu->engine->plug('SomeComponent');
-    app->renderer->add_handler(pst => $tusu->build);
     
     my $cb = sub {
         my ($c) = @_;
