@@ -245,7 +245,7 @@ MojoX::Tusu - Text::PSTemplate Framework on Mojolicious
         # following is optional
         
         $tusu->document_root($self->home->rel_dir('www2'));
-		$tusu->extensions_to_render([qw(html htm xml txt)]);
+        $tusu->extensions_to_render([qw(html htm xml txt)]);
         
         # initialize Text::PSTemplate::Plugable if necessary
         
