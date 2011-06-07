@@ -31,7 +31,8 @@ use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    MojoX::Tusu->new($self);
+    my $tusu = MojoX::Tusu->new($self);
+    $tusu->document_root('t/public_html');
 }
 
 __END__

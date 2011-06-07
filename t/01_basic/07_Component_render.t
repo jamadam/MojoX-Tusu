@@ -25,6 +25,7 @@ use MojoX::Tusu;
         my $self = shift;
     
         my $tusu = MojoX::Tusu->new($self);
+        $tusu->document_root('t/public_html');
         $tusu->plug('SomeComponent');
         
         my $r = $self->routes;

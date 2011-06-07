@@ -36,6 +36,7 @@ use MojoX::Tusu;
         my $self = shift;
     
         my $tusu = MojoX::Tusu->new($self);
+        $tusu->document_root('t/public_html');
         $tusu->engine->plug('SomeComponent');
         
         my $cb = sub {
