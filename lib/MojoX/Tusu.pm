@@ -11,10 +11,12 @@ our $VERSION = '0.17';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
-    __PACKAGE__->attr('_app');
     __PACKAGE__->attr('extensions_to_render', sub {[qw(html htm xml)]});
-    __PACKAGE__->attr('default_route_set');
     __PACKAGE__->attr('directory_index', sub {[qw(index.html index.htm)]});
+    
+    # internal use
+    __PACKAGE__->attr('_app');
+    __PACKAGE__->attr('_default_route_set');
     
     sub new {
         
@@ -23,8 +25,8 @@ $VERSION = eval $VERSION;
         
         $app->on_process(sub {
             my ($app, $c) = @_;
-            if (! $self->default_route_set) {
-                $self->default_route_set(1);
+            if (! $self->_default_route_set) {
+                $self->_default_route_set(1);
                 my $cb = sub {$self->bootstrap(@_)};
                 my $r = $app->routes;
                 $r->route('/(*template)')->to(cb => $cb);
