@@ -15,48 +15,6 @@ use base qw(Text::PSTemplate::PluginBase);
         
         return $MojoX::Tusu::controller;
     }
-    
-    sub get {
-        
-        my ($self, $c) = @_;
-        $c->render(handler => 'tusu');
-    }
-    
-    sub post {
-        die 'Must be implemented by sub class';
-    }
-    
-    sub head {
-        die 'Must be implemented by sub class';
-    }
-    
-    sub put {
-        die 'Must be implemented by sub class';
-    }
-    
-    sub delete {
-        die 'Must be implemented by sub class';
-    }
-    
-    sub options {
-        die 'Must be implemented by sub class';
-    }
-    
-    sub trace {
-        die 'Must be implemented by sub class';
-    }
-    
-    sub patch {
-        die 'Must be implemented by sub class';
-    }
-    
-    sub link {
-        die 'Must be implemented by sub class';
-    }
-    
-    sub unlink {
-        die 'Must be implemented by sub class';
-    }
 
 1;
 
@@ -73,19 +31,15 @@ MojoX::Tusu::ComponentBase - Base Class for WAF component
     use warnings;
     use base qw(MojoX::Tusu::ComponentBase);
     
-    sub get {
+    sub your_action1 {
         my ($self, $controller) = @_;
         $controller->render(
-            handler => 'pst',
+            handler => 'tusu',
             format  => 'html',
             template => 'some_template',
         );
     }
-    sub post {
-        my ($self, $controller) = @_;
-        # ...
-    }
-    sub put {
+    sub your_action2 {
         my ($self, $controller) = @_;
         # ...
     }
@@ -114,29 +68,6 @@ Returns current Mojolicious::Controller instance.
 
 This is a hook method for initializing component. This will automatically be
 called from MojoX::Tusu->plug method.
-
-=head2 get 
-
-=head2 post
-
-=head2 head
-
-=head2 delete
-
-=head2 put
-
-=head2 options
-
-=head2 patch
-
-=head2 trace
-
-=head2 link
-
-=head2 unlink
-
-These methods must be overridden by sub classes to act as a MVC Controller
-to treats corresponding HTTP methods.
 
 =head1 SEE ALSO
 

@@ -27,7 +27,7 @@ $VERSION = eval $VERSION;
             my ($app, $c) = @_;
             if (! $self->_default_route_set) {
                 $self->_default_route_set(1);
-                my $cb = sub {$self->bootstrap(@_)};
+                my $cb = sub {$_[0]->render(handler => 'tusu')};
                 my $r = $app->routes;
                 $r->route('/(*template)')->to(cb => $cb);
                 $r->route('/')->to(cb => $cb);
@@ -192,46 +192,10 @@ $VERSION = eval $VERSION;
     ### --------------
     sub bootstrap {
         
-        my ($self, $c, $plugin) = @_;
+        my ($self, $c, $plugin, $action) = @_;
         
         local $MojoX::Tusu::controller = $c;
-        
-        $plugin ||= 'MojoX::Tusu::ComponentBase';
-        my $plugin_obj = $self->engine->get_plugin($plugin);
-        
-        switch ($c->req->method) {
-            case 'GET'  {
-                return $plugin_obj->get($c);
-            }
-            case 'HEAD'  {
-                return $plugin_obj->head($c);
-            }
-            case 'POST' {
-                return $plugin_obj->post($c);
-            }
-            case 'DELETE'  {
-                return $plugin_obj->delete($c);
-            }
-            case 'PUT'  {
-                return $plugin_obj->put($c);
-            }
-            case 'OPTIONS' {
-                return $plugin_obj->options($c);
-            }
-            case 'TRACE' {
-                return $plugin_obj->trace($c);
-            }
-            case 'PATCH' {
-                return $plugin_obj->patch($c);
-            }
-            case 'LINK' {
-                return $plugin_obj->link($c);
-            }
-            case 'UNLINK' {
-                return $plugin_obj->unlink($c);
-            }
-        }
-        return $plugin_obj->get($c);
+        return $self->engine->get_plugin($plugin)->$action($c);
     }
 
 1;
@@ -259,8 +223,11 @@ MojoX::Tusu - Text::PSTemplate Framework on Mojolicious
         
         my $plugin_instance = $tusu->plug('some_plugin');
         $tusu->engine->set_...();
+        $tusu->plug('Your::Component', 'YC');
         
-        $r->route(...)->to(...);
+        $r->route('/specific/path')->to(cb => sub {
+			$tusu->bootstrap($_[0], 'Your::Component', 'post');
+        });
     }
 
 =head1 DESCRIPTION
@@ -312,14 +279,14 @@ You also can plug multiple plugins at once.
         'Namespace::C' => undef, # namespace is Namespace::C
     );
 
-=head2 $instance->bootstrap($controller, [$component])
+=head2 $instance->bootstrap($controller, $component, $method)
 
 This method is a sub dispacher method. Each HTTP request methods will be routed
 to corresponding mthods of given component class. $component defaults to
 'MojoX::Tusu::ComponentBase'.
 
-    $r->route('/')->to(cb => sub {
-        $tusu->bootstrap($c, 'Your::Component');
+    $r->route('/some/path')->via('post')->to(cb => sub {
+        $tusu->bootstrap($c, 'Your::Component', 'post');
     });
 
 =head2 $instance->extensions_to_render($array_ref)

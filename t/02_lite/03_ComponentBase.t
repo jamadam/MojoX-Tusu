@@ -16,13 +16,9 @@ use Test::More tests => 9;
     $tusu->document_root('t/public_html');
     $tusu->engine->plug('SomeComponent');
     
-    my $cb = sub {
-        my ($c) = @_;
-        $tusu->bootstrap($c, 'SomeComponent');
+    any '/03_ComponentBase02.html' => sub {
+        $tusu->bootstrap($_[0], 'SomeComponent', 'post');
     };
-    
-    any '/(*template)' => $cb;
-    any '/' => $cb;
     
     my $t = Test::Mojo->new;
     $t->get_ok('/03_ComponentBase01.html?key=value')->status_is(200)->content_is('value');
@@ -37,5 +33,6 @@ use warnings;
 use base 'MojoX::Tusu::ComponentBase';
 
     sub post {
-        shift->get(@_);
+        my ($self, $c) = @_;
+        $c->render(handler => 'tusu', template => '/03_ComponentBase02.html')
     }

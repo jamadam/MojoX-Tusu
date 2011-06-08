@@ -43,14 +43,10 @@ use MojoX::Tusu;
         $tusu->document_root('t/public_html');
         $tusu->engine->plug('SomeComponent');
         
-        my $cb = sub {
-            my ($c) = @_;
-            $tusu->bootstrap($c, 'SomeComponent');
-        };
-        
         my $r = $self->routes;
-        $r->route('/(*template)')->to(cb => $cb);
-        $r->route('/')->to(cb => $cb);
+        $r->route('/03_ComponentBase02.html')->to(cb => sub {
+            $tusu->bootstrap($_[0], 'SomeComponent', 'post');
+        });
     }
 
 package SomeComponent;
@@ -59,7 +55,9 @@ use warnings;
 use base 'MojoX::Tusu::ComponentBase';
 
     sub post {
-        shift->get(@_);
+        
+        my ($self, $c) = @_;
+        $c->render(handler => 'tusu', template => '/03_ComponentBase02.html')
     }
     
 __END__

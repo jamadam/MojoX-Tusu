@@ -34,8 +34,7 @@ use MojoX::Tusu;
         
         my $r = $self->routes;
         $r->route('/07/some_component')->to(cb => sub {
-            my ($c) = @_;
-            $tusu->bootstrap($c, 'SomeComponent');
+            $tusu->bootstrap($_[0], 'SomeComponent', 'get');
         });
     }
 

@@ -18,8 +18,7 @@ use Test::More tests => 6;
     
     my $r = app->routes;
     $r->route('/07/some_component')->to(cb => sub {
-        my ($c) = @_;
-        $tusu->bootstrap($c, 'SomeComponent');
+        $tusu->bootstrap($_[0], 'SomeComponent', 'get');
     });
     
     my $t = Test::Mojo->new;
