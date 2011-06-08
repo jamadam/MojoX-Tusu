@@ -7,7 +7,7 @@ use base qw(Mojo::Base);
 use Carp;
 use Switch;
 use Mojolicious::Static;
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');

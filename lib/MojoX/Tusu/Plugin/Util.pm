@@ -32,6 +32,14 @@ use Mojo::Util;
         return $val;
     }
     
+    sub url_abs : TplExport {
+        
+        my ($self) = @_;
+        my $c = $self->controller;
+        my $path = $c->url_for(@_[1.. scalar (@_) - 1])->to_abs;
+        return bless $path, 'MojoX::Tusu::Plugin::Util::URL';
+    }
+    
     sub url_for : TplExport {
         
         my ($self) = @_;

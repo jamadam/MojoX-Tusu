@@ -48,8 +48,11 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 0.16 2011/06/01
   - Reduce messign app attr namaspace
 
-0.17 2011/06/07
+0.17 2011/06/08
   - File searching rule has changed. It got similar to behavior of apache 
   - directory_index method added
   - Compatibility with apache improved
   - bootstrap renewed
+
+0.18 2011/06/08
+  - url_abs added
