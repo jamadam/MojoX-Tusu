@@ -152,7 +152,7 @@ $VERSION = eval $VERSION;
     ### ---
     sub _filename_trans {
         
-        my ($template_base, $directory_index, $name, $c) = @_;
+        my ($template_base, $directory_index, $name) = @_;
         $name ||= '';
         $name =~ s{(?<=/)(\.\w+)+$}{};
         my $path;
