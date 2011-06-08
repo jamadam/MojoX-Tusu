@@ -6,6 +6,8 @@ use Test::More;
 use MojoX::Tusu;
 use Test::Mojo;
 
+    my $backup = $ENV{MOJO_MODE} || '';
+
     __PACKAGE__->runtests;
     
     sub request_not_found : Test(3) {
@@ -33,6 +35,8 @@ use Test::Mojo;
         $t->get_ok('/08/')->status_is(500)->text_is('title', 'Server Error')
             ->content_like(qr{t/public_html/08/not_exist.html/index.htm not found at t/public_html/08/index.html line 1});
     }
+
+	$ENV{MOJO_MODE} = $backup;
 
 package SomeApp;
 use strict;

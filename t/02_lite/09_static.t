@@ -6,7 +6,7 @@ use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
 
-use Test::More tests => 6;
+use Test::More tests => 4;
 
     my $backup;
     BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
@@ -17,5 +17,7 @@ use Test::More tests => 6;
     
     my $t = Test::Mojo->new;
     $t->get_ok('/09/img/a.gif')->status_is(200)->header_is('Content-Type', 'image/gif')->content_like(qr/GIF89a/);
+
+	$ENV{MOJO_MODE} = $backup;
 
 __END__

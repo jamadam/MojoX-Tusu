@@ -6,6 +6,8 @@ use Test::More;
 use MojoX::Tusu;
 use Test::Mojo;
 
+    my $backup = $ENV{MOJO_MODE} || '';
+
     __PACKAGE__->runtests;
     
     sub template_render : Test(12) {
@@ -16,6 +18,8 @@ use Test::Mojo;
         $t->get_ok('/04/index3.html')->status_is(200)->content_is('sub3 ok');
         $t->get_ok('/04/index4.html')->status_is(200)->content_is('sub4 ok');
     }
+
+	$ENV{MOJO_MODE} = $backup;
 
 package SomeApp;
 use strict;

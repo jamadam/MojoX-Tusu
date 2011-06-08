@@ -6,6 +6,8 @@ use Test::More;
 use MojoX::Tusu;
 use Test::Mojo;
 
+    my $backup = $ENV{MOJO_MODE} || '';
+
     __PACKAGE__->runtests;
     
     sub param : Test(3) {
@@ -25,6 +27,8 @@ use Test::Mojo;
         my $t = Test::Mojo->new(app => 'SomeApp');
         $t->get_ok('/03_ComponentBase03.html')->status_is(200)->content_is('/path/to/file path/to/file');
     }
+
+	$ENV{MOJO_MODE} = $backup;
 
 package SomeApp;
 use strict;
