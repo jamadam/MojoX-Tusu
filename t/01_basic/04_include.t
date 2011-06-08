@@ -8,12 +8,13 @@ use Test::Mojo;
 
     __PACKAGE__->runtests;
     
-    sub template_render : Test(9) {
+    sub template_render : Test(12) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
         $t->get_ok('/04/')->status_is(200)->content_is('sub ok');
         $t->get_ok('/04/index2.html')->status_is(200)->content_is('sub2 ok');
         $t->get_ok('/04/index3.html')->status_is(200)->content_is('sub3 ok');
+        $t->get_ok('/04/index4.html')->status_is(200)->content_is('sub4 ok');
     }
 
 package SomeApp;

@@ -6,7 +6,7 @@ use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
 
-use Test::More tests => 9;
+use Test::More tests => 12;
 
     my $backup;
     BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
@@ -18,5 +18,6 @@ use Test::More tests => 9;
     $t->get_ok('/04/')->status_is(200)->content_is('sub ok');
     $t->get_ok('/04/index2.html')->status_is(200)->content_is('sub2 ok');
     $t->get_ok('/04/index3.html')->status_is(200)->content_is('sub3 ok');
+    $t->get_ok('/04/index4.html')->status_is(200)->content_is('sub4 ok');
 
 __END__
