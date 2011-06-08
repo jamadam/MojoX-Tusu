@@ -172,6 +172,12 @@ $VERSION = eval $VERSION;
             }
         }
         if ($name !~ m{/$}) {
+            if (! Text::PSTemplate->get_current_filename && -d $path) {
+                $MojoX::Tusu::controller->redirect_to($name. '/');
+                $MojoX::Tusu::controller->tx->res->code(301);
+                $MojoX::Tusu::controller->rendered;
+                croak "$path is a directory";
+            }
             return _filename_trans($template_base, $directory_index, $name. '/');
         }
         if (! Text::PSTemplate->get_current_filename) {

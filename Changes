@@ -51,3 +51,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 0.17 2011/06/07
   - File searching rule has changed. It got similar to behavior of apache 
   - directory_index method added
+  - Compatibility with apache improved
