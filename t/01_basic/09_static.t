@@ -24,7 +24,9 @@ use Test::Mojo;
         $t->get_ok('/09/img/')->status_is(200)->header_is('Content-Type', 'image/gif')->content_like(qr/GIF89a/);
     }
 	
-	$ENV{MOJO_MODE} = $backup;
+	END {
+		$ENV{MOJO_MODE} = $backup;
+	}
 
 package SomeApp;
 use strict;

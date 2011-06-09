@@ -17,8 +17,10 @@ use Test::Mojo;
         $t->get_ok('/02/')->status_is(200)->content_is('default');
         $t->get_ok('/02/02_02.html')->status_is(200)->content_is('ok02_02');
     }
-
-	$ENV{MOJO_MODE} = $backup;
+	
+	END {
+		$ENV{MOJO_MODE} = $backup;
+	}
 
 package SomeApp;
 use strict;

@@ -41,8 +41,10 @@ use Test::Mojo;
         $t->get_ok('/08/dir')->status_is(301)->header_like('location', qr{/08/dir/});
         $t->get_ok('/08/dir2')->status_is(404);
     }
-
-	$ENV{MOJO_MODE} = $backup;
+	
+	END {
+		$ENV{MOJO_MODE} = $backup;
+	}
 
 package SomeApp;
 use strict;

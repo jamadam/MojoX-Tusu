@@ -25,8 +25,10 @@ use Test::Mojo;
         $t->get_ok('/10/permission_ng/permission_ok.html')->status_is(403);
         $t->get_ok('/10/permission_ng/permission_ng.html')->status_is(403);
     }
-
-	$ENV{MOJO_MODE} = $backup;
+	
+	END {
+		$ENV{MOJO_MODE} = $backup;
+	}
 
 package SomeApp;
 use strict;

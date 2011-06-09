@@ -16,8 +16,10 @@ use Test::Mojo;
         $t->get_ok('/')->status_is(200)->content_is('default');
         $t->get_ok('/07/some_component/')->status_is(200)->content_is('index2');
     }
-
-	$ENV{MOJO_MODE} = $backup;
+	
+	END {
+		$ENV{MOJO_MODE} = $backup;
+	}
 
 package SomeApp;
 use strict;
