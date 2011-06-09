@@ -116,6 +116,10 @@ Returns HTML escaped string.
 
     <% escape($value) %>
 
+=head2 url_abs
+
+Short cut for url_for($path)->to_abs()
+
 =head1 SEE ALSO
 
 L<Mojolicious::Controller>, L<Text::PSTemplate>, L<MojoX::Renderer>
