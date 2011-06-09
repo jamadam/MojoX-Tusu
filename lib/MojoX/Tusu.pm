@@ -104,6 +104,21 @@ $VERSION = eval $VERSION;
         }
     }
     
+    sub _permission_ok {
+		
+        my ($name) = @_;
+		if ($name && -f $name && ((stat($name))[2] & 4)) {
+			do {
+				if (! ((stat($name))[2] & 1)) {
+					return 0;
+				}
+				$name =~ s{(^|/)[^/]+$}{};
+			} while ($name);
+			return 1;
+		}
+		return 0;
+    }
+    
     sub plug {
         
         my ($self, @plugins) = @_;
@@ -143,7 +158,7 @@ $VERSION = eval $VERSION;
         };
         return 1;
     }
-    
+	
     ### ---
     ### foo/bar.html    -> public_html/foo/bar.html
     ### foo/.html       -> public_html/foo/index.html
