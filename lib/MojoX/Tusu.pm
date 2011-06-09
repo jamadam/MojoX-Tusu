@@ -32,7 +32,7 @@ $VERSION = eval $VERSION;
                 $r->route('/(*template)')->to(cb => $cb);
                 $r->route('/')->to(cb => $cb);
             }
-            _dispatch($app, $c, $self->extensions_to_render);
+            _dispatch($app, $c, $self->extensions_to_render, $self->directory_index);
         });
         
         $self->_app($app);
@@ -67,7 +67,7 @@ $VERSION = eval $VERSION;
     
     sub _dispatch {
         
-        my ($app, $c, $extensions_to_render) = @_;
+        my ($app, $c, $extensions_to_render, $directory_index) = @_;
         
         my $tx = $c->tx;
         if ($tx->is_websocket) {
@@ -78,42 +78,70 @@ $VERSION = eval $VERSION;
         $plugins->run_hook(before_dispatch => $c);
         
         my $path = $tx->req->url->path->to_string;
-        my $ext = join '|', @{$extensions_to_render};
-        if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
-            my $res = $tx->res;
-            if (my $code = ($tx->req->error)[1]) {
-                $res->code($code)
-            } elsif ($tx->is_websocket) {
-                $res->code(426)
-            }
-            if ($app->routes->dispatch($c)) {
-                if (! $res->code) {
-                    $c->render_not_found
-                }
-            }
-        } elsif ($path =~ m{((\.(cgi|php|rb))|/)$}) {## This block never run
-            $tx->res->code(401);
-            $c->render_exception('401');
-        } else {
-            if ($app->static->dispatch($c)) {
-                if (! $tx->res->code) {
-                    $c->render_not_found
-                }
-            }
-            $plugins->run_hook_reverse(after_static_dispatch => $c);
-        }
+		
+		my $check_result = _check_file_type($c, $path, $directory_index);
+		
+		if (! $check_result->{type}) {
+			$c->render_not_found();
+		} elsif ($path !~ m{/$} && $check_result->{type} eq 'directory') {
+			$c->redirect_to($path. '/');
+			$tx->res->code(301);
+		} elsif (! _permission_ok($check_result->{path})) {
+			$c->render_not_found();
+			$tx->res->code(403);
+		} else {
+			my $ext = join '|', @{$extensions_to_render};
+			if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
+				my $res = $tx->res;
+				if (my $code = ($tx->req->error)[1]) {
+					$res->code($code)
+				} elsif ($tx->is_websocket) {
+					$res->code(426)
+				}
+				if ($app->routes->dispatch($c) && ! $res->code) {
+					$c->render_not_found
+				}
+			} elsif ($path =~ m{((\.(cgi|php|rb))|/)$}) {## This block never run
+				$c->render_exception('403');
+				$tx->res->code(403);
+			} else {
+				if ($app->static->dispatch($c) && ! $tx->res->code) {
+					$c->render_not_found;
+				}
+				$plugins->run_hook_reverse(after_static_dispatch => $c);
+			}
+		}
     }
+	
+	sub _check_file_type {
+		
+        my ($c, $name, $directory_index) = @_;
+		my $dir = $c->app->renderer->root;
+        $name ||= '';
+        $name =~ s{(?<=/)(\.\w+)+$}{};
+		if (substr($name, 0, 1) eq '/') {
+			$name =~ s{^/}{};
+		}
+		my $path = File::Spec->catfile($dir, $name);
+		if (my $fixed_path = _fill_filename($path, $directory_index)) {
+			return {type => 'file', path => $fixed_path};
+		} elsif (-d $path) {
+			return {type => 'directory', path => $path};
+		}
+		return {};
+	}
     
     sub _permission_ok {
 		
         my ($name) = @_;
 		if ($name && -f $name && ((stat($name))[2] & 4)) {
-			do {
+			$name =~ s{(^|/)[^/]+$}{};
+			while (-d $name) {
 				if (! ((stat($name))[2] & 1)) {
 					return 0;
 				}
 				$name =~ s{(^|/)[^/]+$}{};
-			} while ($name);
+			}
 			return 1;
 		}
 		return 0;
@@ -149,11 +177,9 @@ $VERSION = eval $VERSION;
         }
         catch {
             my $err = $_ || 'Unknown Error';
-            if (! $c->stash('mojo.rendered')) {
-                $c->app->log->error(qq(Template error in "$options->{template}": $err));
-                $c->render_exception("$err");
-                $$output = '';
-            }
+			$c->app->log->error(qq(Template error in "$options->{template}": $err));
+			$c->render_exception("$err");
+			$$output = '';
             return 0;
         };
         return 1;
@@ -198,17 +224,7 @@ $VERSION = eval $VERSION;
 			return $path;
 		}
         if ($name !~ m{/$}) {
-            if (! Text::PSTemplate->get_current_filename && -d $path) {
-                $MojoX::Tusu::controller->redirect_to($name. '/');
-                $MojoX::Tusu::controller->tx->res->code(301);
-                $MojoX::Tusu::controller->rendered;
-                croak "$path is a directory";
-            }
             return _filename_trans($template_base, $directory_index, $name. '/');
-        }
-        if (! Text::PSTemplate->get_current_filename) {
-            $MojoX::Tusu::controller->render_not_found();
-            $MojoX::Tusu::controller->rendered;
         }
         croak "$path not found";
     }

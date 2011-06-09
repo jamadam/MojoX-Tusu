@@ -10,17 +10,20 @@ use Test::Mojo;
 
     __PACKAGE__->runtests;
     
-    sub template_render : Test(4) {
+	sub _permission_ok : Test(4) {
 		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ok/permission_ok.html'), 1);
 		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ok/permission_ng.html'), 0);
 		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ng/permission_ok.html'), 0);
 		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ng/permission_ng.html'), 0);
+	}
+	
+    sub template_render : Test(8) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        #$t->get_ok('/10/permission_ok/permission_ok.gif');
-        #$t->get_ok('/10/permission_ok/permission_ng.gif');
-        #$t->get_ok('/10/permission_ng/permission_ok.gif');
-        #$t->get_ok('/10/permission_ng/permission_ng.gif');
+        $t->get_ok('/10/permission_ok/permission_ok.html')->status_is(200);
+        $t->get_ok('/10/permission_ok/permission_ng.html')->status_is(403);
+        $t->get_ok('/10/permission_ng/permission_ok.html')->status_is(403);
+        $t->get_ok('/10/permission_ng/permission_ng.html')->status_is(403);
     }
 
 	$ENV{MOJO_MODE} = $backup;
