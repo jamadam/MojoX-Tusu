@@ -121,53 +121,53 @@ $VERSION = eval $VERSION;
         
         if (! $check_result->{type}) {
             $c->render_not_found();
-			return;
+            return;
         }
-		if ($check_result->{type} eq 'directory') {
+        if ($check_result->{type} eq 'directory') {
             $c->redirect_to($path. '/');
             $tx->res->code(301);
-			return;
+            return;
         }
-		
-		if (! _permission_ok($check_result->{path})) {
+        
+        if (! _permission_ok($check_result->{path})) {
             $c->render_not_found();
             $tx->res->code(403);
-			return;
+            return;
         }
-		
-		my $ext = join '|', @{$self->extensions_to_render};
-		$path = $check_result->{path};
-		
-		### dynamic content
-		if ($path !~ m{\.} || $path =~ m{(\.($ext))$}) {
-			my $res = $tx->res;
-			if (my $code = ($tx->req->error)[1]) {
-				$res->code($code)
-			} elsif ($tx->is_websocket) {
-				$res->code(426)
-			}
-			if ($app->routes->dispatch($c) && ! $res->code) {
-				$c->render_not_found
-			}
-			return;
-		}
-		
-		## This must not be happen
-		if ($path =~ m{((\.(cgi|php|rb))|/)$}) {
-			$c->render_exception('403');
-			$tx->res->code(403);
-			return;
-		}
-		
-		### defaults to static content
-		if (! $app->static->serve($c, $path, '')) {
-			$c->stash->{'mojo.static'} = 1;
-			$c->rendered;
-		}
-		if (! $tx->res->code) {
-			$c->render_not_found;
-		}
-		$plugins->run_hook_reverse(after_static_dispatch => $c);
+        
+        my $ext = join '|', @{$self->extensions_to_render};
+        $path = $check_result->{path};
+        
+        ### dynamic content
+        if ($path !~ m{\.} || $path =~ m{(\.($ext))$}) {
+            my $res = $tx->res;
+            if (my $code = ($tx->req->error)[1]) {
+                $res->code($code)
+            } elsif ($tx->is_websocket) {
+                $res->code(426)
+            }
+            if ($app->routes->dispatch($c) && ! $res->code) {
+                $c->render_not_found
+            }
+            return;
+        }
+        
+        ## This must not be happen
+        if ($path =~ m{((\.(cgi|php|rb))|/)$}) {
+            $c->render_exception('403');
+            $tx->res->code(403);
+            return;
+        }
+        
+        ### defaults to static content
+        if (! $app->static->serve($c, $path, '')) {
+            $c->stash->{'mojo.static'} = 1;
+            $c->rendered;
+        }
+        if (! $tx->res->code) {
+            $c->render_not_found;
+        }
+        $plugins->run_hook_reverse(after_static_dispatch => $c);
     }
     
     ### ---
