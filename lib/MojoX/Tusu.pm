@@ -32,7 +32,7 @@ $VERSION = eval $VERSION;
                 $r->route('/(*template)')->to(cb => $cb);
                 $r->route('/')->to(cb => $cb);
             }
-            _dispatch($app, $c, $self->extensions_to_render, $self->directory_index);
+            $self->_dispatch($app, $c);
         });
         
         $self->_app($app);
@@ -67,7 +67,7 @@ $VERSION = eval $VERSION;
     
     sub _dispatch {
         
-        my ($app, $c, $extensions_to_render, $directory_index) = @_;
+        my ($self, $app, $c) = @_;
         
         my $tx = $c->tx;
         if ($tx->is_websocket) {
@@ -79,7 +79,7 @@ $VERSION = eval $VERSION;
         
         my $path = $tx->req->url->path->to_string;
         
-        my $check_result = _check_file_type($c, $path, $directory_index);
+        my $check_result = $self->_check_file_type($c, $path);
         
         if (! $check_result->{type}) {
             $c->render_not_found();
@@ -90,7 +90,7 @@ $VERSION = eval $VERSION;
             $c->render_not_found();
             $tx->res->code(403);
         } else {
-            my $ext = join '|', @{$extensions_to_render};
+            my $ext = join '|', @{$self->extensions_to_render};
             if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
                 my $res = $tx->res;
                 if (my $code = ($tx->req->error)[1]) {
@@ -115,7 +115,7 @@ $VERSION = eval $VERSION;
     
     sub _check_file_type {
         
-        my ($c, $name, $directory_index) = @_;
+        my ($self, $c, $name) = @_;
         my $dir = $c->app->renderer->root;
         $name ||= '';
         $name =~ s{(?<=/)(\.\w+)+$}{};
@@ -123,7 +123,7 @@ $VERSION = eval $VERSION;
             $name =~ s{^/}{};
         }
         my $path = File::Spec->catfile($dir, $name);
-        if (my $fixed_path = _fill_filename($path, $directory_index)) {
+        if (my $fixed_path = _fill_filename($path, $self->directory_index)) {
             return {type => 'file', path => $fixed_path};
         } elsif (-d $path) {
             return {type => 'directory', path => $path};
