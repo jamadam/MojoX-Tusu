@@ -106,9 +106,11 @@ $VERSION = eval $VERSION;
                 $c->render_exception('403');
                 $tx->res->code(403);
             } else {
-				my $res = $app->static->serve($c, $path, '');
-				$c->rendered;
-                if ($res && ! $tx->res->code) {
+				if (! $app->static->serve($c, $path, '')) {
+					$c->stash->{'mojo.static'} = 1;
+					$c->rendered;
+				}
+                if (! $tx->res->code) {
                     $c->render_not_found;
                 }
                 $plugins->run_hook_reverse(after_static_dispatch => $c);

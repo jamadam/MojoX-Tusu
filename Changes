@@ -57,3 +57,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 0.18 2011/06/08
   - url_abs added
   - Permission check activated
+  - Directory Index can be a static file

@@ -10,14 +10,14 @@ use Test::Mojo;
 
     __PACKAGE__->runtests;
     
-    sub template_render : Test(7) {
+    sub basic : Test(7) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
         $t->get_ok('/09/img/a.gif')->status_is(200)->header_is('Content-Type', 'image/gif')->content_like(qr/GIF89a/);
         $t->get_ok('/09/img/not_found.gif')->status_is(404)->text_is('title', 'Page Not Found');
     }
     
-    sub template_render2 : Test(8) {
+    sub directory_indexed : Test(8) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp2');
         $t->get_ok('/09/img/a.gif')->status_is(200)->header_is('Content-Type', 'image/gif')->content_like(qr/GIF89a/);
