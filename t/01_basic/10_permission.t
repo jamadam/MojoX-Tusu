@@ -9,13 +9,6 @@ use Test::Mojo;
     my $backup = $ENV{MOJO_MODE} || '';
 
     __PACKAGE__->runtests;
-    
-	sub _permission_ok : Test(4) {
-		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ok/permission_ok.html'), 1);
-		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ok/permission_ng.html'), 0);
-		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ng/permission_ok.html'), 0);
-		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ng/permission_ng.html'), 0);
-	}
 	
     sub template_render : Test(8) {
         $ENV{MOJO_MODE} = 'production';

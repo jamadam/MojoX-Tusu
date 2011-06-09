@@ -8,6 +8,13 @@ Makefile.PL
 MANIFEST
 README
 t/00_load.t
+t/00_partial/01.t
+t/00_partial/f/t01/permission_ng/permission_ng.html
+t/00_partial/f/t01/permission_ng/permission_ok.html
+t/00_partial/f/t01/permission_ok/permission_ng.html
+t/00_partial/f/t01/permission_ok/permission_ok.html
+t/00_partial/f/t02/a/index.html
+t/00_partial/f/t02/index.html
 t/01_basic/01_constractor.t
 t/01_basic/02_template_load.t
 t/01_basic/03_ComponentBase.t
@@ -25,6 +32,7 @@ t/02_lite/07_Component_render.t
 t/02_lite/08_template_not_found_dev.t
 t/02_lite/08_template_not_found_pro.t
 t/02_lite/09_static.t
+t/02_lite/10_permission.t
 t/99_pod.t
 t/99_podcoverage.t
 t/public_html/02.html
@@ -45,6 +53,7 @@ t/public_html/06/index.html
 t/public_html/06/index.txt
 t/public_html/07/some_component/index.html
 t/public_html/07/some_component/index2.html
+t/public_html/08/dir/dummy.html
 t/public_html/08/index.html
 t/public_html/09/img/a.gif
 t/public_html/10/permission_ng/permission_ng.html

@@ -123,7 +123,7 @@ $VERSION = eval $VERSION;
             $c->render_not_found();
 			return;
         }
-		if ($path !~ m{/$} && $check_result->{type} eq 'directory') {
+		if ($check_result->{type} eq 'directory') {
             $c->redirect_to($path. '/');
             $tx->res->code(301);
 			return;
@@ -177,15 +177,13 @@ $VERSION = eval $VERSION;
         
         my ($self, $name) = @_;
         $name ||= '';
-        $name =~ s{(?<=/)(\.\w+)+$}{};
-        if (substr($name, 0, 1) eq '/') {
-            $name =~ s{^/}{};
+        my $path = File::Spec->catfile(
+                        $self->_app->renderer->root, ($name =~ qr{^/(.+)})[0]);
+        if (-d $path && substr($name, -1, 1) ne '/') {
+            return {type => 'directory', path => $path};
         }
-        my $path = File::Spec->catfile($self->_app->renderer->root, $name);
         if (my $fixed_path = _fill_filename($path, $self->directory_index)) {
             return {type => 'file', path => $fixed_path};
-        } elsif (-d $path) {
-            return {type => 'directory', path => $path};
         }
         return {};
     }
