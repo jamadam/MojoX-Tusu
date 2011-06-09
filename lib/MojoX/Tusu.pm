@@ -18,6 +18,9 @@ $VERSION = eval $VERSION;
     __PACKAGE__->attr('_app');
     __PACKAGE__->attr('_default_route_set');
     
+    ### ---
+    ### Constractor
+    ### ---
     sub new {
         
         my ($class, $app) = @_;
@@ -51,6 +54,9 @@ $VERSION = eval $VERSION;
         return $self;
     }
     
+    ### ---
+    ### document_root is combined path for both static and renderer
+    ### ---
     sub document_root {
         
         my ($self, $value) = @_;
@@ -65,6 +71,38 @@ $VERSION = eval $VERSION;
         return $app->renderer->root;
     }
     
+    ### ---
+    ### Delegate method to Text::PSTemplate::plug with init hook for component
+    ### ---
+    sub plug {
+        
+        my ($self, @plugins) = @_;
+        my $plugin;
+        while (scalar @plugins) {
+            my $plugin_name = shift @plugins;
+            my $as = shift @plugins;
+            $plugin = $self->engine->plug($plugin_name, $as);
+            if ($plugin->isa('MojoX::Tusu::ComponentBase')) {
+                $plugin->init($self->_app);
+            }
+        }
+        return $plugin;
+    }
+    
+    ### ---
+    ### bootstrap for frameworking
+    ### ---
+    sub bootstrap {
+        
+        my ($self, $c, $plugin, $action) = @_;
+        
+        local $MojoX::Tusu::controller = $c;
+        return $self->engine->get_plugin($plugin)->$action($c);
+    }
+    
+    ### ---
+    ### Custom dispacher
+    ### ---
     sub _dispatch {
         
         my ($self, $app, $c) = @_;
@@ -79,54 +117,72 @@ $VERSION = eval $VERSION;
         
         my $path = $tx->req->url->path->to_string;
         
-        my $check_result = $self->_check_file_type($c, $path);
+        my $check_result = $self->_check_file_type($path);
         
         if (! $check_result->{type}) {
             $c->render_not_found();
-        } elsif ($path !~ m{/$} && $check_result->{type} eq 'directory') {
+			return;
+        }
+		
+		if ($path !~ m{/$} && $check_result->{type} eq 'directory') {
             $c->redirect_to($path. '/');
             $tx->res->code(301);
-        } elsif (! _permission_ok($check_result->{path})) {
+			return;
+        }
+		
+		if (! _permission_ok($check_result->{path})) {
             $c->render_not_found();
             $tx->res->code(403);
-        } else {
-            my $ext = join '|', @{$self->extensions_to_render};
-			my $path = $check_result->{path};
-            if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
-                my $res = $tx->res;
-                if (my $code = ($tx->req->error)[1]) {
-                    $res->code($code)
-                } elsif ($tx->is_websocket) {
-                    $res->code(426)
-                }
-                if ($app->routes->dispatch($c) && ! $res->code) {
-                    $c->render_not_found
-                }
-            } elsif ($path =~ m{((\.(cgi|php|rb))|/)$}) {## This block never run
-                $c->render_exception('403');
-                $tx->res->code(403);
-            } else {
-				if (! $app->static->serve($c, $path, '')) {
-					$c->stash->{'mojo.static'} = 1;
-					$c->rendered;
-				}
-                if (! $tx->res->code) {
-                    $c->render_not_found;
-                }
-                $plugins->run_hook_reverse(after_static_dispatch => $c);
-            }
+			return;
         }
+		
+		my $ext = join '|', @{$self->extensions_to_render};
+		$path = $check_result->{path};
+		
+		### dynamic content
+		if ($path !~ m{\.} || $path =~ m{(\.($ext))$}) {
+			my $res = $tx->res;
+			if (my $code = ($tx->req->error)[1]) {
+				$res->code($code)
+			} elsif ($tx->is_websocket) {
+				$res->code(426)
+			}
+			if ($app->routes->dispatch($c) && ! $res->code) {
+				$c->render_not_found
+			}
+			return;
+		}
+		
+		## This must not be happen
+		if ($path =~ m{((\.(cgi|php|rb))|/)$}) {
+			$c->render_exception('403');
+			$tx->res->code(403);
+			return;
+		}
+		
+		### defaults to static content
+		if (! $app->static->serve($c, $path, '')) {
+			$c->stash->{'mojo.static'} = 1;
+			$c->rendered;
+		}
+		if (! $tx->res->code) {
+			$c->render_not_found;
+		}
+		$plugins->run_hook_reverse(after_static_dispatch => $c);
     }
     
+    ### ---
+    ### find file and type
+    ### ---
     sub _check_file_type {
         
-        my ($self, $c, $name) = @_;
+        my ($self, $name) = @_;
         $name ||= '';
         $name =~ s{(?<=/)(\.\w+)+$}{};
         if (substr($name, 0, 1) eq '/') {
             $name =~ s{^/}{};
         }
-        my $path = File::Spec->catfile($c->app->renderer->root, $name);
+        my $path = File::Spec->catfile($self->_app->renderer->root, $name);
         if (my $fixed_path = _fill_filename($path, $self->directory_index)) {
             return {type => 'file', path => $fixed_path};
         } elsif (-d $path) {
@@ -135,6 +191,9 @@ $VERSION = eval $VERSION;
         return {};
     }
     
+    ### ---
+    ### Check if others readable
+    ### ---
     sub _permission_ok {
         
         my ($name) = @_;
@@ -151,21 +210,9 @@ $VERSION = eval $VERSION;
         return 0;
     }
     
-    sub plug {
-        
-        my ($self, @plugins) = @_;
-        my $plugin;
-        while (scalar @plugins) {
-            my $plugin_name = shift @plugins;
-            my $as = shift @plugins;
-            $plugin = $self->engine->plug($plugin_name, $as);
-            if ($plugin->isa('MojoX::Tusu::ComponentBase')) {
-                $plugin->init($self->_app);
-            }
-        }
-        return $plugin;
-    }
-    
+    ### ---
+    ### tusu renderer
+    ### ---
     sub _render {
         
         my ($self, $renderer, $c, $output, $options) = @_;
@@ -189,6 +236,9 @@ $VERSION = eval $VERSION;
         return 1;
     }
     
+    ### ---
+    ### fill directory_index candidate
+    ### ---
     sub _fill_filename {
         
         my ($path, $directory_index) = @_;
@@ -231,17 +281,6 @@ $VERSION = eval $VERSION;
             return _filename_trans($template_base, $directory_index, $name. '/');
         }
         croak "$path not found";
-    }
-    
-    ### --------------
-    ### bootstrap for frameworking
-    ### --------------
-    sub bootstrap {
-        
-        my ($self, $c, $plugin, $action) = @_;
-        
-        local $MojoX::Tusu::controller = $c;
-        return $self->engine->get_plugin($plugin)->$action($c);
     }
 
 1;
