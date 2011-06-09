@@ -123,7 +123,6 @@ $VERSION = eval $VERSION;
             $c->render_not_found();
 			return;
         }
-		
 		if ($path !~ m{/$} && $check_result->{type} eq 'directory') {
             $c->redirect_to($path. '/');
             $tx->res->code(301);
