@@ -17,7 +17,7 @@ use Test::More tests => 7;
     
     my $t = Test::Mojo->new;
     $t->get_ok('/08/not_found.html')->status_is(404)->text_is('title', 'Page Not Found');
-    $t->get_ok('/08/')->status_is(500)->text_is('title', 'Server Error')->content_like(qr{t/public_html/08/not_exist.html/index.htm not found at t/public_html/08/index.html line 1});
+    $t->get_ok('/08/')->status_is(500)->text_is('title', 'Server Error')->content_like(qr{t/public_html/08/not_exist.html not found at t/public_html/08/index.html line 1});
 
 	$ENV{MOJO_MODE} = $backup;
 

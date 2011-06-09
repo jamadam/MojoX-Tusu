@@ -158,6 +158,22 @@ $VERSION = eval $VERSION;
         };
         return 1;
     }
+    
+	sub _fill_filename {
+		
+        my ($path, $directory_index) = @_;
+		if (-d $path) {
+			for my $default (@{$directory_index}) {
+				my $path = File::Spec->catfile($path, $default);
+				if (-f $path) {
+					return $path;
+				}
+			}
+		} elsif (-f $path) {
+			return $path;
+		}
+		return;
+	}
 	
     ### ---
     ### foo/bar.html    -> public_html/foo/bar.html
@@ -170,22 +186,17 @@ $VERSION = eval $VERSION;
         my ($template_base, $directory_index, $name) = @_;
         $name ||= '';
         $name =~ s{(?<=/)(\.\w+)+$}{};
-        my $path;
-        for my $default (@{$directory_index}) {
-            my $name = $name;
-            $name =~ s{(^|/)$}($1$default);
-            if (substr($name, 0, 1) eq '/') {
-                $name =~ s{^/}{};
-                $path = File::Spec->catfile($template_base, $name);
-            } else {
-                my $parent_tpl = Text::PSTemplate->get_current_filename;
-                my (undef, $dir, undef) = File::Spec->splitpath($parent_tpl);
-                $path = File::Spec->catfile($dir, $name);
-            }
-            if (-f $path) {
-                return $path;
-            }
-        }
+		my $dir;
+		if (substr($name, 0, 1) eq '/') {
+			$name =~ s{^/}{};
+			$dir = $template_base;
+		} else {
+			$dir = (File::Spec->splitpath(Text::PSTemplate->get_current_filename))[1];
+		}
+		my $path = File::Spec->catfile($dir, $name);
+		if (my $path = _fill_filename($path, $directory_index)) {
+			return $path;
+		}
         if ($name !~ m{/$}) {
             if (! Text::PSTemplate->get_current_filename && -d $path) {
                 $MojoX::Tusu::controller->redirect_to($name. '/');
