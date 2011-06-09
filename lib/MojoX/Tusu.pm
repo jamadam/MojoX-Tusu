@@ -78,73 +78,73 @@ $VERSION = eval $VERSION;
         $plugins->run_hook(before_dispatch => $c);
         
         my $path = $tx->req->url->path->to_string;
-		
-		my $check_result = _check_file_type($c, $path, $directory_index);
-		
-		if (! $check_result->{type}) {
-			$c->render_not_found();
-		} elsif ($path !~ m{/$} && $check_result->{type} eq 'directory') {
-			$c->redirect_to($path. '/');
-			$tx->res->code(301);
-		} elsif (! _permission_ok($check_result->{path})) {
-			$c->render_not_found();
-			$tx->res->code(403);
-		} else {
-			my $ext = join '|', @{$extensions_to_render};
-			if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
-				my $res = $tx->res;
-				if (my $code = ($tx->req->error)[1]) {
-					$res->code($code)
-				} elsif ($tx->is_websocket) {
-					$res->code(426)
-				}
-				if ($app->routes->dispatch($c) && ! $res->code) {
-					$c->render_not_found
-				}
-			} elsif ($path =~ m{((\.(cgi|php|rb))|/)$}) {## This block never run
-				$c->render_exception('403');
-				$tx->res->code(403);
-			} else {
-				if ($app->static->dispatch($c) && ! $tx->res->code) {
-					$c->render_not_found;
-				}
-				$plugins->run_hook_reverse(after_static_dispatch => $c);
-			}
-		}
+        
+        my $check_result = _check_file_type($c, $path, $directory_index);
+        
+        if (! $check_result->{type}) {
+            $c->render_not_found();
+        } elsif ($path !~ m{/$} && $check_result->{type} eq 'directory') {
+            $c->redirect_to($path. '/');
+            $tx->res->code(301);
+        } elsif (! _permission_ok($check_result->{path})) {
+            $c->render_not_found();
+            $tx->res->code(403);
+        } else {
+            my $ext = join '|', @{$extensions_to_render};
+            if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
+                my $res = $tx->res;
+                if (my $code = ($tx->req->error)[1]) {
+                    $res->code($code)
+                } elsif ($tx->is_websocket) {
+                    $res->code(426)
+                }
+                if ($app->routes->dispatch($c) && ! $res->code) {
+                    $c->render_not_found
+                }
+            } elsif ($path =~ m{((\.(cgi|php|rb))|/)$}) {## This block never run
+                $c->render_exception('403');
+                $tx->res->code(403);
+            } else {
+                if ($app->static->dispatch($c) && ! $tx->res->code) {
+                    $c->render_not_found;
+                }
+                $plugins->run_hook_reverse(after_static_dispatch => $c);
+            }
+        }
     }
-	
-	sub _check_file_type {
-		
+    
+    sub _check_file_type {
+        
         my ($c, $name, $directory_index) = @_;
-		my $dir = $c->app->renderer->root;
+        my $dir = $c->app->renderer->root;
         $name ||= '';
         $name =~ s{(?<=/)(\.\w+)+$}{};
-		if (substr($name, 0, 1) eq '/') {
-			$name =~ s{^/}{};
-		}
-		my $path = File::Spec->catfile($dir, $name);
-		if (my $fixed_path = _fill_filename($path, $directory_index)) {
-			return {type => 'file', path => $fixed_path};
-		} elsif (-d $path) {
-			return {type => 'directory', path => $path};
-		}
-		return {};
-	}
+        if (substr($name, 0, 1) eq '/') {
+            $name =~ s{^/}{};
+        }
+        my $path = File::Spec->catfile($dir, $name);
+        if (my $fixed_path = _fill_filename($path, $directory_index)) {
+            return {type => 'file', path => $fixed_path};
+        } elsif (-d $path) {
+            return {type => 'directory', path => $path};
+        }
+        return {};
+    }
     
     sub _permission_ok {
-		
+        
         my ($name) = @_;
-		if ($name && -f $name && ((stat($name))[2] & 4)) {
-			$name =~ s{(^|/)[^/]+$}{};
-			while (-d $name) {
-				if (! ((stat($name))[2] & 1)) {
-					return 0;
-				}
-				$name =~ s{(^|/)[^/]+$}{};
-			}
-			return 1;
-		}
-		return 0;
+        if ($name && -f $name && ((stat($name))[2] & 4)) {
+            $name =~ s{(^|/)[^/]+$}{};
+            while (-d $name) {
+                if (! ((stat($name))[2] & 1)) {
+                    return 0;
+                }
+                $name =~ s{(^|/)[^/]+$}{};
+            }
+            return 1;
+        }
+        return 0;
     }
     
     sub plug {
@@ -177,30 +177,30 @@ $VERSION = eval $VERSION;
         }
         catch {
             my $err = $_ || 'Unknown Error';
-			$c->app->log->error(qq(Template error in "$options->{template}": $err));
-			$c->render_exception("$err");
-			$$output = '';
+            $c->app->log->error(qq(Template error in "$options->{template}": $err));
+            $c->render_exception("$err");
+            $$output = '';
             return 0;
         };
         return 1;
     }
     
-	sub _fill_filename {
-		
+    sub _fill_filename {
+        
         my ($path, $directory_index) = @_;
-		if (-d $path) {
-			for my $default (@{$directory_index}) {
-				my $path = File::Spec->catfile($path, $default);
-				if (-f $path) {
-					return $path;
-				}
-			}
-		} elsif (-f $path) {
-			return $path;
-		}
-		return;
-	}
-	
+        if (-d $path) {
+            for my $default (@{$directory_index}) {
+                my $path = File::Spec->catfile($path, $default);
+                if (-f $path) {
+                    return $path;
+                }
+            }
+        } elsif (-f $path) {
+            return $path;
+        }
+        return;
+    }
+    
     ### ---
     ### foo/bar.html    -> public_html/foo/bar.html
     ### foo/.html       -> public_html/foo/index.html
@@ -212,17 +212,17 @@ $VERSION = eval $VERSION;
         my ($template_base, $directory_index, $name) = @_;
         $name ||= '';
         $name =~ s{(?<=/)(\.\w+)+$}{};
-		my $dir;
-		if (substr($name, 0, 1) eq '/') {
-			$name =~ s{^/}{};
-			$dir = $template_base;
-		} else {
-			$dir = (File::Spec->splitpath(Text::PSTemplate->get_current_filename))[1];
-		}
-		my $path = File::Spec->catfile($dir, $name);
-		if (my $path = _fill_filename($path, $directory_index)) {
-			return $path;
-		}
+        my $dir;
+        if (substr($name, 0, 1) eq '/') {
+            $name =~ s{^/}{};
+            $dir = $template_base;
+        } else {
+            $dir = (File::Spec->splitpath(Text::PSTemplate->get_current_filename))[1];
+        }
+        my $path = File::Spec->catfile($dir, $name);
+        if (my $path = _fill_filename($path, $directory_index)) {
+            return $path;
+        }
         if ($name !~ m{/$}) {
             return _filename_trans($template_base, $directory_index, $name. '/');
         }
@@ -268,7 +268,7 @@ MojoX::Tusu - Text::PSTemplate Framework on Mojolicious
         $tusu->plug('Your::Component', 'YC');
         
         $r->route('/specific/path')->to(cb => sub {
-			$tusu->bootstrap($_[0], 'Your::Component', 'post');
+            $tusu->bootstrap($_[0], 'Your::Component', 'post');
         });
     }
 
