@@ -91,6 +91,7 @@ $VERSION = eval $VERSION;
             $tx->res->code(403);
         } else {
             my $ext = join '|', @{$self->extensions_to_render};
+			my $path = $check_result->{path};
             if (! $path || $path !~ m{\.} || $path =~ m{(\.($ext))$}) {
                 my $res = $tx->res;
                 if (my $code = ($tx->req->error)[1]) {
@@ -105,7 +106,9 @@ $VERSION = eval $VERSION;
                 $c->render_exception('403');
                 $tx->res->code(403);
             } else {
-                if ($app->static->dispatch($c) && ! $tx->res->code) {
+				my $res = $app->static->serve($c, $path, '');
+				$c->rendered;
+                if ($res && ! $tx->res->code) {
                     $c->render_not_found;
                 }
                 $plugins->run_hook_reverse(after_static_dispatch => $c);
@@ -116,13 +119,12 @@ $VERSION = eval $VERSION;
     sub _check_file_type {
         
         my ($self, $c, $name) = @_;
-        my $dir = $c->app->renderer->root;
         $name ||= '';
         $name =~ s{(?<=/)(\.\w+)+$}{};
         if (substr($name, 0, 1) eq '/') {
             $name =~ s{^/}{};
         }
-        my $path = File::Spec->catfile($dir, $name);
+        my $path = File::Spec->catfile($c->app->renderer->root, $name);
         if (my $fixed_path = _fill_filename($path, $self->directory_index)) {
             return {type => 'file', path => $fixed_path};
         } elsif (-d $path) {

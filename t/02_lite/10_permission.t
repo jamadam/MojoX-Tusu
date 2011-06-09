@@ -6,7 +6,7 @@ use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
 
-use Test::More tests => 4;
+use Test::More tests => 8;
 
     my $backup;
     BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
