@@ -5,17 +5,19 @@ use base 'Test::Class';
 use Test::More;
 use MojoX::Tusu;
 use Test::Mojo;
-
-    my $backup = $ENV{MOJO_MODE} || '';
+	
+	BEGIN {
+		chmod(0755, 't/00_partial/f/t01/permission_ok');
+		chmod(0744, 't/00_partial/f/t01/permission_ng');
+		chmod(0755, 't/00_partial/f/t01/permission_ok/permission_ok.html');
+		chmod(0700, 't/00_partial/f/t01/permission_ok/permission_ng.html');
+		chmod(0755, 't/00_partial/f/t01/permission_ng/permission_ok.html');
+		chmod(0700, 't/00_partial/f/t01/permission_ng/permission_ng.html');
+	}
+	
+	my $backup = $ENV{MOJO_MODE} || '';
 
     __PACKAGE__->runtests;
-    
-	sub _permission_ok : Test(4) {
-		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ok/permission_ok.html'), 1);
-		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ok/permission_ng.html'), 0);
-		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ng/permission_ok.html'), 0);
-		is(MojoX::Tusu::_permission_ok('t/public_html/10/permission_ng/permission_ng.html'), 0);
-	}
 	
     sub template_render : Test(8) {
         $ENV{MOJO_MODE} = 'production';
