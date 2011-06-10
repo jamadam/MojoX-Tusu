@@ -117,47 +117,49 @@ $VERSION = eval $VERSION;
         
         my $path = $tx->req->url->path->to_string;
         
+		my $not_found;
+		
         my $check_result = $self->_check_file_type($path);
         
         if (! $check_result->{type}) {
-            $c->render_not_found();
-            return;
+			$not_found = 1;
+        } elsif ($check_result->{type} eq 'directory') {
+			$c->redirect_to($path. '/');
+			$tx->res->code(301);
+			return;
+        } elsif (! _permission_ok($check_result->{path})) {
+			$c->render_not_found();
+			$tx->res->code(403);
+			return;
         }
-        if ($check_result->{type} eq 'directory') {
-            $c->redirect_to($path. '/');
-            $tx->res->code(301);
-            return;
-        }
-        
-        if (! _permission_ok($check_result->{path})) {
-            $c->render_not_found();
-            $tx->res->code(403);
-            return;
-        }
-        
-        my $ext = join '|', @{$self->extensions_to_render};
-        $path = $check_result->{path};
-        
-        ### dynamic content
-        if ($path !~ m{\.} || $path =~ m{(\.($ext))$}) {
-            my $res = $tx->res;
-            if (my $code = ($tx->req->error)[1]) {
-                $res->code($code)
-            } elsif ($tx->is_websocket) {
-                $res->code(426)
-            }
-            if ($app->routes->dispatch($c) && ! $res->code) {
-                $c->render_not_found
-            }
-            return;
-        }
-        
-        ## This must not be happen
-        if ($path =~ m{((\.(cgi|php|rb))|/)$}) {
-            $c->render_exception('403');
-            $tx->res->code(403);
-            return;
-        }
+		
+		if (! $not_found) {
+			
+			$path = $check_result->{path};
+			
+			### dynamic content
+			for my $ext (@{$self->extensions_to_render}) {
+				if ($path !~ m{\.} || $path =~ m{\.$ext$}) {
+					my $res = $tx->res;
+					if (my $code = ($tx->req->error)[1]) {
+						$res->code($code)
+					} elsif ($tx->is_websocket) {
+						$res->code(426)
+					}
+					if ($app->routes->dispatch($c) && ! $res->code) {
+						$c->render_not_found
+					}
+					return;
+				}
+			}
+			
+			## This must not be happen
+			if ($path =~ m{((\.(cgi|php|rb))|/)$}) {
+				$c->render_exception('403');
+				$tx->res->code(403);
+				return;
+			}
+		}
         
         ### defaults to static content
         if (! $app->static->serve($c, $path, '')) {
