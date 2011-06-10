@@ -178,7 +178,8 @@ $VERSION = eval $VERSION;
     sub _check_file_type {
         
         my ($self, $name) = @_;
-        $name ||= '/';
+        $name ||= '';
+        $name = substr($name, 0, 1) eq '/' ? $name : '/'. $name;
         my $path = File::Spec->catfile(
                         $self->_app->renderer->root, ($name =~ qr{^/(.+)})[0]);
         if (-d $path && substr($name, -1, 1) ne '/') {
