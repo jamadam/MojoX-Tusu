@@ -123,6 +123,7 @@ $VERSION = eval $VERSION;
             $c->render_not_found();
 			return;
         }
+		
 		if ($path !~ m{/$} && $check_result->{type} eq 'directory') {
             $c->redirect_to($path. '/');
             $tx->res->code(301);
@@ -241,6 +242,7 @@ $VERSION = eval $VERSION;
     sub _fill_filename {
         
         my ($path, $directory_index) = @_;
+		warn $path;
         if (-d $path) {
             for my $default (@{$directory_index}) {
                 my $path = File::Spec->catfile($path, $default);
