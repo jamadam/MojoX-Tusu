@@ -146,7 +146,7 @@ $VERSION = eval $VERSION;
                         $res->code(426)
                     }
                     if ($app->routes->dispatch($c) && ! $res->code) {
-                        $c->render_not_found
+                        $c->render_not_found;
                     }
                     return;
                 }
