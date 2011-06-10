@@ -60,3 +60,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - Directory Index can be a static file
   - Fix bug on CGI mode
   - pst handler removed. tusu is available
+  - error document method added

@@ -54,6 +54,9 @@ t/public_html/06/index.txt
 t/public_html/07/some_component/index.html
 t/public_html/07/some_component/index2.html
 t/public_html/08/dir/dummy.html
+t/public_html/08/err/403.html
+t/public_html/08/err/404.html
+t/public_html/08/err/500.html
 t/public_html/08/index.html
 t/public_html/09/img/a.gif
 t/public_html/10/permission_ng/permission_ng.html
