@@ -154,7 +154,7 @@ $VERSION = eval $VERSION;
             
             ## This must not be happen
             if ($path =~ m{((\.(cgi|php|rb))|/)$}) {
-				$self->_render_error_document($c, 403);
+                $self->_render_error_document($c, 403);
                 return;
             }
         }
@@ -178,7 +178,7 @@ $VERSION = eval $VERSION;
         my ($self, $c, $code, $debug_message) = @_;
         
         my $resource = $c->tx->req->url->path->to_string;
-		
+        
         $c->app->log->debug(qq/Resource "$resource" not found./);
         
         if ($ENV{MOJO_MODE} eq 'production') {
@@ -186,7 +186,7 @@ $VERSION = eval $VERSION;
                 $c->render(handler => 'tusu', template => $template);
                 $c->res->code($code);
                 $c->rendered;
-				return;
+                return;
             }
         }
         if ($code == 404) {
@@ -254,7 +254,7 @@ $VERSION = eval $VERSION;
         catch {
             my $err = $_ || 'Unknown Error';
             $c->app->log->error(qq(Template error in "$options->{template}": $err));
-			$self->_render_error_document($c, 500, "$err");
+            $self->_render_error_document($c, 500, "$err");
             $$output = '';
             return 0;
         };
@@ -413,11 +413,11 @@ Each component classes must have methods such as get(), post() etc.
 
 This method setup custom error pages like apache's ErrorDocument.
 
-	$instance->error_document({
-		404 => '/errors/404.html',
-		403 => '/errors/403.html',
-		500 => '/errors/405.html',
-	})
+    $instance->error_document({
+        404 => '/errors/404.html',
+        403 => '/errors/403.html',
+        500 => '/errors/405.html',
+    })
 
 =head1 SEE ALSO
 
