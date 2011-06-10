@@ -48,7 +48,6 @@ $VERSION = eval $VERSION;
             'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
         );
         
-        $app->renderer->add_handler(pst => sub { $self->_render(@_) }); # deprecated
         $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
         
         return $self;
