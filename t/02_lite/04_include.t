@@ -20,6 +20,6 @@ use Test::More tests => 12;
     $t->get_ok('/04/index3.html')->status_is(200)->content_is('sub3 ok');
     $t->get_ok('/04/index4.html')->status_is(200)->content_is('sub4 ok');
 
-	$ENV{MOJO_MODE} = $backup;
+    $ENV{MOJO_MODE} = $backup;
 
 __END__

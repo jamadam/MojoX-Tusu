@@ -19,6 +19,6 @@ use Test::More tests => 6;
     $t->get_ok('/')->status_is(200)->content_is('06 default a');
     $t->get_ok('/index.txt')->status_is(200)->content_is('06 index.txt a');
 
-	$ENV{MOJO_MODE} = $backup;
+    $ENV{MOJO_MODE} = $backup;
 
 __END__

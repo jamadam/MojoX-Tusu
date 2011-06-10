@@ -16,10 +16,10 @@ use Test::Mojo;
         $t->get_ok('/')->status_is(200)->content_is('06 default a');
         $t->get_ok('/index.txt')->status_is(200)->content_is('06 index.txt a');
     }
-	
-	END {
-		$ENV{MOJO_MODE} = $backup;
-	}
+    
+    END {
+        $ENV{MOJO_MODE} = $backup;
+    }
 
 package SomeApp;
 use strict;

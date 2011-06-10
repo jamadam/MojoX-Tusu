@@ -10,12 +10,12 @@ use Test::Mojo;
 
     __PACKAGE__->runtests;
     
-	sub t01_permission_ok : Test(4) {
-		is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ok.html'), 1);
-		is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ng.html'), 0);
-		is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ng/permission_ok.html'), 0);
-		is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ng/permission_ng.html'), 0);
-	}
+    sub t01_permission_ok : Test(4) {
+        is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ok.html'), 1);
+        is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ng.html'), 0);
+        is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ng/permission_ok.html'), 0);
+        is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ng/permission_ng.html'), 0);
+    }
     
     sub t02_fill_filename : Test(9) {
         is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02', ['index.html']), 't/00_partial/f/t02/index.html');

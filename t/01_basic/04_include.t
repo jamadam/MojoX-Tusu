@@ -18,10 +18,10 @@ use Test::Mojo;
         $t->get_ok('/04/index3.html')->status_is(200)->content_is('sub3 ok');
         $t->get_ok('/04/index4.html')->status_is(200)->content_is('sub4 ok');
     }
-	
-	END {
-		$ENV{MOJO_MODE} = $backup;
-	}
+    
+    END {
+        $ENV{MOJO_MODE} = $backup;
+    }
 
 package SomeApp;
 use strict;
