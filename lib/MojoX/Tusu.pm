@@ -13,6 +13,7 @@ $VERSION = eval $VERSION;
     __PACKAGE__->attr('engine');
     __PACKAGE__->attr('extensions_to_render', sub {[qw(html htm xml)]});
     __PACKAGE__->attr('directory_index', sub {[qw(index.html index.htm)]});
+    __PACKAGE__->attr('error_document', sub {{}});
     
     # internal use
     __PACKAGE__->attr('_app');
@@ -127,8 +128,7 @@ $VERSION = eval $VERSION;
             $tx->res->code(301);
             return;
         } elsif (! _permission_ok($check_result->{path})) {
-            $c->render_not_found();
-            $tx->res->code(403);
+            $self->_render_error_document($c, 403);
             return;
         }
         
@@ -154,8 +154,7 @@ $VERSION = eval $VERSION;
             
             ## This must not be happen
             if ($path =~ m{((\.(cgi|php|rb))|/)$}) {
-                $c->render_exception('403');
-                $tx->res->code(403);
+				$self->_render_error_document($c, 403);
                 return;
             }
         }
@@ -166,9 +165,36 @@ $VERSION = eval $VERSION;
             $c->rendered;
         }
         if (! $tx->res->code) {
-            $c->render_not_found;
+            $self->_render_error_document($c, 404);
         }
         $plugins->run_hook_reverse(after_static_dispatch => $c);
+    }
+    
+    ### ---
+    ### Render Error document
+    ### ---
+    sub _render_error_document {
+        
+        my ($self, $c, $code, $debug_message) = @_;
+        
+        my $resource = $c->tx->req->url->path->to_string;
+		
+        $c->app->log->debug(qq/Resource "$resource" not found./);
+        
+        if ($ENV{MOJO_MODE} eq 'production') {
+            if (my $template = $self->error_document->{$code}) {
+                $c->render(handler => 'tusu', template => $template);
+                $c->res->code($code);
+                $c->rendered;
+				return;
+            }
+        }
+        if ($code == 404) {
+            $c->render_not_found;
+        } else {
+            $c->render_exception($debug_message || 'Unknown Error');
+        }
+        $c->res->code($code);
     }
     
     ### ---
@@ -228,7 +254,7 @@ $VERSION = eval $VERSION;
         catch {
             my $err = $_ || 'Unknown Error';
             $c->app->log->error(qq(Template error in "$options->{template}": $err));
-            $c->render_exception("$err");
+			$self->_render_error_document($c, 500, "$err");
             $$output = '';
             return 0;
         };
@@ -382,6 +408,16 @@ Following settting is the default.
     $tusu->extensions_to_render(['html','htm','xml'])
 
 Each component classes must have methods such as get(), post() etc.
+
+=head2 $instance->error_document($hash_ref)
+
+This method setup custom error pages like apache's ErrorDocument.
+
+	$instance->error_document({
+		404 => '/errors/404.html',
+		403 => '/errors/403.html',
+		500 => '/errors/405.html',
+	})
 
 =head1 SEE ALSO
 

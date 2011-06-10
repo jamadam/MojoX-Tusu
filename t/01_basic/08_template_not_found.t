@@ -43,6 +43,12 @@ use Test::Mojo;
         $t->get_ok('/08')->status_is(301)->header_like('location', qr{/08/});
     }
     
+    sub error_document_set : Test(4) {
+        $ENV{MOJO_MODE} = 'production';
+        my $t = Test::Mojo->new(app => 'ErrorDocument');
+        $t->get_ok('/08/not_found.html')->status_is(404)->content_is('404');
+    }
+    
     END {
         $ENV{MOJO_MODE} = $backup;
     }
@@ -56,6 +62,23 @@ use MojoX::Tusu;
 sub startup {
     my $self = shift;
     my $tusu = MojoX::Tusu->new($self);
+    $tusu->document_root('t/public_html');
+}
+
+package ErrorDocument;
+use strict;
+use warnings;
+use base 'Mojolicious';
+use MojoX::Tusu;
+
+sub startup {
+    my $self = shift;
+    my $tusu = MojoX::Tusu->new($self);
+	$tusu->error_document({
+		404 => '/08/err/404.html',
+		403 => '/08/err/403.html',
+		500 => '/08/err/500.html',
+	});
     $tusu->document_root('t/public_html');
 }
 
