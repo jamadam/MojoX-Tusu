@@ -10,8 +10,8 @@ our $VERSION = '0.18';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');
-    __PACKAGE__->attr('extensions_to_render', sub {[qw(html htm xml)]});
-    __PACKAGE__->attr('directory_index', sub {[qw(index.html index.htm)]});
+    __PACKAGE__->attr('extensions_to_render', sub {['html','htm','xml']});
+    __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
     
     # internal use
