@@ -181,7 +181,7 @@ $VERSION = eval $VERSION;
         
         $c->app->log->debug(qq/Resource "$resource" not found./);
         
-        if ($ENV{MOJO_MODE} eq 'production') {
+        if ($self->_app->mode eq 'production') {
             if (my $template = $self->error_document->{$code}) {
                 $c->render(handler => 'tusu', template => $template);
                 $c->res->code($code);
