@@ -5,7 +5,6 @@ use Try::Tiny;
 use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
 use Carp;
-use Switch;
 use Mojolicious::Static;
 our $VERSION = '0.18';
 $VERSION = eval $VERSION;
