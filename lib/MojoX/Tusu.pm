@@ -6,7 +6,7 @@ use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
 use Carp;
 use Mojolicious::Static;
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine');

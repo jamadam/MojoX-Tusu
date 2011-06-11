@@ -61,3 +61,5 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - Fix bug on CGI mode
   - pst handler removed. tusu is available
   - error document method added
+  
+0.19 2011/06/10
