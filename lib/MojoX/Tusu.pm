@@ -196,6 +196,21 @@ $VERSION = eval $VERSION;
     }
     
     ### ---
+    ### fill directory_index candidate
+    ### ---
+    sub _fill_filename {
+        
+        my ($path, $directory_index) = @_;
+        for my $default (@{$directory_index}) {
+            my $path = File::Spec->catfile($path, $default);
+            if (-f $path) {
+                return $path;
+            }
+        }
+        return;
+    }
+    
+    ### ---
     ### find file and type
     ### ---
     sub _check_file_type {
@@ -213,11 +228,37 @@ $VERSION = eval $VERSION;
             if (my $fixed_path = _fill_filename($path, $self->directory_index)) {
                 return {type => 'file', path => $fixed_path};
             }
-        }
-        if (-d $path) {
-            return {type => 'directory', path => $path};
+        } elsif (-d $path) {
+            return {type => 'directory'};
         }
         return {};
+    }
+    
+    ### ---
+    ### foo/bar.html    -> public_html/foo/bar.html
+    ### foo/            -> public_html/foo/index.html
+    ### foo             -> public_html/foo
+    ### ---
+    sub _filename_trans {
+        
+        my ($template_base, $directory_index, $name) = @_;
+        $name ||= '';
+        my $leading_slash = substr($name, 0, 1) eq '/';
+        my $trailing_slash = substr($name, -1, 1) eq '/';
+        $name =~ s{^/}{};
+        my $dir;
+        if ($leading_slash) {
+            $dir = $template_base;
+        } else {
+            $dir = (File::Spec->splitpath(Text::PSTemplate->get_current_filename))[1];
+        }
+        my $path = File::Spec->catfile($dir, $name);
+        if ($trailing_slash) {
+            if (my $fixed_path = _fill_filename($path, $directory_index)) {
+                return $fixed_path;
+            }
+        }
+        return $path;
     }
     
     ### ---
@@ -263,48 +304,6 @@ $VERSION = eval $VERSION;
             return 0;
         };
         return 1;
-    }
-    
-    ### ---
-    ### fill directory_index candidate
-    ### ---
-    sub _fill_filename {
-        
-        my ($path, $directory_index) = @_;
-        for my $default (@{$directory_index}) {
-            my $path = File::Spec->catfile($path, $default);
-            if (-f $path) {
-                return $path;
-            }
-        }
-        return;
-    }
-    
-    ### ---
-    ### foo/bar.html    -> public_html/foo/bar.html
-    ### foo/            -> public_html/foo/index.html
-    ### foo             -> public_html/foo
-    ### ---
-    sub _filename_trans {
-        
-        my ($template_base, $directory_index, $name) = @_;
-        $name ||= '';
-        my $leading_slash = substr($name, 0, 1) eq '/';
-        my $trailing_slash = substr($name, -1, 1) eq '/';
-        $name =~ s{^/}{};
-        my $dir;
-        if ($leading_slash) {
-            $dir = $template_base;
-        } else {
-            $dir = (File::Spec->splitpath(Text::PSTemplate->get_current_filename))[1];
-        }
-        my $path = File::Spec->catfile($dir, $name);
-        if ($trailing_slash) {
-            if (my $fixed_path = _fill_filename($path, $directory_index)) {
-                return $fixed_path;
-            }
-        }
-        return $path;
     }
 
 1;

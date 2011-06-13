@@ -22,6 +22,22 @@ use Test::Mojo;
         $t->get_ok('/08/not_found.html')->status_is(404)->text_is('title', 'Page Not Found');
     }
     
+    sub request_not_found3 : Test(3) {
+        $ENV{MOJO_MODE} = 'production';
+        my $t = Test::Mojo->new(app => 'SomeApp');
+        $t->get_ok('/08/directory_index_fail/')
+			->status_is(404)
+			->text_is('title', 'Page Not Found');
+    }
+    
+    sub request_not_found4 : Test(3) {
+        $ENV{MOJO_MODE} = 'development';
+        my $t = Test::Mojo->new(app => 'SomeApp');
+        $t->get_ok('/08/directory_index_fail/')
+			->status_is(404)
+			->text_is('title', 'Page Not Found');
+    }
+    
     sub internal_not_found : Test(4) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');

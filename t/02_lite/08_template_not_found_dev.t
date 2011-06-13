@@ -10,7 +10,7 @@ use Test::More;
 use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
-use Test::More tests => 8;
+use Test::More tests => 11;
 
     my $tusu = MojoX::Tusu->new(app);
     $tusu->document_root('t/public_html');
@@ -22,6 +22,9 @@ use Test::More tests => 8;
 		->text_is('title', 'Server Error')
 		->content_like(qr{t/public_html/08/not_exist.html})
 		->content_like(qr{at t/public_html/08/index.html line 1});
+	$t->get_ok('/08/directory_index_fail/')
+		->status_is(404)
+		->text_is('title', 'Page Not Found');
 
     $ENV{MOJO_MODE} = $backup;
 
