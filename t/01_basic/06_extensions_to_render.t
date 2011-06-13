@@ -13,8 +13,12 @@ use Test::Mojo;
     sub template_render : Test(6) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        $t->get_ok('/')->status_is(200)->content_is('06 default a');
-        $t->get_ok('/index.txt')->status_is(200)->content_is('06 index.txt a');
+        $t->get_ok('/')
+			->status_is(200)
+			->content_is('06 default a');
+        $t->get_ok('/index.txt')
+			->status_is(200)
+			->content_is('06 index.txt a');
     }
     
     END {

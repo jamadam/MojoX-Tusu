@@ -21,9 +21,15 @@ use Test::More tests => 9;
     };
     
     my $t = Test::Mojo->new;
-    $t->get_ok('/03_ComponentBase01.html?key=value')->status_is(200)->content_is('value');
-    $t->post_form_ok('/03_ComponentBase02.html', {key => 'value2'})->status_is(200)->content_is('value2');
-    $t->get_ok('/03_ComponentBase03.html')->status_is(200)->content_is('/path/to/file path/to/file');
+    $t->get_ok('/03_ComponentBase01.html?key=value')
+		->status_is(200)
+		->content_is('value');
+    $t->post_form_ok('/03_ComponentBase02.html', {key => 'value2'})
+		->status_is(200)
+		->content_is('value2');
+    $t->get_ok('/03_ComponentBase03.html')
+		->status_is(200)
+		->content_is('/path/to/file path/to/file');
 
     $ENV{MOJO_MODE} = $backup;
 

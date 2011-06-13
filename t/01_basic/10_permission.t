@@ -31,7 +31,9 @@ use Test::Mojo;
     sub error_document_set : Test(3) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'ErrorDocument');
-        $t->get_ok('/10/permission_ng/permission_ng.html')->status_is(403)->content_is('403');
+        $t->get_ok('/10/permission_ng/permission_ng.html')
+			->status_is(403)
+			->content_is('403');
     }
     
     END {

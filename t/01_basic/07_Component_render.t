@@ -13,8 +13,12 @@ use Test::Mojo;
     sub param : Test(6) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
-        $t->get_ok('/')->status_is(200)->content_is('default');
-        $t->get_ok('/07/some_component/')->status_is(200)->content_is('index2');
+        $t->get_ok('/')
+			->status_is(200)
+			->content_is('default');
+        $t->get_ok('/07/some_component/')
+			->status_is(200)
+			->content_is('index2');
     }
     
     END {

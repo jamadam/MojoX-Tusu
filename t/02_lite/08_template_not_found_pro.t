@@ -16,10 +16,11 @@ use Test::More tests => 10;
     $tusu->document_root('t/public_html');
     
     my $t = Test::Mojo->new;
-    $ENV{MOJO_MODE} = 'production';
-    $t->get_ok('/08/not_found.html')->status_is(404)->text_is('title', 'Page Not Found');
-    $ENV{MOJO_MODE} = 'production';
-    $t->get_ok('/08/')
+    
+	$t->get_ok('/08/not_found.html')
+		->status_is(404)
+		->text_is('title', 'Page Not Found');
+	$t->get_ok('/08/')
 		->status_is(500)
 		->text_is('title', 'Server Error')
 		->element_exists('div#raptor');
