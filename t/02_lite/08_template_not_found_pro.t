@@ -19,7 +19,10 @@ use Test::More tests => 7;
     $ENV{MOJO_MODE} = 'production';
     $t->get_ok('/08/not_found.html')->status_is(404)->text_is('title', 'Page Not Found');
     $ENV{MOJO_MODE} = 'production';
-    $t->get_ok('/08/')->status_is(500)->text_is('title', 'Server Error')->element_exists('div#raptor');
+    $t->get_ok('/08/')
+		->status_is(500)
+		->text_is('title', 'Server Error')
+		->element_exists('div#raptor');
 
     $ENV{MOJO_MODE} = $backup;
 
