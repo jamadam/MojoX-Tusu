@@ -30,10 +30,10 @@ $VERSION = eval $VERSION;
             my ($app, $c) = @_;
             if (! $self->_default_route_set) {
                 $self->_default_route_set(1);
-                my $cb = sub {$_[0]->render(handler => 'tusu')};
-                my $r = $app->routes;
-                $r->route('/(*template)')->to(cb => $cb);
-                $r->route('/')->to(cb => $cb);
+                $app->routes
+                    ->route('/:template', template => qr{.*})
+                    ->name('')
+                    ->to(cb => sub {$_[0]->render(handler => 'tusu')});
             }
             $self->_dispatch($app, $c);
         });
