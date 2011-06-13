@@ -312,7 +312,7 @@ __END__
 
 =head1 NAME
 
-MojoX::Tusu - Text::PSTemplate Framework on Mojolicious
+MojoX::Tusu - Apache-like dispatcher for Mojolicious
 
 =head1 SYNOPSIS
 
@@ -334,14 +334,96 @@ MojoX::Tusu - Text::PSTemplate Framework on Mojolicious
         $tusu->plug('Your::Component', 'YC');
         
         $r->route('/specific/path')->to(cb => sub {
-            $tusu->bootstrap($_[0], 'Your::Component', 'post');
+            $tusu->bootstrap($_[0], 'Your::Component', 'your_method');
         });
     }
 
 =head1 DESCRIPTION
 
-The C<MojoX::Tusu> is a sub framework on Mojolicious using Text::PSTemplate
-for renderer.
+C<MojoX::Tusu> is a sub framework on Mojolicious using Text::PSTemplate
+for renderer. With this framework, you can deploy directory based web sites
+onto Mojolicious at once.
+
+This framework automatically activate own dispacher which behaves like apache
+web server. You can build your web site into single document root directory
+named public_html in hierarchal structure. The document root directory can
+contain both server-parsed-documents and static files such as images.
+
+MojoX::Tusu doesn't require files to be named like index.html.ep style but just
+like index.html. You can specify which files to be server parsable by telling
+it extensions. It also provides some more apache-like features such as
+directory_index, error_document and file permissions checking.
+
+One of the intent of this module is to enhance existing static websites into
+dynamic with minimal effort. The chances are that most typical website data are
+transplantable with no change at all.
+
+=head2 Components & Plugins
+
+Mojo::Tusu provides object oriented component & plugin framework. You can
+easily add your custom features into your website. The following is a example
+for plugin development.
+
+    <span><% questionize('Hello') %></span>
+
+To make it possible, you should write a module like this. 
+
+    package MyUtility;
+    use strict;
+    use warnings;
+    use base 'MojoX::Tusu::PluginBase';
+    
+    sub questionize : TplExport {
+        my ($self, $sentence) = @_;
+        my $c = $self->controller; # mojolicious controller in case you need
+        return $sentence . '?';
+    }
+
+To activate this plugin, you must plug-in this at mojolicious startup method.
+
+    sub startup {
+        my $self = shift;
+        my $tusu = MojoX::Tusu->new($self);
+        $tusu->plug('YourUtility', ''); ## second argument is the namespace
+    }
+
+The following is a example for component development.
+
+    <div id="productContainer">
+        <% Product::list_by_category('books', 10) %>
+    </div>
+
+To make it possible, you should write a module like this.
+
+    package Product;
+    use strict;
+    use warnings;
+    use base 'MojoX::Tusu::ComponentBase';
+    
+    sub init {
+        my ($self, $app) = @_;
+        $self->set_ini({...}); ### DB SETTING OR SOMETHING
+    }
+    
+    sub list_by_category : TplExport {
+        my ($self, $category, $limit) = @_;
+        my $c = $self->controller; # mojolicious controller in case you need
+        
+        # MAY BE ACCESS TO YOUR MODELS HERE
+        
+        return $html_snippet;
+    }
+
+To activate this component, you must plug-in this at mojolicious startup method.
+
+    sub startup {
+        my $self = shift;
+        my $tusu = MojoX::Tusu->new($self);
+        $tusu->plug('Product');
+    }
+
+The only difference between plugins and components is that components can have
+an init method to have own data.
 
 =head1 METHODS
 
