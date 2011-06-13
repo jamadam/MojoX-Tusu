@@ -9,7 +9,7 @@ use Mojolicious::Static;
 our $VERSION = '0.19';
 $VERSION = eval $VERSION;
     
-    __PACKAGE__->attr('engine');
+    __PACKAGE__->attr('engine', sub {Text::PSTemplate::Plugable->new});
     __PACKAGE__->attr('extensions_to_render', sub {['html','htm','xml']});
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
@@ -39,7 +39,6 @@ $VERSION = eval $VERSION;
         });
         
         $self->_app($app);
-        $self->engine(Text::PSTemplate::Plugable->new);
         $self->document_root($app->home->rel_dir('public_html'));
         
         $self->plug(
