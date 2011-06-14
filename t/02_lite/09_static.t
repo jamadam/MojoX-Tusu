@@ -1,16 +1,17 @@
 package Template_Basic;
 use strict;
 use warnings;
+
+    my $backup;
+    BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
+    BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'production' }
+
 use Test::More;
 use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
 
 use Test::More tests => 24;
-
-    my $backup;
-    BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
-    BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'production' }
 
     my $tusu = MojoX::Tusu->new(app);
     $tusu->document_root(app->home->rel_dir('../public_html'));

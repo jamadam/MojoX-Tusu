@@ -11,7 +11,7 @@ use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
 
-use Test::More tests => 8;
+use Test::More tests => 11;
     
     BEGIN {
         chmod(0755, 't/00_partial/f/t01/permission_ok');
