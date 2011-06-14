@@ -1,18 +1,214 @@
-MojoX-Tusu
+=head1 NAME
 
-INSTALLATION
+MojoX::Tusu - Apache-like dispatcher for Mojolicious
 
-To install this module, run the following commands:
+=head1 SYNOPSIS
 
-    perl Makefile.PL
-    make
-    make test
-    make install
+    sub startup {
+        ....
 
-COPYRIGHT AND LICENSE
+        use MojoX::Tusu;
+        my $tusu = MojoX::Tusu->new($self);
+        
+        # following is optional
+        
+        $tusu->document_root($self->home->rel_dir('www2'));
+        $tusu->extensions_to_render([qw(html htm xml txt)]);
+        
+        # initialize Text::PSTemplate::Plugable if necessary
+        
+        my $plugin_instance = $tusu->plug('some_plugin');
+        $tusu->engine->set_...();
+        $tusu->plug('Your::Component', 'YC');
+        
+        $r->route('/specific/path')->to(cb => sub {
+            $tusu->bootstrap($_[0], 'Your::Component', 'your_method');
+        });
+    }
 
-Copyright (C) 2011 sugama
+=head1 DESCRIPTION
+
+C<MojoX::Tusu> is a sub framework on Mojolicious using Text::PSTemplate
+for renderer. With this framework, you can deploy directory based web sites
+onto Mojolicious at once.
+
+This framework automatically activate own dispacher which behaves like apache
+web server. You can build your web site into single document root directory
+named public_html in hierarchal structure. The document root directory can
+contain both server-parsed-documents and static files such as images.
+
+MojoX::Tusu doesn't require files to be named like index.html.ep style but just
+like index.html. You can specify which files to be server parsable by telling
+it extensions. It also provides some more apache-like features such as
+directory_index, error_document and file permissions checking.
+
+One of the intent of this module is to enhance existing static websites into
+dynamic with minimal effort. The chances are that most typical website data are
+transplantable with no change at all.
+
+=head2 Components & Plugins
+
+Mojo::Tusu provides object oriented component & plugin framework. You can
+easily add your custom features into your website. The following is an example
+for plugin development.
+
+    <span><% questionize('Hello') %></span>
+
+To make it possible, you should write a module like this. 
+
+    package MyUtility;
+    use strict;
+    use warnings;
+    use base 'MojoX::Tusu::PluginBase';
+    
+    sub questionize : TplExport {
+        my ($self, $sentence) = @_;
+        my $c = $self->controller; # mojolicious controller in case you need
+        return $sentence . '?';
+    }
+
+To activate this plugin, you must plug-in this at mojolicious startup method.
+
+    sub startup {
+        my $self = shift;
+        my $tusu = MojoX::Tusu->new($self);
+        $tusu->plug('YourUtility', ''); ## second argument is the namespace
+    }
+
+The following is an example for component development.
+
+    <div id="productContainer">
+        <% Product::list_by_category('books', 10) %>
+    </div>
+
+To make it possible, you should write a module like this.
+
+    package Product;
+    use strict;
+    use warnings;
+    use base 'MojoX::Tusu::ComponentBase';
+    
+    sub init {
+        my ($self, $app) = @_;
+        $self->set_ini({...}); ### DB SETTING OR SOMETHING
+    }
+    
+    sub list_by_category : TplExport {
+        my ($self, $category, $limit) = @_;
+        my $c = $self->controller; # mojolicious controller in case you need
+        
+        # MAY BE ACCESS TO YOUR MODELS HERE
+        
+        return $html_snippet;
+    }
+
+To activate this component, you must plug-in this at mojolicious startup method.
+
+    sub startup {
+        my $self = shift;
+        my $tusu = MojoX::Tusu->new($self);
+        $tusu->plug('Product');
+    }
+
+The only difference between plugins and components is that components can have
+an init method to have own data.
+
+=head1 METHODS
+
+=head2 MojoX::Tusu->new($app)
+
+Constractor. This method takes Mojolicious app for argument and returns
+MojoX::Tusu instance.
+    
+    $tusu = MojoX::Tusu->new($app)
+
+=head2 $instance->document_root($directory)
+
+This method sets root directory for templates and static files. Following
+example is default setting.
+    
+    my $tusu = MojoX::Tusu->new($app);
+    $tusu->document_root($self->home->rel_dir('public_html'));
+
+=head2 directory_index($candidate1 [, $candidate2])
+
+This method sets default file names for searching files in directory when
+the request path doesn't ended with file name. And this setting also affects to
+inside template context such as include('path') function. Following example is
+the default setting.
+
+    my $tusu = MojoX::Tusu->new($app);
+    $tusu->directory_index(['index.html', 'index.htm']);
+
+=head2 $instance->engine
+
+This returns Text::PSTemplate::Plugable instance. You can customize the template
+system behavior by calling parser methods directly.
+    
+    my $tusu = MojoX::Tusu->new($app);
+    my $pst = $tusu->engine;
+    $pst->set_delimiter('<!--', '-->');
+
+=head2 $instance->plug($plug_name, [$namespace])
+
+This is a delegate method for Text::PSTemplate::Plugable->plug just for hooking
+init method for components. All arguments are thrown at
+Text::PSTemplate::Plugable->plug.
+
+    my $tusu = MojoX::Tusu->new($self);
+    $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
+
+You also can plug multiple plugins at once.
+
+    my $tusu = MojoX::Tusu->new($self);
+    $tusu->plug(
+        'Namespace::A' => 'A',   # namespace is A
+        'Namespace::B' => '',    # namespace is ''
+        'Namespace::C' => undef, # namespace is Namespace::C
+    );
+
+=head2 $instance->bootstrap($controller, $component, $method)
+
+This method is a sub dispacher method. You can specify a class and a method the
+route to be dispached to.
+
+    my $tusu = MojoX::Tusu->new($self);
+    $r->route('/some/path')->via('post')->to(cb => sub {
+        $tusu->bootstrap($c, 'Your::Component', 'post');
+    });
+
+=head2 $instance->extensions_to_render($array_ref)
+
+This method sets the extensions to be parsed by tusu renderer. If request
+doesn't match any of extensions, dispatcher try to render it as static file.
+Following settting is the default.
+
+    my $tusu = MojoX::Tusu->new($self);
+    $tusu->extensions_to_render(['html','htm','xml'])
+
+=head2 $instance->error_document($hash_ref)
+
+This method setup custom error pages like apache's ErrorDocument.
+
+    $instance->error_document({
+        404 => '/errors/404.html',
+        403 => '/errors/403.html',
+        500 => '/errors/405.html',
+    })
+
+=head1 SEE ALSO
+
+L<Mojolicious>, L<Text::PSTemplate>, L<MojoX::Renderer>
+
+=head1 AUTHOR
+
+Sugama Keita, E<lt>sugama@jamadam.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2011 by Sugama Keita.
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 
+=cut
