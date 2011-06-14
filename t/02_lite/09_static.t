@@ -6,7 +6,7 @@ use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
 
-use Test::More tests => 15;
+use Test::More tests => 24;
 
     my $backup;
     BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
@@ -34,6 +34,16 @@ use Test::More tests => 15;
 		->status_is(200)
 		->header_is('Content-Type', 'image/gif')
 		->content_like(qr/GIF89a/);
+
+	$t->get_ok('/mojolicious-pinstripe.gif')
+		->status_is(200)
+		->header_is('Content-Type', 'image/gif');
+	$t->get_ok('/mojolicious-noraptor.png')
+		->status_is(200)
+		->header_is('Content-Type', 'image/png');
+	$t->get_ok('/js/lang-proto.js')
+		->status_is(200)
+		->header_is('Content-Type', 'application/x-javascript');
     
     $ENV{MOJO_MODE} = $backup;
 
