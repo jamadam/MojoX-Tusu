@@ -16,18 +16,18 @@ use Test::More tests => 9;
     $tusu->document_root('t/public_html');
     $tusu->engine->plug('SomeComponent');
     
-    any '/03_ComponentBase02.html' => sub {
+    any '/03/03_ComponentBase02.html' => sub {
         $tusu->bootstrap($_[0], 'SomeComponent', 'post');
     };
     
     my $t = Test::Mojo->new;
-    $t->get_ok('/03_ComponentBase01.html?key=value')
+    $t->get_ok('/03/03_ComponentBase01.html?key=value')
 		->status_is(200)
 		->content_is('value');
-    $t->post_form_ok('/03_ComponentBase02.html', {key => 'value2'})
+    $t->post_form_ok('/03/03_ComponentBase02.html', {key => 'value2'})
 		->status_is(200)
 		->content_is('value2');
-    $t->get_ok('/03_ComponentBase03.html')
+    $t->get_ok('/03/03_ComponentBase03.html')
 		->status_is(200)
 		->content_is('/path/to/file path/to/file');
 
@@ -40,5 +40,5 @@ use base 'MojoX::Tusu::ComponentBase';
 
     sub post {
         my ($self, $c) = @_;
-        $c->render(handler => 'tusu', template => '/03_ComponentBase02.html')
+        $c->render(handler => 'tusu', template => '/03/03_ComponentBase02.html')
     }
