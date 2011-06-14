@@ -113,7 +113,7 @@ $VERSION = eval $VERSION;
         my $plugins = $app->plugins;
         $plugins->run_hook(before_dispatch => $c);
         
-        my $path = $tx->req->url->path->to_string;
+        my $path = $tx->req->url->path->to_string || '/';
         
         my $not_found;
         
