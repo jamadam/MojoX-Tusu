@@ -361,7 +361,7 @@ transplantable with no change at all.
 =head2 Components & Plugins
 
 Mojo::Tusu provides object oriented component & plugin framework. You can
-easily add your custom features into your website. The following is a example
+easily add your custom features into your website. The following is an example
 for plugin development.
 
     <span><% questionize('Hello') %></span>
@@ -387,7 +387,7 @@ To activate this plugin, you must plug-in this at mojolicious startup method.
         $tusu->plug('YourUtility', ''); ## second argument is the namespace
     }
 
-The following is a example for component development.
+The following is an example for component development.
 
     <div id="productContainer">
         <% Product::list_by_category('books', 10) %>
@@ -429,40 +429,50 @@ an init method to have own data.
 
 =head2 MojoX::Tusu->new($app)
 
-Constractor. This returns MojoX::Tusu instance.
+Constractor. This method takes Mojolicious app for argument and returns
+MojoX::Tusu instance.
     
-    $instance = MojoX::Tusu->new($app)
+    $tusu = MojoX::Tusu->new($app)
 
 =head2 $instance->document_root($directory)
 
-Set root directory for templates and static files. Following example is default
-setting.
-
+This method sets root directory for templates and static files. Following
+example is default setting.
+    
+    my $tusu = MojoX::Tusu->new($app);
     $tusu->document_root($self->home->rel_dir('public_html'));
 
 =head2 directory_index($candidate1 [, $candidate2])
 
 This method sets default file names for searching files in directory when
-path_info is ended with directory name. Following example is the default
-setting.
+the request path doesn't ended with file name. And this setting also affects to
+inside template context such as include('path') function. Following example is
+the default setting.
 
+    my $tusu = MojoX::Tusu->new($app);
     $tusu->directory_index(['index.html', 'index.htm']);
 
 =head2 $instance->engine
 
-Returns Text::PSTemplate::Plugable instance.
+This returns Text::PSTemplate::Plugable instance. You can customize the template
+system behavior by calling parser methods directly.
+    
+    my $tusu = MojoX::Tusu->new($app);
+    my $pst = $tusu->engine;
+    $pst->set_delimiter('<!--', '-->');
 
 =head2 $instance->plug($plug_name, [$namespace])
 
-This is delegate method for Text::PSTemplate::Plugable->plug to hook
-MojoX::Tusu::ComponentBase->init. All arguments are thrown at
-Text::PSTemplate::Plugable->plug. See L<Text::PSTemplate::Plugable>.
+This is a delegate method for Text::PSTemplate::Plugable->plug just for hooking
+init method for components. All arguments are thrown at
+Text::PSTemplate::Plugable->plug.
 
     my $tusu = MojoX::Tusu->new($self);
     $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
 
 You also can plug multiple plugins at once.
 
+    my $tusu = MojoX::Tusu->new($self);
     $tusu->plug(
         'Namespace::A' => 'A',   # namespace is A
         'Namespace::B' => '',    # namespace is ''
@@ -471,10 +481,10 @@ You also can plug multiple plugins at once.
 
 =head2 $instance->bootstrap($controller, $component, $method)
 
-This method is a sub dispacher method. Each HTTP request methods will be routed
-to corresponding mthods of given component class. $component defaults to
-'MojoX::Tusu::ComponentBase'.
+This method is a sub dispacher method. You can specify a class and a method the
+route to be dispached to.
 
+    my $tusu = MojoX::Tusu->new($self);
     $r->route('/some/path')->via('post')->to(cb => sub {
         $tusu->bootstrap($c, 'Your::Component', 'post');
     });
@@ -485,9 +495,8 @@ This method sets the extensions to be parsed by tusu renderer. If request
 doesn't match any of extensions, dispatcher try to render it as static file.
 Following settting is the default.
 
+    my $tusu = MojoX::Tusu->new($self);
     $tusu->extensions_to_render(['html','htm','xml'])
-
-Each component classes must have methods such as get(), post() etc.
 
 =head2 $instance->error_document($hash_ref)
 
