@@ -508,9 +508,16 @@ This method setup custom error pages like apache's ErrorDocument.
         500 => '/errors/405.html',
     })
 
+=head1 What does Tusu means?
+
+Tusu means mojo in Ainu languages which is spoken by the native inhabitants of
+Hokkaido prefecture, Japan.
+
 =head1 SEE ALSO
 
-L<Mojolicious>, L<Text::PSTemplate>, L<MojoX::Renderer>
+L<Mojolicious>, L<Text::PSTemplate>
+
+L<http://en.wikipedia.org/wiki/Ainu_languages>
 
 =head1 AUTHOR
 
