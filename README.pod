@@ -39,7 +39,7 @@ contain both server-parsed-documents and static files such as images.
 
 MojoX::Tusu doesn't require files to be named like index.html.ep style but just
 like index.html. You can specify which files to be server parsable by telling
-it extensions. It also provides some more apache-like features such as
+it the extensions. It also provides some more apache-like features such as
 directory_index, error_document and file permissions checking.
 
 One of the intent of this module is to enhance existing static websites into
@@ -196,9 +196,16 @@ This method setup custom error pages like apache's ErrorDocument.
         500 => '/errors/405.html',
     })
 
+=head1 What does Tusu means?
+
+Tusu means mojo in Ainu languages which is spoken by the native inhabitants of
+Hokkaido prefecture, Japan.
+
 =head1 SEE ALSO
 
-L<Mojolicious>, L<Text::PSTemplate>, L<MojoX::Renderer>
+L<Mojolicious>, L<Text::PSTemplate>
+
+L<http://en.wikipedia.org/wiki/Ainu_languages>
 
 =head1 AUTHOR
 
