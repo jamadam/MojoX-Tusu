@@ -22,7 +22,7 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - ComponentBase got some utility functions for template
 
 0.08 2011/05/19
-  - Controller no more given via second arg on tpl funcs
+  - Controller no longer given via second arg on tpl funcs
 
 0.09 2011/05/19
   - Distribution renamed
@@ -46,10 +46,10 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - plug method now capable of multiple plugins at once
 
 0.16 2011/06/01
-  - Reduce messign app attr namaspace
+  - Reduce messing app attr namaspace
 
 0.17 2011/06/08
-  - File searching rule has changed. It got similar to behavior of apache 
+  - File searching rule has been changed. It got similar behavior to apache 
   - directory_index method added
   - Compatibility with apache improved
   - bootstrap renewed
@@ -57,13 +57,13 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 0.18 2011/06/10
   - url_abs added
   - Permission check activated
-  - Directory Index can be a static file
-  - Fix bug on CGI mode
-  - pst handler removed. tusu is available
+  - Directory Index can be a static file now
+  - Fixed a bug on CGI mode
+  - pst handler removed and tusu is available
   - error document method added
   
 0.19 2011/06/10
 
-  - pathes in template without trailing slash are no longer autofilled with
+  - Pathes in templates without trailing slash are no longer autofilled with
     directory index
   - FIX: CGI mode bug on root access

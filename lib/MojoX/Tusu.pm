@@ -351,7 +351,7 @@ contain both server-parsed-documents and static files such as images.
 
 MojoX::Tusu doesn't require files to be named like index.html.ep style but just
 like index.html. You can specify which files to be server parsable by telling
-it extensions. It also provides some more apache-like features such as
+it the extensions. It also provides some more apache-like features such as
 directory_index, error_document and file permissions checking.
 
 One of the intent of this module is to enhance existing static websites into
