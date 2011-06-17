@@ -67,3 +67,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - Pathes in templates without trailing slash are no longer autofilled with
     directory index
   - FIX: CGI mode bug on root access
+  - encoding method added
