@@ -11,6 +11,7 @@ $VERSION = eval $VERSION;
     __PACKAGE__->attr('extensions_to_render', sub {['html','htm','xml']});
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
+    __PACKAGE__->attr('encoding', 'utf8');
     
     # internal use
     __PACKAGE__->attr('_app');
@@ -289,6 +290,8 @@ $VERSION = eval $VERSION;
         
         my $engine = Text::PSTemplate::Plugable->new($self->engine);
         
+        $engine->set_encoding($self->encoding);
+        
         local $SIG{__DIE__} = undef;
         
         try {
@@ -505,6 +508,14 @@ This method setup custom error pages like apache's ErrorDocument.
         403 => '/errors/403.html',
         500 => '/errors/405.html',
     })
+
+=head2 $instance->encoding($encoding)
+
+This method sets encoding for template files. Array ref causes auto detection
+active.
+
+	$tusu->encoding('Shift-JIS');
+	$tusu->encoding(['Shift-JIS', 'utf8']);
 
 =head1 What does Tusu means?
 
