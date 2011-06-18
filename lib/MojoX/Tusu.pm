@@ -12,7 +12,7 @@ $VERSION = eval $VERSION;
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
     __PACKAGE__->attr('encoding', 'utf8');
-    __PACKAGE__->attr('output_charset_auto_detect');
+    __PACKAGE__->attr('output_encoding');
     
     # internal use
     __PACKAGE__->attr('_app');
@@ -280,7 +280,7 @@ $VERSION = eval $VERSION;
         return 0;
     }
     
-    __PACKAGE__->attr('_output_charset_auto_detect_hook_set');
+    __PACKAGE__->attr('_output_encoding_hook_set');
     
     ### ---
     ### tusu renderer
@@ -302,16 +302,25 @@ $VERSION = eval $VERSION;
         my $file_obj = Text::PSTemplate::File->new($fixed_path, $self->encoding);
         my $charset = Encode::find_encoding($file_obj->detected_encoding)->mime_name;
         
-        if (! $self->_output_charset_auto_detect_hook_set &&
-                                            $self->output_charset_auto_detect) {
-            $self->_output_charset_auto_detect_hook_set(1);
+        if ($self->output_encoding && $self->output_encoding eq 'auto') {
+            
+            $c->stash('_tusu.charset', $charset);
+            
             $self->_app->types->type(html => "text/html;charset=$charset");
-            $self->_app->hook('after_dispatch', sub {
-                my ($c) = @_;
-                my $body = $c->tx->res->body;
-                Encode::from_to($body, $renderer->encoding, $charset);
-                $c->tx->res->body($body);
-            });
+            
+            if (! $self->_output_encoding_hook_set) {
+                
+                $self->_output_encoding_hook_set(1);
+                
+                $self->_app->hook('after_dispatch', sub {
+                    my ($c) = @_;
+                    if (my $charset = $c->stash('_tusu.charset')) {
+                        my $body = $c->tx->res->body;
+                        Encode::from_to($body, $renderer->encoding, $charset);
+                        $c->tx->res->body($body);
+                    }
+                });
+            }
         }
         
         try {
@@ -536,6 +545,11 @@ active.
 
 	$tusu->encoding('Shift-JIS');
 	$tusu->encoding(['Shift-JIS', 'utf8']);
+
+=head2 $instance->output_encoding('auto') [EXPERIMENTAL]
+
+This method activate output encoding auto detection. The encoding will be
+originated from template encoding.
 
 =head1 What does Tusu means?
 
