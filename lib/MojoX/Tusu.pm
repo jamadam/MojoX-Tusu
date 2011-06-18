@@ -12,6 +12,7 @@ $VERSION = eval $VERSION;
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
     __PACKAGE__->attr('encoding', 'utf8');
+    __PACKAGE__->attr('output_charset_auto_detect');
     
     # internal use
     __PACKAGE__->attr('_app');
@@ -278,6 +279,9 @@ $VERSION = eval $VERSION;
         }
         return 0;
     }
+    
+    __PACKAGE__->attr('_output_charset_auto_detect_hook_set');
+    
     ### ---
     ### tusu renderer
     ### ---
@@ -297,9 +301,18 @@ $VERSION = eval $VERSION;
             $renderer->root, $self->directory_index, '/'. $options->{template});
         my $file_obj = Text::PSTemplate::File->new($fixed_path, $self->encoding);
         my $charset = Encode::find_encoding($file_obj->detected_encoding)->mime_name;
-        $self->_app->types->type(html => "text/html;charset=$charset");
-        $self->_app->hook(after_build_tx => sub { shift->req->default_charset($charset) });
-        $renderer->encoding($self->encoding);
+        
+        if (! $self->_output_charset_auto_detect_hook_set &&
+                                            $self->output_charset_auto_detect) {
+            $self->_output_charset_auto_detect_hook_set(1);
+            $self->_app->types->type(html => "text/html;charset=$charset");
+            $self->_app->hook('after_dispatch', sub {
+                my ($c) = @_;
+                my $body = $c->tx->res->body;
+                Encode::from_to($body, $renderer->encoding, $charset);
+                $c->tx->res->body($body);
+            });
+        }
         
         try {
             $$output = $engine->parse_file($file_obj);
