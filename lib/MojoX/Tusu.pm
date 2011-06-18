@@ -278,7 +278,6 @@ $VERSION = eval $VERSION;
         }
         return 0;
     }
-    
     ### ---
     ### tusu renderer
     ### ---
@@ -294,8 +293,16 @@ $VERSION = eval $VERSION;
         
         local $SIG{__DIE__} = undef;
         
+        my $fixed_path = _filename_trans(
+            $renderer->root, $self->directory_index, '/'. $options->{template});
+        my $file_obj = Text::PSTemplate::File->new($fixed_path, $self->encoding);
+        my $charset = Encode::find_encoding($file_obj->detected_encoding)->mime_name;
+        $self->_app->types->type(html => "text/html;charset=$charset");
+        $self->_app->hook(after_build_tx => sub { shift->req->default_charset($charset) });
+        $renderer->encoding($self->encoding);
+        
         try {
-            $$output = $engine->parse_file('/'. $options->{template});
+            $$output = $engine->parse_file($file_obj);
         }
         catch {
             my $err = $_ || 'Unknown Error';
