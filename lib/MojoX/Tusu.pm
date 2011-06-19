@@ -4,6 +4,7 @@ use warnings;
 use Try::Tiny;
 use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
+use Scalar::Util qw(weaken);
 our $VERSION = '0.19';
 $VERSION = eval $VERSION;
     
@@ -39,6 +40,7 @@ $VERSION = eval $VERSION;
         });
         
         $self->_app($app);
+        
         $self->document_root($app->home->rel_dir('public_html'));
         
         $self->plug(
@@ -49,6 +51,7 @@ $VERSION = eval $VERSION;
         
         $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
         
+        weaken $self->{_app};
         return $self;
     }
     
