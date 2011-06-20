@@ -1,4 +1,5 @@
 Changes
+lib/Mojolicious/Command/Generate/TusuApp.pm
 lib/MojoX/Tusu.pm
 lib/MojoX/Tusu/ComponentBase.pm
 lib/MojoX/Tusu/Plugin/Mojolicious.pm
@@ -34,7 +35,6 @@ t/02_lite/08_template_not_found_dev.t
 t/02_lite/08_template_not_found_pro.t
 t/02_lite/09_static.t
 t/02_lite/10_permission.t
-t/99_extra/bench.t
 t/99_pod.t
 t/99_podcoverage.t
 t/public_html/02/02_02.html
@@ -68,3 +68,5 @@ t/public_html/10/permission_ok/permission_ok.html
 t/public_html/11/index.html
 t/public_html/11/utf8.html
 t/public_html/index.html
+xt/bench.t
+xt/memory_leak.t

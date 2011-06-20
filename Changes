@@ -70,3 +70,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - input & output encoding can be auto detected
   
 0.20 2011/06/20
+  - Mojolicious::Command::Generate::TusuApp added

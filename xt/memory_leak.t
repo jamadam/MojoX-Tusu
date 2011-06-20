@@ -4,6 +4,8 @@ use Test::Memory::Cycle;
 use Test::More;
 use MojoX::Tusu;
 
+#use Test::More tests => 1;
+
 my $app = SomeApp->new;
 memory_cycle_ok( $app );
 
@@ -16,8 +18,7 @@ use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    #my $tusu = MojoX::Tusu->new($self);
-    #$tusu->document_root('t/public_html');
+    my $tusu = MojoX::Tusu->new($self);
 }
 
 __END__
