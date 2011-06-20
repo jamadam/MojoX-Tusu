@@ -79,10 +79,11 @@ $VERSION = eval $VERSION;
         
         my ($self, @plugins) = @_;
         my $plugin;
+        my $engine = $self->engine;
         while (scalar @plugins) {
             my $plugin_name = shift @plugins;
             my $as = shift @plugins;
-            $plugin = $self->engine->plug($plugin_name, $as);
+            $plugin = $engine->plug($plugin_name, $as);
             if ($plugin->isa('MojoX::Tusu::ComponentBase')) {
                 $plugin->init($self->_app);
             }
