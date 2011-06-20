@@ -62,9 +62,11 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - pst handler removed and tusu is available
   - error document method added
   
-0.19 2011/06/19
+0.19 2011/06/20
 
   - Pathes in templates without trailing slash are no longer autofilled with
     directory index
   - FIX: CGI mode bug on root access
   - input & output encoding can be auto detected
+  
+0.20 2011/06/20
