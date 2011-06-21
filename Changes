@@ -69,6 +69,6 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - FIX: CGI mode bug on root access
   - input & output encoding can be auto detected
   
-0.20 2011/06/20
+0.20 2011/06/21
   - Mojolicious::Command::Generate::TusuApp added
   - Static file bug on win fixed
