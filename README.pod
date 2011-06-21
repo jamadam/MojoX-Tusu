@@ -113,12 +113,13 @@ To activate this component, you must plug-in this at mojolicious startup method.
 The only difference between plugins and components is that components can have
 an init method to have own data.
 
-=head1 INSTALLATION
+=head2 Instrallation
 
-    $ cpanm install https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
-    $ cpanm install https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.19
+    $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.19
 
-=head1 GETTING STARTED
+=head2 Getting Started
 
     $ mojo generate tusu_app MyApp
     $ cd ./my_app
