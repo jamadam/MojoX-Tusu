@@ -466,6 +466,19 @@ To activate this component, you must plug-in this at mojolicious startup method.
 The only difference between plugins and components is that components can have
 an init method to have own data.
 
+=head1 INSTALLATION
+
+    $ cpanm install https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
+    $ cpanm install https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.19
+
+=head1 GETTING STARTED
+
+    $ mojo generate tusu_app MyApp
+    $ cd ./my_app
+    $ prove
+    $ ./script/my_app daemon
+    Server available at http://127.0.0.1:3000.
+
 =head1 METHODS
 
 =head2 MojoX::Tusu->new($app)
