@@ -21,6 +21,7 @@ my %params = (
             repository => '',
         },
     },
+	test => {TESTS => 't/*.t t/*/*.t'},
 );
 
 my $eumm = $ExtUtils::MakeMaker::VERSION;
