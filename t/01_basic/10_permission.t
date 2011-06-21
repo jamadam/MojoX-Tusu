@@ -8,12 +8,12 @@ use MojoX::Tusu;
 use Test::Mojo;
     
     BEGIN {
-        chmod(0755, 't/10/permission_ok');
-        chmod(0744, 't/10/permission_ng');
-        chmod(0755, 't/10/permission_ok/permission_ok.html');
-        chmod(0700, 't/10/permission_ok/permission_ng.html');
-        chmod(0755, 't/10/permission_ng/permission_ok.html');
-        chmod(0700, 't/10/permission_ng/permission_ng.html');
+        chmod(0755, 't/public_html/10/permission_ok');
+        chmod(0744, 't/public_html/10/permission_ng');
+        chmod(0755, 't/public_html/10/permission_ok/permission_ok.html');
+        chmod(0700, 't/public_html/10/permission_ok/permission_ng.html');
+        chmod(0755, 't/public_html/10/permission_ng/permission_ok.html');
+        chmod(0700, 't/public_html/10/permission_ng/permission_ng.html');
     }
     
     my $backup = $ENV{MOJO_MODE} || '';
