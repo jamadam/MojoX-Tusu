@@ -44,8 +44,12 @@ EOF
   $self->renderer->tag_start('<%%');
   $self->renderer->tag_end('%%>');
 
-  # Static
-  $self->render_to_rel_file('static', "$name/public_html/index.html");
+  $self->render_to_rel_file('index.html', "$name/public_html/index.html");
+  $self->render_to_rel_file('copyright.html', "$name/public_html/copyright.html");
+  $self->render_to_rel_file('htmlhead.html', "$name/public_html/htmlhead.html");
+  $self->render_to_rel_file('commons/index.css', "$name/public_html/commons/index.css");
+  $self->render_to_rel_file('inquiry/index.html', "$name/public_html/inquiry/index.html");
+  $self->render_to_rel_file('inquiry/thanks.html', "$name/public_html/inquiry/thanks.html");
 }
 
 1;
@@ -87,10 +91,19 @@ sub startup {
   my $self = shift;
   my $tusu = MojoX::Tusu->new($self);
   $tusu->plug('<%= $class %>::YourComponent', 'YC');
+  
+  # Following lines are optional
+  
   # $tusu->extensions_to_render([qw(html htm xml)]);
   # $tusu->document_root($self->home->rel_dir('www'));
   # $tusu->encoding(['Shift_JIS', 'utf8']);
   # $tusu->output_encoding('auto');
+  
+  # special route
+  my $r = $self->routes;
+  $r->route('/inquiry/')->via('post')->to(cb => sub {
+    $tusu->bootstrap($_[0], '<%= $class %>::YourComponent', 'post');
+  });
 }
 
 1;
@@ -105,19 +118,130 @@ use base 'MojoX::Tusu::ComponentBase';
     my $c = $self->controller;
     return 'your_function called';
   }
+  
+  sub post {
+    my ($self, $c) = @_;
+    
+    # validate
+    
+    # sendmail
+    
+    $c->render(handler => 'tusu', template => '/inquiry/thanks.html');
+  }
 
 1;
-@@ static
-<!doctype html><html>
-  <head><title>Welcome to the MojoX::Tusu Web Framework!</title></head>
+@@ index.html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <title>Welcome to the MojoX::Tusu Web Framework!</title>
+    <% include('/htmlhead.html') %>
+  </head>
   <body>
-    <h2>Welcome to the MojoX::Tusu Web Framework!</h2>
-    This is the document "public_html/index.html".
-    <br />Is the following line says 'Your function called?'
-    <br />That's a dynamically generated content with a tag \<% YC::your_function() %>.
-    <hr />
-    <% YC::your_function() %>
-    <hr />
+    <h1>
+      Skeleton Site
+    </h1>
+    <div id="main">
+      <h2>
+        Welcome to the MojoX::Tusu Web Framework!
+      </h2>
+      This is the document "public_html/index.html".
+      <br />Is the following line says 'Your function called?'
+      <br />That's a dynamically generated content with a tag \<% YC::your_function() %>.
+      <hr />
+      <% YC::your_function() %>
+      <hr />
+      <a href="./inquiry/">inquiry(skeleton)</a>
+    </div>
+    <div id="footer">
+      <% include('/copyright.html') %>
+    </div>
+  </body>
+</html>
+@@ copyright.html
+<div>
+  Copyright jamadam.com alright reserved.
+</div>
+@@ htmlhead.html
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.2.0/build/cssreset/reset-min.css" />
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.2.0/build/cssbase/base-min.css" />
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.2.0/build/cssfonts/fonts-min.css" />
+<link type="text/css" rel="stylesheet" href="/commons/index.css" />
+@@ commons/index.css
+@charset "utf-8";
+
+p,
+div {
+	margin-bottom:1em;
+}
+h1 {
+	padding:20px;
+}
+#main {
+	margin-left:40px;
+	margin-bottom:20px;
+	padding:0 20px 20px;
+}
+#footer {
+	padding:0 20px;
+}
+@@ inquiry/index.html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <title>Welcome to the MojoX::Tusu Web Framework!</title>
+    <% include('/htmlhead.html') %>
+  </head>
+  <body>
+    <h1>
+      Demo
+    </h1>
+    <div id="main">
+      <h2>
+        Inquiry
+      </h2>
+      <div>
+        <form method="post" action="./">
+          <div>
+            <input type="text" name="name" value="" />
+            <input type="submit" value="send mail" />
+          </div>
+        </form>
+      </div>
+      <div>
+        <a href="../">Back to home</a>
+      </div>
+    </div>
+    <div id="footer">
+      <% include('/copyright.html') %>
+    </div>
+  </body>
+</html>
+@@ inquiry/thanks.html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <title>Welcome to the MojoX::Tusu Web Framework!</title>
+    <% include('/htmlhead.html') %>
+  </head>
+  <body>
+    <h1>
+      Demo
+    </h1>
+    <div id="main">
+      <h2>
+        Thank you for asking something!
+      </h2>
+      <div>
+        <% post_param('name', 1) %>
+      </div>
+      <div>
+        <a href="../">Back to home</a>
+      </div>
+    </div>
+    <div id="footer">
+      <% include('/copyright.html') %>
+    </div>
   </body>
 </html>
 @@ test
@@ -134,9 +258,14 @@ use_ok '<%= $class %>';
 
 # Test
 my $t = Test::Mojo->new(app => '<%= $class %>');
+
 $t->get_ok('/')->status_is(200)
   ->content_type_is('text/html;charset=UTF-8')
   ->content_like(qr/MojoX::Tusu Web Framework/i);
+
+$t->post_ok('/inquiry/')->status_is(200)
+  ->content_type_is('text/html;charset=UTF-8')
+  ->content_like(qr/Thank you/i);
 __END__
 =head1 NAME
 
