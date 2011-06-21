@@ -5,7 +5,7 @@ use Try::Tiny;
 use Text::PSTemplate::Plugable;
 use base qw(Mojo::Base);
 use Scalar::Util qw(weaken);
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 $VERSION = eval $VERSION;
     
     __PACKAGE__->attr('engine', sub {Text::PSTemplate::Plugable->new});
