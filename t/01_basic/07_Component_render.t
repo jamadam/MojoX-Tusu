@@ -1,6 +1,7 @@
 package ComponentBase_render;
 use strict;
 use warnings;
+use lib 'lib';
 use base 'Test::Class';
 use Test::More;
 use MojoX::Tusu;

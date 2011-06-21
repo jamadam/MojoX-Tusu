@@ -1,10 +1,20 @@
 package Template_Basic;
 use strict;
 use warnings;
+use lib 'lib';
 use base 'Test::Class';
 use Test::More;
 use MojoX::Tusu;
 use Test::Mojo;
+    
+    BEGIN {
+        chmod(0755, 't/00_partial/f/t01/permission_ok');
+        chmod(0744, 't/00_partial/f/t01/permission_ng');
+        chmod(0755, 't/00_partial/f/t01/permission_ok/permission_ok.html');
+        chmod(0700, 't/00_partial/f/t01/permission_ok/permission_ng.html');
+        chmod(0755, 't/00_partial/f/t01/permission_ng/permission_ok.html');
+        chmod(0700, 't/00_partial/f/t01/permission_ng/permission_ng.html');
+    }
 
     my $backup = $ENV{MOJO_MODE} || '';
 
