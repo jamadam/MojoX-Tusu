@@ -113,6 +113,19 @@ To activate this component, you must plug-in this at mojolicious startup method.
 The only difference between plugins and components is that components can have
 an init method to have own data.
 
+=head1 INSTALLATION
+
+    $ cpanm install https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
+    $ cpanm install https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.19
+
+=head1 GETTING STARTED
+
+    $ mojo generate tusu_app MyApp
+    $ cd ./my_app
+    $ prove
+    $ ./script/my_app daemon
+    Server available at http://127.0.0.1:3000.
+
 =head1 METHODS
 
 =head2 MojoX::Tusu->new($app)
@@ -195,6 +208,19 @@ This method setup custom error pages like apache's ErrorDocument.
         403 => '/errors/403.html',
         500 => '/errors/405.html',
     })
+
+=head2 $instance->encoding($encoding)
+
+This method sets encoding for template files. Array ref causes auto detection
+active.
+
+	$tusu->encoding('Shift-JIS');
+	$tusu->encoding(['Shift-JIS', 'utf8']);
+
+=head2 $instance->output_encoding('auto') [EXPERIMENTAL]
+
+This method activate output encoding auto detection. The encoding will be
+originated from template encoding.
 
 =head1 What does Tusu means?
 
