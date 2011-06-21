@@ -71,3 +71,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   
 0.20 2011/06/20
   - Mojolicious::Command::Generate::TusuApp added
+  - Static file bug on win fixed

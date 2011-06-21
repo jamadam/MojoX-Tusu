@@ -18,7 +18,9 @@ use Test::Mojo;
 
     my $backup = $ENV{MOJO_MODE} || '';
 
-    __PACKAGE__->runtests;
+	if ($^O !~ /MSWin32/) {
+		__PACKAGE__->runtests;
+	}
     
     sub t01_permission_ok : Test(4) {
         is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ok.html'), 1);

@@ -18,9 +18,17 @@ use Test::Mojo;
     
     my $backup = $ENV{MOJO_MODE} || '';
 
-    __PACKAGE__->runtests;
-    
+	__PACKAGE__->runtests;
+	
+	sub no_tests_for_mswin : Test(setup) {
+		my $self = shift;
+		if ($^O eq "MSWin32") {
+			__PACKAGE__->SKIP_ALL("Test irrelevant on MSWin32");
+		}
+	};
+
     sub template_render : Test(8) {
+		
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'SomeApp');
         $t->get_ok('/10/permission_ok/permission_ok.html')->status_is(200);
@@ -30,6 +38,7 @@ use Test::Mojo;
     }
     
     sub error_document_set : Test(3) {
+		
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new(app => 'ErrorDocument');
         $t->get_ok('/10/permission_ng/permission_ng.html')

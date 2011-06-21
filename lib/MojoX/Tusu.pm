@@ -136,7 +136,7 @@ $VERSION = eval $VERSION;
         
         if (! $not_found) {
             
-            $path = $check_result->{path};
+            my $path = $check_result->{path};
             
             ### dynamic content
             for my $ext (@{$self->extensions_to_render}) {
@@ -161,8 +161,12 @@ $VERSION = eval $VERSION;
             }
         }
         
+        my $relpath =
+            ($check_result->{path})
+                ? File::Spec->abs2rel($check_result->{path}, $app->static->root)
+                : $path;
         ### defaults to static content
-        if (! $app->static->serve($c, $path, '')) {
+        if (! $app->static->serve($c, $relpath)) {
             $c->stash->{'mojo.static'} = 1;
             $c->rendered;
         }
@@ -271,6 +275,9 @@ $VERSION = eval $VERSION;
     sub _permission_ok {
         
         my ($name) = @_;
+        if ($^O eq 'MSWin32') {
+            return 1;
+        }
         if ($name && -f $name && ((stat($name))[2] & 4)) {
             $name =~ s{(^|/)[^/]+$}{};
             while (-d $name) {

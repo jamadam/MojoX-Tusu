@@ -1,6 +1,7 @@
 package Template_Basic;
 use strict;
 use warnings;
+use lib 'lib';
 
     my $backup;
     BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }

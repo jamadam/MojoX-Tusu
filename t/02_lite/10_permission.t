@@ -1,6 +1,7 @@
 package Template_Basic;
 use strict;
 use warnings;
+use lib 'lib';
 
     my $backup;
     BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
@@ -10,8 +11,13 @@ use Test::More;
 use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
-
-use Test::More tests => 11;
+	
+	if( $^O eq 'MSWin32' ) {
+		plan skip_all => 'Test irrelevant on MSWin32';
+	}
+	else {
+		plan tests => 11;
+	}
     
     BEGIN {
         chmod(0755, 't/00_partial/f/t01/permission_ok');
