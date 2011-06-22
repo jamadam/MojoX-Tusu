@@ -24,10 +24,10 @@ EOF
 
   # Script
   my $app = $self->class_to_file($class);
-  $self->render_to_rel_file($class, "script/my_app", "$app/script/$app");
+  $self->render_to_rel_file($class, "script/my_app", 'script/<<% $app %>>');
   $self->chmod_file("$app/script/$app", 0744);
-  $self->render_to_rel_file($class, "lib/MyApp.pm", "$app/lib/$class.pm");
-  $self->render_to_rel_file($class, "lib/MyApp/YourComponent.pm", "$app/lib/$class/YourComponent.pm");
+  $self->render_to_rel_file($class, "lib/MyApp.pm", 'lib/<<% $class %>>.pm');
+  $self->render_to_rel_file($class, "lib/MyApp/YourComponent.pm", 'lib/<<% $class %>>/YourComponent.pm');
   $self->render_to_rel_file($class, "t/basic.t");
   $self->render_to_rel_file($class, 'public_html/index.html');
   $self->render_to_rel_file($class, 'public_html/copyright.html');
@@ -38,20 +38,17 @@ EOF
   $self->create_rel_dir("$app/log");
 }
 
-sub render_to_file {
-  my ($self, $data, $path) = @_;
-  $self->write_file($path, $data);
-  $self;
-}
-
 sub render_to_rel_file {
   my ($self, $class, $path, $path_to) = @_;
   my $app = $self->class_to_file($class);
   my $parser = Text::PSTemplate->new;
   $parser->set_delimiter('<<%', '%>>');
-  $parser->set_var(class => $class);
+  $parser->set_var(class => $class, app => $app);
   my $template = File::Spec->rel2abs(File::Spec->catfile(dirname(__FILE__), 'TusuApp', $path));
-  $self->render_to_file($parser->parse_file($template), ($path_to || "$app/$path"));
+  my $content = $parser->parse_file($template);
+  $path_to = $path_to ? $parser->parse($path_to) : $path;
+  $self->write_file("$app/". $path_to, $content);
+  return $self;
 }
 
 1;

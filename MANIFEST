@@ -1,5 +1,15 @@
 Changes
 lib/Mojolicious/Command/Generate/TusuApp.pm
+lib/Mojolicious/Command/Generate/TusuApp/lib/MyApp.pm
+lib/Mojolicious/Command/Generate/TusuApp/lib/MyApp/YourComponent.pm
+lib/Mojolicious/Command/Generate/TusuApp/public_html/commons/index.css
+lib/Mojolicious/Command/Generate/TusuApp/public_html/copyright.html
+lib/Mojolicious/Command/Generate/TusuApp/public_html/htmlhead.html
+lib/Mojolicious/Command/Generate/TusuApp/public_html/index.html
+lib/Mojolicious/Command/Generate/TusuApp/public_html/inquiry/index.html
+lib/Mojolicious/Command/Generate/TusuApp/public_html/inquiry/thanks.html
+lib/Mojolicious/Command/Generate/TusuApp/script/my_app
+lib/Mojolicious/Command/Generate/TusuApp/t/basic.t
 lib/MojoX/Tusu.pm
 lib/MojoX/Tusu/ComponentBase.pm
 lib/MojoX/Tusu/Plugin/Mojolicious.pm
