@@ -75,3 +75,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
 
 0.21 2011/06/22
   - ini and ini_set added in ComponentBase
+  - Depencency updated

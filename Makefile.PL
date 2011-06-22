@@ -13,7 +13,7 @@ my %params = (
     BUILD_REQUIRES => {
         'Test::More'          => '0.47',
         'Test::UseAllModules' => '0.10',
-        'Mojolicious'    	  => '1.41',
+        'Mojolicious'    	  => '1.47',
         'Text::PSTemplate'    => '0.33',
     },
     META_MERGE => {

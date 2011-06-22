@@ -147,7 +147,7 @@ $VERSION = eval $VERSION;
                     } elsif ($tx->is_websocket) {
                         $res->code(426)
                     }
-                    if ($app->routes->dispatch($c) && ! $res->code) {
+                    if (! $app->routes->dispatch($c) || ! $res->code) {
                         $c->render_not_found;
                     }
                     return;
@@ -166,7 +166,7 @@ $VERSION = eval $VERSION;
                 ? File::Spec->abs2rel($check_result->{path}, $app->static->root)
                 : $path;
         ### defaults to static content
-        if (! $app->static->serve($c, $relpath)) {
+        if ($app->static->serve($c, $relpath)) {
             $c->stash->{'mojo.static'} = 1;
             $c->rendered;
         }
