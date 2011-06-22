@@ -183,6 +183,8 @@ $VERSION = eval $VERSION;
         
         my ($self, $c, $code, $debug_message) = @_;
         
+        $debug_message ||= 'Unknown Error';
+        
         my $resource = $c->tx->req->url->path->to_string;
         
         $c->app->log->debug($debug_message);
@@ -197,7 +199,7 @@ $VERSION = eval $VERSION;
         if ($code == 404) {
             $c->render_not_found;
         } else {
-            $c->render_exception($debug_message || 'Unknown Error');
+            $c->render_exception($debug_message);
         }
         $c->res->code($code);
     }
