@@ -74,3 +74,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - Static file bug on win fixed
 
 0.21 2011/06/22
+  - ini and ini_set added in ComponentBase
