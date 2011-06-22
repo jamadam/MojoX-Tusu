@@ -7,6 +7,30 @@ use base qw(Text::PSTemplate::PluginBase);
         ### Must be implemented on sub classes.
     }
     
+    ### ---
+    ### Set ini
+    ### ---
+    sub set_ini {
+        
+        my ($self, $hash) = (@_);
+        $self->{ini} = $hash || {};
+        return $self;
+    }
+    
+    ### ---
+    ### Get ini
+    ### ---
+    sub ini {
+        
+        my ($self, $name) = (@_);
+        
+        if (exists $self->{ini}->{$name}) {
+            return $self->{ini}->{$name};
+        }
+        return (undef) if wantarray;
+        return;
+    }
+    
     sub _dummy : TplExport {
         
     }
@@ -63,6 +87,14 @@ all methods from Text::PSTemplate::PluginBase.
 =head2 controller
 
 Returns current Mojolicious::Controller instance.
+
+=head2 $self->ini($key)
+
+Returns ini data for given key.
+
+=head2 $self->set_ini($hash_ref)
+
+Sets ini data with hash ref.
 
 =head2 $self->init($app)
 
