@@ -3,7 +3,7 @@ use warnings;
 use Test::UseAllModules;
 
 BEGIN {
-    all_uses_ok(except => [
-        qr/Mojolicious::Command::Generate::TusuApp::.*/,
-    ]);
+    all_uses_ok(except => qw(
+        Mojolicious::Command::Generate::TusuApp::.*
+    ));
 }
