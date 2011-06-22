@@ -185,13 +185,12 @@ $VERSION = eval $VERSION;
         
         my $resource = $c->tx->req->url->path->to_string;
         
-        $c->app->log->debug(qq/Resource "$resource" not found./);
+        $c->app->log->debug($debug_message);
         
         if ($self->_app->mode eq 'production') {
             if (my $template = $self->error_document->{$code}) {
                 $c->render(handler => 'tusu', template => $template);
-                $c->res->code($code);
-                $c->rendered;
+                $c->rendered($code);
                 return;
             }
         }
