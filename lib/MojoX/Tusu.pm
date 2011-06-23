@@ -27,8 +27,7 @@ $VERSION = eval $VERSION;
         my ($class, $app) = @_;
         my $self = $class->SUPER::new;
         
-        $app->on_process(sub {
-            my ($app, $c) = @_;
+        $app->hook(after_build_tx => sub {
             if (! $self->_default_route_set) {
                 $self->_default_route_set(1);
                 $app->routes
@@ -36,8 +35,9 @@ $VERSION = eval $VERSION;
                     ->name('')
                     ->to(cb => sub {$_[0]->render(handler => 'tusu')});
             }
-            $self->_dispatch($app, $c);
         });
+        
+        $app->on_process(sub {$self->_dispatch(@_)});
         
         $self->_app($app);
         
