@@ -318,8 +318,6 @@ $VERSION = eval $VERSION;
         
         if ($self->output_encoding && $self->output_encoding eq 'auto') {
             
-            $c->stash('_tusu.charset', $charset);
-            
             $self->_app->types->type(html => "text/html;charset=$charset");
             
             if (! $self->_output_encoding_hook_set) {
@@ -328,7 +326,7 @@ $VERSION = eval $VERSION;
                 
                 $self->_app->hook('after_dispatch', sub {
                     my ($c) = @_;
-                    if (my $charset = $c->stash('_tusu.charset')) {
+                    if ($charset) {
                         my $body = $c->tx->res->body;
                         Encode::from_to($body, $renderer->encoding, $charset);
                         $c->tx->res->body($body);
