@@ -28,6 +28,7 @@ $VERSION = eval $VERSION;
         my $self = $class->SUPER::new;
         
         $app->hook(after_build_tx => sub {
+            my $app = $_[1];
             if (! $self->_default_route_set) {
                 $self->_default_route_set(1);
                 $app->routes
@@ -65,6 +66,7 @@ $VERSION = eval $VERSION;
         if ($value) {
             $app->static->root($value);
             $app->renderer->root($value);
+            weaken $self;
             $self->engine->set_filename_trans_coderef(sub {
                 _filename_trans($value, $self->directory_index, @_);
             });

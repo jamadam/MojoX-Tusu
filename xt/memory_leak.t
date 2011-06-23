@@ -4,7 +4,7 @@ use Test::Memory::Cycle;
 use Test::More;
 use MojoX::Tusu;
 
-#use Test::More tests => 1;
+use Test::More tests => 1;
 
 my $app = SomeApp->new;
 memory_cycle_ok( $app );
