@@ -105,7 +105,7 @@ $VERSION = eval $VERSION;
     }
     
     ### ---
-    ### Custom dispacher
+    ### Custom dispatcher
     ### ---
     sub _dispatch {
         
@@ -386,7 +386,7 @@ C<MojoX::Tusu> is a sub framework on Mojolicious using Text::PSTemplate
 for renderer. With this framework, you can deploy directory based web sites
 onto Mojolicious at once.
 
-This framework automatically activate own dispacher which behaves like apache
+This framework automatically activate own dispatcher which behaves like apache
 web server. You can build your web site into single document root directory
 named public_html in hierarchal structure. The document root directory can
 contain both server-parsed-documents and static files such as images.
@@ -467,7 +467,7 @@ To activate this component, you must plug-in this at mojolicious startup method.
 The only difference between plugins and components is that components can have
 an init method to have own data.
 
-=head2 Instrallation
+=head2 Installation
 
     $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
     $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
@@ -537,8 +537,8 @@ You also can plug multiple plugins at once.
 
 =head2 $instance->bootstrap($controller, $component, $method)
 
-This method is a sub dispacher method. You can specify a class and a method the
-route to be dispached to.
+This method is a sub dispatcher method. You can specify a class and a method the
+route to be dispatched to.
 
     my $tusu = MojoX::Tusu->new($self);
     $r->route('/some/path')->via('post')->to(cb => sub {
@@ -549,7 +549,7 @@ route to be dispached to.
 
 This method sets the extensions to be parsed by tusu renderer. If request
 doesn't match any of extensions, dispatcher try to render it as static file.
-Following settting is the default.
+Following setting is the default.
 
     my $tusu = MojoX::Tusu->new($self);
     $tusu->extensions_to_render(['html','htm','xml'])
