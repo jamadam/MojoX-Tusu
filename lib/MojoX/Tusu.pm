@@ -471,7 +471,7 @@ an init method to have own data.
 
     $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
     $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.20
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.22
 
 =head2 Getting Started
 
@@ -572,7 +572,7 @@ active.
 	$tusu->encoding('Shift-JIS');
 	$tusu->encoding(['Shift-JIS', 'utf8']);
 
-=head2 $instance->output_encoding('auto') [EXPERIMENTAL]
+=head2 $instance->output_encoding('auto') [DEPRECATED]
 
 This method activate output encoding auto detection. The encoding will be
 originated from template encoding.
