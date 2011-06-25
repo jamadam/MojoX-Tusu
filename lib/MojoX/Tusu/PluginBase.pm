@@ -23,7 +23,8 @@ MojoX::Tusu::PluginBase - Base Class for template plugins for MojoX::Tusu
     use warnings;
     use base qw(MojoX::Tusu::PluginBase);
     
-    <% YourPlugin::some_func(@your_args) %>
+    # inside template..
+    # <% YourPlugin::some_func(@your_args) %>
 
 =head1 DESCRIPTION
 

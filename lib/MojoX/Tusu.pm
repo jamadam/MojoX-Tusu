@@ -20,7 +20,7 @@ $VERSION = eval $VERSION;
     __PACKAGE__->attr('_default_route_set');
     
     ### ---
-    ### Constractor
+    ### Constructor
     ### ---
     sub new {
         
@@ -485,7 +485,7 @@ an init method to have own data.
 
 =head2 MojoX::Tusu->new($app)
 
-Constractor. This method takes Mojolicious app for argument and returns
+Constructor. This method takes Mojolicious app for argument and returns
 MojoX::Tusu instance.
     
     $tusu = MojoX::Tusu->new($app)
