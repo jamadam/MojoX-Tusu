@@ -451,7 +451,7 @@ To make it possible, you should write a module like this.
         my ($self, $category, $limit) = @_;
         my $c = $self->controller; # mojolicious controller in case you need
         
-        # MAY BE ACCESS TO YOUR MODELS HERE
+        # MAY BE ACCESS TO YOUR DB HERE
         
         return $html_snippet;
     }

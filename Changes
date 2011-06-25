@@ -78,3 +78,5 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - Depencency updated
 
 0.22 2011/06/22
+  - output_encoding deprecated.
+  
