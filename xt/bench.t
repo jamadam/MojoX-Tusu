@@ -4,7 +4,7 @@ use warnings;
 use base 'Test::Class';
 use Test::More;
 use Mojo::Template;
-use Text::PSTemplate::Plugable;
+use Text::PSTemplate;
 use Benchmark qw(countit) ;
 	
     __PACKAGE__->runtests;
@@ -12,7 +12,7 @@ use Benchmark qw(countit) ;
     sub template_engine : Test(4) {
 		
 		my $mt = Mojo::Template->new;
-		my $pst = Text::PSTemplate::Plugable->new;
+		my $pst = Text::PSTemplate->new;
 		
 		my $mt_countit = sub {
 			my $str = $_[0];

@@ -2,13 +2,13 @@ package MojoX::Tusu;
 use strict;
 use warnings;
 use Try::Tiny;
-use Text::PSTemplate::Plugable;
+use Text::PSTemplate;
 use base qw(Mojo::Base);
 use Scalar::Util qw(weaken);
 our $VERSION = '0.22';
 $VERSION = eval $VERSION;
     
-    __PACKAGE__->attr('engine', sub {Text::PSTemplate::Plugable->new});
+    __PACKAGE__->attr('engine', sub {Text::PSTemplate->new});
     __PACKAGE__->attr('extensions_to_render', sub {['html','htm','xml']});
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
@@ -305,7 +305,7 @@ $VERSION = eval $VERSION;
         
         local $MojoX::Tusu::controller = $c;
         
-        my $engine = Text::PSTemplate::Plugable->new($self->engine);
+        my $engine = Text::PSTemplate->new($self->engine);
         
         $engine->set_encoding($self->encoding);
         
@@ -369,7 +369,7 @@ MojoX::Tusu - Apache-like dispatcher for Mojolicious
         $tusu->document_root($self->home->rel_dir('www2'));
         $tusu->extensions_to_render([qw(html htm xml txt)]);
         
-        # initialize Text::PSTemplate::Plugable if necessary
+        # initialize Text::PSTemplate if necessary
         
         my $plugin_instance = $tusu->plug('some_plugin');
         $tusu->engine->set_...();
@@ -471,7 +471,7 @@ an init method to have own data.
 
     $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
     $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.19
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.20
 
 =head2 Getting Started
 
@@ -510,8 +510,8 @@ the default setting.
 
 =head2 $instance->engine
 
-This returns Text::PSTemplate::Plugable instance. You can customize the template
-system behavior by calling parser methods directly.
+This returns Text::PSTemplate instance. You can customize the template system
+behavior by calling parser methods directly.
     
     my $tusu = MojoX::Tusu->new($app);
     my $pst = $tusu->engine;
@@ -519,9 +519,9 @@ system behavior by calling parser methods directly.
 
 =head2 $instance->plug($plug_name, [$namespace])
 
-This is a delegate method for Text::PSTemplate::Plugable->plug just for hooking
+This is a delegate method for Text::PSTemplate->plug just for hooking
 init method for components. All arguments are thrown at
-Text::PSTemplate::Plugable->plug.
+Text::PSTemplate->plug.
 
     my $tusu = MojoX::Tusu->new($self);
     $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
