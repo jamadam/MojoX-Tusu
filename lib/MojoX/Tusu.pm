@@ -498,7 +498,7 @@ example is default setting.
     my $tusu = MojoX::Tusu->new($app);
     $tusu->document_root($self->home->rel_dir('public_html'));
 
-=head2 directory_index($candidate1 [, $candidate2])
+=head2 $instance->directory_index($candidate1 [, $candidate2])
 
 This method sets default file names for searching files in directory when
 the request path doesn't ended with file name. And this setting also affects to
