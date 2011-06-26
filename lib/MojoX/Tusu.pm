@@ -187,8 +187,6 @@ $VERSION = eval $VERSION;
         
         $debug_message ||= 'Unknown Error';
         
-        my $resource = $c->tx->req->url->path->to_string;
-        
         $c->app->log->debug($debug_message);
         
         if ($self->_app->mode eq 'production') {
