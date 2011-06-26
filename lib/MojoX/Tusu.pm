@@ -306,13 +306,8 @@ $VERSION = eval $VERSION; ## no critic
         
         local $SIG{__DIE__} = undef;
         
-        my $fixed_path = _filename_trans(
-            $renderer->root, $self->directory_index, '/'. $options->{template});
-        my $file_obj = Text::PSTemplate::File->new($fixed_path, $self->encoding);
-        my $charset = Encode::find_encoding($file_obj->detected_encoding)->mime_name;
-        
         try {
-            $$output = $engine->parse_file($file_obj);
+            $$output = $engine->parse_file('/'. $options->{template});
         }
         catch {
             my $err = $_ || 'Unknown Error';
