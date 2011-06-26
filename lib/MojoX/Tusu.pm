@@ -314,25 +314,6 @@ $VERSION = eval $VERSION;
         my $file_obj = Text::PSTemplate::File->new($fixed_path, $self->encoding);
         my $charset = Encode::find_encoding($file_obj->detected_encoding)->mime_name;
         
-        if ($self->output_encoding && $self->output_encoding eq 'auto') {
-            
-            $self->_app->types->type(html => "text/html;charset=$charset");
-            
-            if (! $self->_output_encoding_hook_set) {
-                
-                $self->_output_encoding_hook_set(1);
-                
-                $self->_app->hook('after_dispatch', sub {
-                    my ($c) = @_;
-                    if ($charset) {
-                        my $body = $c->tx->res->body;
-                        Encode::from_to($body, $renderer->encoding, $charset);
-                        $c->tx->res->body($body);
-                    }
-                });
-            }
-        }
-        
         try {
             $$output = $engine->parse_file($file_obj);
         }
@@ -569,11 +550,6 @@ active.
 
 	$tusu->encoding('Shift-JIS');
 	$tusu->encoding(['Shift-JIS', 'utf8']);
-
-=head2 $instance->output_encoding('auto') [DEPRECATED]
-
-This method activate output encoding auto detection. The encoding will be
-originated from template encoding.
 
 =head1 What does Tusu means?
 
