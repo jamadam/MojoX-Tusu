@@ -13,7 +13,6 @@ $VERSION = eval $VERSION; ## no critic
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
     __PACKAGE__->attr('encoding', 'utf8');
-    __PACKAGE__->attr('output_encoding');
     
     # internal use
     __PACKAGE__->attr('_app');
@@ -291,8 +290,6 @@ $VERSION = eval $VERSION; ## no critic
         }
         return 0;
     }
-    
-    __PACKAGE__->attr('_output_encoding_hook_set');
     
     ### ---
     ### tusu renderer
