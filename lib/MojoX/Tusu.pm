@@ -6,7 +6,7 @@ use Text::PSTemplate;
 use base qw(Mojo::Base);
 use Scalar::Util qw(weaken);
 our $VERSION = '0.22';
-$VERSION = eval $VERSION;
+$VERSION = eval $VERSION; ## no critic
     
     __PACKAGE__->attr('engine', sub {Text::PSTemplate->new});
     __PACKAGE__->attr('extensions_to_render', sub {['html','htm','xml']});
