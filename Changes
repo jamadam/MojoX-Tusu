@@ -77,7 +77,7 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - ini and ini_set added in ComponentBase
   - Depencency updated
 
-0.22 2011/06/22
+0.22 2011/06/30
   - output_encoding feature no longer available. Consider using
     Plack::Middleware instead.
   - Permission check is eased to inside document root
