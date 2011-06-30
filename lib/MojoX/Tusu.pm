@@ -5,7 +5,7 @@ use Try::Tiny;
 use Text::PSTemplate;
 use base qw(Mojo::Base);
 use Scalar::Util qw(weaken);
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 $VERSION = eval $VERSION; ## no critic
     
     __PACKAGE__->attr('engine', sub {Text::PSTemplate->new});
