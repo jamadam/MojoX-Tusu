@@ -13,6 +13,7 @@ $VERSION = eval $VERSION; ## no critic
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
     __PACKAGE__->attr('encoding', 'utf8');
+    __PACKAGE__->attr('apache_document_root', '');
     
     # internal use
     __PACKAGE__->attr('_app');
@@ -130,7 +131,7 @@ $VERSION = eval $VERSION; ## no critic
             $c->redirect_to($path. '/');
             $tx->res->code(301);
             return;
-        } elsif (! _permission_ok($check_result->{path})) {
+        } elsif (! _permission_ok($check_result->{path}, $app->static->root)) {
             $self->_render_error_document($c, 403);
             return;
         }
@@ -274,13 +275,17 @@ $VERSION = eval $VERSION; ## no critic
     ### ---
     sub _permission_ok {
         
-        my ($name) = @_;
+        my ($name, $base) = @_;
+        $base ||= '';
         if ($^O eq 'MSWin32') {
             return 1;
         }
         if ($name && -f $name && ((stat($name))[2] & 4)) {
             $name =~ s{(^|/)[^/]+$}{};
             while (-d $name) {
+                if ($name eq $base) {
+                    return 1;
+                }
                 if (! ((stat($name))[2] & 1)) {
                     return 0;
                 }
