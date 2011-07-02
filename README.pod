@@ -218,12 +218,7 @@ active.
 	$tusu->encoding('Shift-JIS');
 	$tusu->encoding(['Shift-JIS', 'utf8']);
 
-=head2 $instance->output_encoding('auto') [DEPRECATED]
-
-This method activate output encoding auto detection. The encoding will be
-originated from template encoding.
-
-=head1 What does Tusu means?
+=head1 What does Tusu mean?
 
 Tusu means mojo in Ainu languages which is spoken by the native inhabitants of
 Hokkaido prefecture, Japan.

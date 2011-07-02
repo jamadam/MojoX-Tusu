@@ -548,7 +548,7 @@ active.
 	$tusu->encoding('Shift-JIS');
 	$tusu->encoding(['Shift-JIS', 'utf8']);
 
-=head1 What does Tusu means?
+=head1 What does Tusu mean?
 
 Tusu means mojo in Ainu languages which is spoken by the native inhabitants of
 Hokkaido prefecture, Japan.
