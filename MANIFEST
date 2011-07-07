@@ -45,8 +45,6 @@ t/02_lite/08_template_not_found_dev.t
 t/02_lite/08_template_not_found_pro.t
 t/02_lite/09_static.t
 t/02_lite/10_permission.t
-t/99_pod.t
-t/99_podcoverage.t
 t/public_html/02/02_02.html
 t/public_html/02/index.html
 t/public_html/03/03_ComponentBase01.html
@@ -80,3 +78,8 @@ t/public_html/11/utf8.html
 t/public_html/index.html
 xt/bench.t
 xt/memory_leak.t
+xt/perlcritic.t
+xt/perlcriticrc
+xt/pod.t
+xt/podcoverage.t
+xt/podspell.t
