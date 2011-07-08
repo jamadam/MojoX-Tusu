@@ -83,3 +83,4 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - Permission check is eased to inside document root
 
 0.23 2011/06/30
+  - A dependency for test specified
