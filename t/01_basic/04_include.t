@@ -13,7 +13,7 @@ use Test::Mojo;
     
     sub template_render : Test(12) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/04/')
 			->status_is(200)
 			->content_is('sub ok');

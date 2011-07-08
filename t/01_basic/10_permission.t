@@ -30,7 +30,7 @@ use Test::Mojo;
     sub template_render : Test(8) {
 		
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         #$t->get_ok('/10/permission_ok/permission_ok.html')->status_is(200);
         $t->get_ok('/10/permission_ok/permission_ng.html')->status_is(403);
         #$t->get_ok('/10/permission_ng/permission_ok.html')->status_is(403);
@@ -40,7 +40,7 @@ use Test::Mojo;
 #    sub error_document_set : Test(3) {
 #		
 #        $ENV{MOJO_MODE} = 'production';
-#        my $t = Test::Mojo->new(app => 'ErrorDocument');
+#        my $t = Test::Mojo->new('ErrorDocument');
 #        $t->get_ok('/10/permission_ng/permission_ng.html')
 #			->status_is(403)
 #			->content_is('403');

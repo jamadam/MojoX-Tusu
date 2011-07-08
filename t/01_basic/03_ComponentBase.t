@@ -13,7 +13,7 @@ use Test::Mojo;
     
     sub param : Test(3) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/03/03_ComponentBase01.html?key=value')
 			->status_is(200)
 			->content_is('value');
@@ -21,7 +21,7 @@ use Test::Mojo;
     
     sub post_param : Test(3) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->post_form_ok('/03/03_ComponentBase02.html', {key => 'value2'})
 			->status_is(200)
 			->content_is('value2');
@@ -29,7 +29,7 @@ use Test::Mojo;
     
     sub url_for : Test(3) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/03/03_ComponentBase03.html')
 			->status_is(200)
 			->content_is('/path/to/file path/to/file');

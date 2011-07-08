@@ -13,7 +13,7 @@ use Test::Mojo;
     
     sub request_not_found : Test(3) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/08/not_found.html')
 			->status_is(404)
 			->text_is('title', 'Page Not Found');
@@ -21,7 +21,7 @@ use Test::Mojo;
     
     sub request_not_found2 : Test(3) {
         $ENV{MOJO_MODE} = 'development';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/08/not_found.html')
 			->status_is(404)
 			->text_is('title', 'Page Not Found');
@@ -29,7 +29,7 @@ use Test::Mojo;
     
     sub request_not_found3 : Test(3) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/08/directory_index_fail/')
 			->status_is(404)
 			->text_is('title', 'Page Not Found');
@@ -37,7 +37,7 @@ use Test::Mojo;
     
     sub request_not_found4 : Test(3) {
         $ENV{MOJO_MODE} = 'development';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/08/directory_index_fail/')
 			->status_is(404)
 			->text_is('title', 'Page Not Found');
@@ -45,7 +45,7 @@ use Test::Mojo;
     
     sub internal_not_found : Test(4) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/08/')
 			->status_is(500)
 			->text_is('title', 'Server Error')
@@ -54,7 +54,7 @@ use Test::Mojo;
     
     sub internal_not_found2 : Test(5) {
         $ENV{MOJO_MODE} = 'development';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
 		use File::Spec;
 		my $expected1 = File::Spec->catfile(qw(t public_html 08 not_exist.html));
 		my $expected2 = File::Spec->catfile(qw(t public_html 08 index.html));
@@ -67,7 +67,7 @@ use Test::Mojo;
     
     sub if_file_is_directory_then_301  : Test(8) {
         $ENV{MOJO_MODE} = 'development';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/08/dir')
 			->status_is(301)
 			->header_like('location', qr{/08/dir/});
@@ -80,7 +80,7 @@ use Test::Mojo;
     
     sub error_document_set : Test(4) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'ErrorDocument');
+        my $t = Test::Mojo->new('ErrorDocument');
         $t->get_ok('/08/not_found.html')
 			->status_is(404)
 			->content_is('404');

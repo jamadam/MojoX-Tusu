@@ -33,7 +33,7 @@ use Test::Mojo;
     
     sub param : Test(6) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'SomeApp');
+        my $t = Test::Mojo->new('SomeApp');
         $t->get_ok('/')
 			->status_is(200)
 			->content_is('default');

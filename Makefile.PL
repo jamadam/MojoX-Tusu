@@ -14,7 +14,7 @@ my %params = (
         'Test::More'          => '0.47',
  		'Test::Class'         => '0.36',
         'Test::UseAllModules' => '0.10',
-        'Mojolicious'    	  => '1.47',
+        'Mojolicious'    	  => '1.59',
         'Text::PSTemplate'    => '0.33',
     },
     META_MERGE => {

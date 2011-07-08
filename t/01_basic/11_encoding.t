@@ -16,7 +16,7 @@ use Encode::Guess;
 	
     sub file_is_shiftjis : Test(6) {
         $ENV{MOJO_MODE} = 'production';
-        my $t = Test::Mojo->new(app => 'TestCase1');
+        my $t = Test::Mojo->new('TestCase1');
         $t->get_ok('/11/')
 			->header_is('Content-Type', 'text/html;charset=UTF-8')
 			->content_is('シフトJISのファイル');

@@ -1,6 +1,7 @@
 Revision history for MojoX-Tusu
 
-0.23 2011/06/30
+0.23 2011/07/09
+  - Dependency on Mojolicious updated
   - A dependency for test specified
 
 0.22 2011/06/30
