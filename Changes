@@ -1,58 +1,26 @@
 Revision history for Mojolicious-Plugin-PstemplateRenderer
 
-0.01 2011/03/23
-  - initial release
+0.23 2011/06/30
+  - A dependency for test specified
 
-0.02 2011/03/31
-  - some natie helpers available
+0.22 2011/06/30
+  - output_encoding feature no longer available. Consider using
+    Plack::Middleware instead.
+  - Permission check is eased to inside document root
 
-0.03 2011/04/22
-  - Improved error logging
-
-0.04 2011/05/16
-  - ActionBase class added for frameworking
-
-0.05 2011/05/17
-  - Template not found now causes die
-
-0.06 2011/05/18
-  - API got simple
-
-0.07 2011/05/18
-  - ComponentBase got some utility functions for template
-
-0.08 2011/05/19
-  - Controller no longer given via second arg on tpl funcs
-
-0.09 2011/05/19
-  - Distribution renamed
-
-0.10 2011/05/20
-  - Mojo::Tusu::plug for hooking MojoX::Tusu::ComponentBase::init
-
-0.11 2011/05/23
-  - Template dir and static dir both now defaults to public_html
-
-0.12 2011/05/26
-  - Exception object explicitly stringified
-
-0.13 2011/05/31
-  - Extensions_to_render method added
-
-0.14 2011/06/01
-  - document_root method optimized & bug fixed
-
-0.15 2011/06/01
-  - plug method now capable of multiple plugins at once
-
-0.16 2011/06/01
-  - Reduce messing app attr namaspace
-
-0.17 2011/06/08
-  - File searching rule has been changed. It got similar behavior to apache 
-  - directory_index method added
-  - Compatibility with apache improved
-  - bootstrap renewed
+0.21 2011/06/22
+  - ini and ini_set added in ComponentBase
+  - Depencency updated
+  
+0.20 2011/06/21
+  - Mojolicious::Command::Generate::TusuApp added
+  - Static file bug on win fixed
+  
+0.19 2011/06/20
+  - Pathes in templates without trailing slash are no longer autofilled with
+    directory index
+  - FIX: CGI mode bug on root access
+  - input & output encoding can be auto detected
 
 0.18 2011/06/10
   - url_abs added
@@ -61,26 +29,57 @@ Revision history for Mojolicious-Plugin-PstemplateRenderer
   - Fixed a bug on CGI mode
   - pst handler removed and tusu is available
   - error document method added
-  
-0.19 2011/06/20
 
-  - Pathes in templates without trailing slash are no longer autofilled with
-    directory index
-  - FIX: CGI mode bug on root access
-  - input & output encoding can be auto detected
-  
-0.20 2011/06/21
-  - Mojolicious::Command::Generate::TusuApp added
-  - Static file bug on win fixed
+0.17 2011/06/08
+  - File searching rule has been changed. It got similar behavior to apache 
+  - directory_index method added
+  - Compatibility with apache improved
+  - bootstrap renewed
 
-0.21 2011/06/22
-  - ini and ini_set added in ComponentBase
-  - Depencency updated
+0.16 2011/06/01
+  - Reduce messing app attr namaspace
 
-0.22 2011/06/30
-  - output_encoding feature no longer available. Consider using
-    Plack::Middleware instead.
-  - Permission check is eased to inside document root
+0.15 2011/06/01
+  - plug method now capable of multiple plugins at once
 
-0.23 2011/06/30
-  - A dependency for test specified
+0.14 2011/06/01
+  - document_root method optimized & bug fixed
+
+0.13 2011/05/31
+  - Extensions_to_render method added
+
+0.12 2011/05/26
+  - Exception object explicitly stringified
+
+0.11 2011/05/23
+  - Template dir and static dir both now defaults to public_html
+
+0.10 2011/05/20
+  - Mojo::Tusu::plug for hooking MojoX::Tusu::ComponentBase::init
+
+0.09 2011/05/19
+  - Distribution renamed
+
+0.08 2011/05/19
+  - Controller no longer given via second arg on tpl funcs
+
+0.07 2011/05/18
+  - ComponentBase got some utility functions for template
+
+0.06 2011/05/18
+  - API got simple
+
+0.05 2011/05/17
+  - Template not found now causes die
+
+0.04 2011/05/16
+  - ActionBase class added for frameworking
+
+0.03 2011/04/22
+  - Improved error logging
+
+0.02 2011/03/31
+  - some natie helpers available
+
+0.01 2011/03/23
+  - initial release
