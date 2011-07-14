@@ -10,6 +10,10 @@ sub startup {
   
   # Following lines are optional
   
+  $tusu->error_document({
+    404 => '/error_document/404.html',
+  });
+  
   # $tusu->extensions_to_render([qw(html htm xml)]);
   # $tusu->document_root($self->home->rel_dir('www'));
   # $tusu->encoding(['Shift_JIS', 'utf8']);

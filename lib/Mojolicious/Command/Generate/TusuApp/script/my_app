@@ -19,6 +19,8 @@ EOF
 
 # Application
 $ENV{MOJO_APP} ||= '<<% $class %>>';
+#$ENV{MOJO_MODE} ||= 'production';
+$ENV{MOJO_MODE} ||= 'development';
 
 # Start commands
 Mojolicious::Commands->start;
