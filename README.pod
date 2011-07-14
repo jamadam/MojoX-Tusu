@@ -46,6 +46,31 @@ One of the intent of this module is to enhance existing static websites into
 dynamic with minimal effort. The chances are that most typical website data are
 transplantable with no change at all.
 
+=head2 Installation
+
+    $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.22
+
+=head2 Getting Started
+
+    $ mojo generate tusu_app MyApp
+    $ cd ./my_app
+    $ prove
+    $ ./script/my_app daemon
+    Server available at http://127.0.0.1:3000.
+
+=head2 Template Syntax
+
+See L<https://github.com/jamadam/Text-PSTemplate> for detail.
+
+In addition to Text::PSTemplate's default syntax, MojoX::Tusu provides short cut
+for html escaping as follows
+
+    <% $var %> normal
+    <%= $var %> escaped
+    <%= some_func(...) %> escaped
+
 =head2 Components & Plugins
 
 Mojo::Tusu provides object oriented component & plugin framework. You can
@@ -112,20 +137,6 @@ To activate this component, you must plug-in this at mojolicious startup method.
 
 The only difference between plugins and components is that components can have
 an init method to have own data.
-
-=head2 Installation
-
-    $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.22
-
-=head2 Getting Started
-
-    $ mojo generate tusu_app MyApp
-    $ cd ./my_app
-    $ prove
-    $ ./script/my_app daemon
-    Server available at http://127.0.0.1:3000.
 
 =head1 METHODS
 

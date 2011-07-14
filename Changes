@@ -1,6 +1,7 @@
 Revision history for MojoX-Tusu
 
-0.24 2011/07/09
+0.24 2011/07/14
+  - Short cut for html escape activated
 
 0.23 2011/07/09
   - Dependency on Mojolicious updated

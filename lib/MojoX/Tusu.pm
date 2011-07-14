@@ -5,10 +5,14 @@ use Try::Tiny;
 use Text::PSTemplate;
 use base qw(Mojo::Base);
 use Scalar::Util qw(weaken);
+use Mojo::Util;
 our $VERSION = '0.24';
 $VERSION = eval $VERSION; ## no critic
     
-    __PACKAGE__->attr('engine', sub {Text::PSTemplate->new});
+    __PACKAGE__->attr('engine', sub {
+        my $engine = Text::PSTemplate->new;
+        $engine->set_filter('=', \&Mojo::Util::html_escape);
+    });
     __PACKAGE__->attr('extensions_to_render', sub {['html','htm','xml']});
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
@@ -376,6 +380,31 @@ One of the intent of this module is to enhance existing static websites into
 dynamic with minimal effort. The chances are that most typical website data are
 transplantable with no change at all.
 
+=head2 Installation
+
+    $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.22
+
+=head2 Getting Started
+
+    $ mojo generate tusu_app MyApp
+    $ cd ./my_app
+    $ prove
+    $ ./script/my_app daemon
+    Server available at http://127.0.0.1:3000.
+
+=head2 Template Syntax
+
+See L<https://github.com/jamadam/Text-PSTemplate> for detail.
+
+In addition to Text::PSTemplate's default syntax, MojoX::Tusu provides short cut
+for html escaping as follows
+
+    <% $var %> normal
+    <%= $var %> escaped
+    <%= some_func(...) %> escaped
+
 =head2 Components & Plugins
 
 Mojo::Tusu provides object oriented component & plugin framework. You can
@@ -442,20 +471,6 @@ To activate this component, you must plug-in this at mojolicious startup method.
 
 The only difference between plugins and components is that components can have
 an init method to have own data.
-
-=head2 Installation
-
-    $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.33
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.22
-
-=head2 Getting Started
-
-    $ mojo generate tusu_app MyApp
-    $ cd ./my_app
-    $ prove
-    $ ./script/my_app daemon
-    Server available at http://127.0.0.1:3000.
 
 =head1 METHODS
 

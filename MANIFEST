@@ -36,6 +36,7 @@ t/01_basic/08_template_not_found.t
 t/01_basic/09_static.t
 t/01_basic/10_permission.t
 t/01_basic/11_encoding.t
+t/01_basic/12_auto_escape.t
 t/02_lite/02_template_load.t
 t/02_lite/03_ComponentBase.t
 t/02_lite/04_include.t
@@ -75,6 +76,7 @@ t/public_html/10/permission_ok/permission_ng.html
 t/public_html/10/permission_ok/permission_ok.html
 t/public_html/11/index.html
 t/public_html/11/utf8.html
+t/public_html/12/index.html
 t/public_html/index.html
 xt/bench.t
 xt/memory_leak.t
