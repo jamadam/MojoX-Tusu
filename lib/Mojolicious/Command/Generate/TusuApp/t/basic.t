@@ -9,7 +9,7 @@ use Test::Mojo;
 use_ok '<<% $class %>>';
 
 # Test
-my $t = Test::Mojo->new(app => '<<% $class %>>');
+my $t = Test::Mojo->new('<<% $class %>>');
 
 $t->get_ok('/')->status_is(200)
   ->content_type_is('text/html;charset=UTF-8')
