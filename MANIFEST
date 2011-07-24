@@ -4,6 +4,7 @@ lib/Mojolicious/Command/Generate/TusuApp/lib/MyApp.pm
 lib/Mojolicious/Command/Generate/TusuApp/lib/MyApp/YourComponent.pm
 lib/Mojolicious/Command/Generate/TusuApp/public_html/commons/index.css
 lib/Mojolicious/Command/Generate/TusuApp/public_html/copyright.html
+lib/Mojolicious/Command/Generate/TusuApp/public_html/error_document/404.html
 lib/Mojolicious/Command/Generate/TusuApp/public_html/htmlhead.html
 lib/Mojolicious/Command/Generate/TusuApp/public_html/index.html
 lib/Mojolicious/Command/Generate/TusuApp/public_html/inquiry/index.html
