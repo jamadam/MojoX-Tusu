@@ -39,173 +39,184 @@ EOF
     $self->render_to_rel_file($class, 'public_html/inquiry/index.html');
     $self->render_to_rel_file($class, 'public_html/inquiry/thanks.html');
     $self->create_rel_dir("$app/log");
-    $self->bundle_lib($class, 'Mojolicious.pm');
-    $self->bundle_lib($class, 'Mojo.pm');
-    $self->bundle_lib($class, 'Mojo/Asset.pm');
-    $self->bundle_lib($class, 'Mojo/Asset/File.pm');
-    $self->bundle_lib($class, 'Mojo/Asset/Memory.pm');
-    $self->bundle_lib($class, 'Mojo/Base.pm');
-    $self->bundle_lib($class, 'Mojo/ByteStream.pm');
-    $self->bundle_lib($class, 'Mojo/Cache.pm');
-    $self->bundle_lib($class, 'Mojo/Command.pm');
-    $self->bundle_lib($class, 'Mojo/Content.pm');
-    $self->bundle_lib($class, 'Mojo/Content/MultiPart.pm');
-    $self->bundle_lib($class, 'Mojo/Content/Single.pm');
-    $self->bundle_lib($class, 'Mojo/Cookie.pm');
-    $self->bundle_lib($class, 'Mojo/Cookie/Request.pm');
-    $self->bundle_lib($class, 'Mojo/Cookie/Response.pm');
-    $self->bundle_lib($class, 'Mojo/CookieJar.pm');
-    $self->bundle_lib($class, 'Mojo/Date.pm');
-    $self->bundle_lib($class, 'Mojo/DOM.pm');
-    $self->bundle_lib($class, 'Mojo/DOM/Collection.pm');
-    $self->bundle_lib($class, 'Mojo/DOM/CSS.pm');
-    $self->bundle_lib($class, 'Mojo/DOM/HTML.pm');
-    $self->bundle_lib($class, 'Mojo/Exception.pm');
-    $self->bundle_lib($class, 'Mojo/Headers.pm');
-    $self->bundle_lib($class, 'Mojo/HelloWorld.pm');
-    $self->bundle_lib($class, 'Mojo/Home.pm');
-    $self->bundle_lib($class, 'Mojo/IOLoop.pm');
-    $self->bundle_lib($class, 'Mojo/IOWatcher.pm');
-    $self->bundle_lib($class, 'Mojo/IOWatcher/Epoll.pm');
-    $self->bundle_lib($class, 'Mojo/IOWatcher/KQueue.pm');
-    $self->bundle_lib($class, 'Mojo/JSON.pm');
-    $self->bundle_lib($class, 'Mojo/Loader.pm');
-    $self->bundle_lib($class, 'Mojo/Log.pm');
-    $self->bundle_lib($class, 'Mojo/Message.pm');
-    $self->bundle_lib($class, 'Mojo/Message/Request.pm');
-    $self->bundle_lib($class, 'Mojo/Message/Response.pm');
-    $self->bundle_lib($class, 'Mojo/Parameters.pm');
-    $self->bundle_lib($class, 'Mojo/Path.pm');
-    $self->bundle_lib($class, 'Mojo/Resolver.pm');
-    $self->bundle_lib($class, 'Mojo/Server.pm');
-    $self->bundle_lib($class, 'Mojo/Server/CGI.pm');
-    $self->bundle_lib($class, 'Mojo/Server/Daemon.pm');
-    $self->bundle_lib($class, 'Mojo/Server/FastCGI.pm');
-    $self->bundle_lib($class, 'Mojo/Server/Hypnotoad.pm');
-    $self->bundle_lib($class, 'Mojo/Server/Morbo.pm');
-    $self->bundle_lib($class, 'Mojo/Server/PSGI.pm');
-    $self->bundle_lib($class, 'Mojo/Template.pm');
-    $self->bundle_lib($class, 'Mojo/Transaction.pm');
-    $self->bundle_lib($class, 'Mojo/Transaction/HTTP.pm');
-    $self->bundle_lib($class, 'Mojo/Transaction/WebSocket.pm');
-    $self->bundle_lib($class, 'Mojo/Upload.pm');
-    $self->bundle_lib($class, 'Mojo/URL.pm');
-    $self->bundle_lib($class, 'Mojo/UserAgent.pm');
-    $self->bundle_lib($class, 'Mojo/UserAgent/Transactor.pm');
-    $self->bundle_lib($class, 'Mojo/Util.pm');
-    $self->bundle_lib($class, 'Mojolicious.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Cgi.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Daemon.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Eval.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Fastcgi.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Generate.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Generate/App.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Generate/Gitignore.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Generate/Hypnotoad.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Generate/LiteApp.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Generate/Makefile.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Get.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Inflate.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Psgi.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Routes.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Test.pm');
-    $self->bundle_lib($class, 'Mojolicious/Command/Version.pm');
-    $self->bundle_lib($class, 'Mojolicious/Commands.pm');
-    $self->bundle_lib($class, 'Mojolicious/Controller.pm');
-    $self->bundle_lib($class, 'Mojolicious/Guides.pod');
-    $self->bundle_lib($class, 'Mojolicious/Guides/Cheatsheet.pod');
-    $self->bundle_lib($class, 'Mojolicious/Guides/CodingGuidelines.pod');
-    $self->bundle_lib($class, 'Mojolicious/Guides/Cookbook.pod');
-    $self->bundle_lib($class, 'Mojolicious/Guides/FAQ.pod');
-    $self->bundle_lib($class, 'Mojolicious/Guides/Growing.pod');
-    $self->bundle_lib($class, 'Mojolicious/Guides/Rendering.pod');
-    $self->bundle_lib($class, 'Mojolicious/Guides/Routing.pod');
-    $self->bundle_lib($class, 'Mojolicious/Lite.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/CallbackCondition.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/Charset.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/Config.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/DefaultHelpers.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/EplRenderer.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/EpRenderer.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/HeaderCondition.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/I18n.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/JsonConfig.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/Mount.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/PodRenderer.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/PoweredBy.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/RequestTimer.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugin/TagHelpers.pm');
-    $self->bundle_lib($class, 'Mojolicious/Plugins.pm');
-    $self->bundle_lib($class, 'Mojolicious/public/amelia.png');
-    $self->bundle_lib($class, 'Mojolicious/public/css/prettify-mojo.css');
-    $self->bundle_lib($class, 'Mojolicious/public/css/prettify.css');
-    $self->bundle_lib($class, 'Mojolicious/public/failraptor.png');
-    $self->bundle_lib($class, 'Mojolicious/public/favicon.ico');
-    $self->bundle_lib($class, 'Mojolicious/public/js/jquery.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-apollo.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-clj.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-css.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-go.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-hs.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-lisp.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-lua.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-ml.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-n.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-proto.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-scala.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-sql.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-tex.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-vb.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-vhdl.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-wiki.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-xq.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/lang-yaml.js');
-    $self->bundle_lib($class, 'Mojolicious/public/js/prettify.js');
-    $self->bundle_lib($class, 'Mojolicious/public/mojolicious-arrow.png');
-    $self->bundle_lib($class, 'Mojolicious/public/mojolicious-black.png');
-    $self->bundle_lib($class, 'Mojolicious/public/mojolicious-box.png');
-    $self->bundle_lib($class, 'Mojolicious/public/mojolicious-clouds.png');
-    $self->bundle_lib($class, 'Mojolicious/public/mojolicious-noraptor.png');
-    $self->bundle_lib($class, 'Mojolicious/public/mojolicious-notfound.png');
-    $self->bundle_lib($class, 'Mojolicious/public/mojolicious-pinstripe.gif');
-    $self->bundle_lib($class, 'Mojolicious/public/mojolicious-white.png');
-    $self->bundle_lib($class, 'Mojolicious/Renderer.pm');
-    $self->bundle_lib($class, 'Mojolicious/Routes.pm');
-    $self->bundle_lib($class, 'Mojolicious/Routes/Match.pm');
-    $self->bundle_lib($class, 'Mojolicious/Routes/Pattern.pm');
-    $self->bundle_lib($class, 'Mojolicious/Sessions.pm');
-    $self->bundle_lib($class, 'Mojolicious/Static.pm');
-    $self->bundle_lib($class, 'Mojolicious/templates/exception.development.html.ep');
-    $self->bundle_lib($class, 'Mojolicious/templates/exception.html.ep');
-    $self->bundle_lib($class, 'Mojolicious/templates/mojobar.html.ep');
-    $self->bundle_lib($class, 'Mojolicious/templates/not_found.development.html.ep');
-    $self->bundle_lib($class, 'Mojolicious/templates/not_found.html.ep');
-    $self->bundle_lib($class, 'Mojolicious/templates/perldoc.html.ep');
-    $self->bundle_lib($class, 'Mojolicious/Types.pm');
-    $self->bundle_lib($class, 'ojo.pm');
-    $self->bundle_lib($class, 'Test/Mojo.pm');
     
-    $self->bundle_lib($class, 'Text/PSTemplate.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Block.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/DateTime.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Exception.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/File.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Manual.pod');
-    $self->bundle_lib($class, 'Text/PSTemplate/ManualJP.pod');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugable.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/CGI.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Control.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Developer.pod');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Env.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Extends.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/FS.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/HTML.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Time.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Time2.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/TSV.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Util.pm');
-    $self->bundle_lib($class, 'Text/PSTemplate/PluginBase.pm');
+    my @bundle = qw(
+        Mojolicious.pm
+        Mojo.pm
+        Mojo/Asset.pm
+        Mojo/Asset/File.pm
+        Mojo/Asset/Memory.pm
+        Mojo/Base.pm
+        Mojo/ByteStream.pm
+        Mojo/Cache.pm
+        Mojo/Command.pm
+        Mojo/Content.pm
+        Mojo/Content/MultiPart.pm
+        Mojo/Content/Single.pm
+        Mojo/Cookie.pm
+        Mojo/Cookie/Request.pm
+        Mojo/Cookie/Response.pm
+        Mojo/CookieJar.pm
+        Mojo/Date.pm
+        Mojo/DOM.pm
+        Mojo/DOM/Collection.pm
+        Mojo/DOM/CSS.pm
+        Mojo/DOM/HTML.pm
+        Mojo/Exception.pm
+        Mojo/Headers.pm
+        Mojo/HelloWorld.pm
+        Mojo/Home.pm
+        Mojo/IOLoop.pm
+        Mojo/IOWatcher.pm
+        Mojo/IOWatcher/Epoll.pm
+        Mojo/IOWatcher/KQueue.pm
+        Mojo/JSON.pm
+        Mojo/Loader.pm
+        Mojo/Log.pm
+        Mojo/Message.pm
+        Mojo/Message/Request.pm
+        Mojo/Message/Response.pm
+        Mojo/Parameters.pm
+        Mojo/Path.pm
+        Mojo/Resolver.pm
+        Mojo/Server.pm
+        Mojo/Server/CGI.pm
+        Mojo/Server/Daemon.pm
+        Mojo/Server/FastCGI.pm
+        Mojo/Server/Hypnotoad.pm
+        Mojo/Server/Morbo.pm
+        Mojo/Server/PSGI.pm
+        Mojo/Template.pm
+        Mojo/Transaction.pm
+        Mojo/Transaction/HTTP.pm
+        Mojo/Transaction/WebSocket.pm
+        Mojo/Upload.pm
+        Mojo/URL.pm
+        Mojo/UserAgent.pm
+        Mojo/UserAgent/Transactor.pm
+        Mojo/Util.pm
+        Mojolicious.pm
+        Mojolicious/Command/Cgi.pm
+        Mojolicious/Command/Daemon.pm
+        Mojolicious/Command/Eval.pm
+        Mojolicious/Command/Fastcgi.pm
+        Mojolicious/Command/Generate.pm
+        Mojolicious/Command/Generate/App.pm
+        Mojolicious/Command/Generate/Gitignore.pm
+        Mojolicious/Command/Generate/Hypnotoad.pm
+        Mojolicious/Command/Generate/LiteApp.pm
+        Mojolicious/Command/Generate/Makefile.pm
+        Mojolicious/Command/Get.pm
+        Mojolicious/Command/Inflate.pm
+        Mojolicious/Command/Psgi.pm
+        Mojolicious/Command/Routes.pm
+        Mojolicious/Command/Test.pm
+        Mojolicious/Command/Version.pm
+        Mojolicious/Commands.pm
+        Mojolicious/Controller.pm
+        Mojolicious/Guides.pod
+        Mojolicious/Guides/Cheatsheet.pod
+        Mojolicious/Guides/CodingGuidelines.pod
+        Mojolicious/Guides/Cookbook.pod
+        Mojolicious/Guides/FAQ.pod
+        Mojolicious/Guides/Growing.pod
+        Mojolicious/Guides/Rendering.pod
+        Mojolicious/Guides/Routing.pod
+        Mojolicious/Lite.pm
+        Mojolicious/Plugin.pm
+        Mojolicious/Plugin/CallbackCondition.pm
+        Mojolicious/Plugin/Charset.pm
+        Mojolicious/Plugin/Config.pm
+        Mojolicious/Plugin/DefaultHelpers.pm
+        Mojolicious/Plugin/EplRenderer.pm
+        Mojolicious/Plugin/EpRenderer.pm
+        Mojolicious/Plugin/HeaderCondition.pm
+        Mojolicious/Plugin/I18n.pm
+        Mojolicious/Plugin/JsonConfig.pm
+        Mojolicious/Plugin/Mount.pm
+        Mojolicious/Plugin/PodRenderer.pm
+        Mojolicious/Plugin/PoweredBy.pm
+        Mojolicious/Plugin/RequestTimer.pm
+        Mojolicious/Plugin/TagHelpers.pm
+        Mojolicious/Plugins.pm
+        Mojolicious/public/amelia.png
+        Mojolicious/public/css/prettify-mojo.css
+        Mojolicious/public/css/prettify.css
+        Mojolicious/public/failraptor.png
+        Mojolicious/public/favicon.ico
+        Mojolicious/public/js/jquery.js
+        Mojolicious/public/js/lang-apollo.js
+        Mojolicious/public/js/lang-clj.js
+        Mojolicious/public/js/lang-css.js
+        Mojolicious/public/js/lang-go.js
+        Mojolicious/public/js/lang-hs.js
+        Mojolicious/public/js/lang-lisp.js
+        Mojolicious/public/js/lang-lua.js
+        Mojolicious/public/js/lang-ml.js
+        Mojolicious/public/js/lang-n.js
+        Mojolicious/public/js/lang-proto.js
+        Mojolicious/public/js/lang-scala.js
+        Mojolicious/public/js/lang-sql.js
+        Mojolicious/public/js/lang-tex.js
+        Mojolicious/public/js/lang-vb.js
+        Mojolicious/public/js/lang-vhdl.js
+        Mojolicious/public/js/lang-wiki.js
+        Mojolicious/public/js/lang-xq.js
+        Mojolicious/public/js/lang-yaml.js
+        Mojolicious/public/js/prettify.js
+        Mojolicious/public/mojolicious-arrow.png
+        Mojolicious/public/mojolicious-black.png
+        Mojolicious/public/mojolicious-box.png
+        Mojolicious/public/mojolicious-clouds.png
+        Mojolicious/public/mojolicious-noraptor.png
+        Mojolicious/public/mojolicious-notfound.png
+        Mojolicious/public/mojolicious-pinstripe.gif
+        Mojolicious/public/mojolicious-white.png
+        Mojolicious/Renderer.pm
+        Mojolicious/Routes.pm
+        Mojolicious/Routes/Match.pm
+        Mojolicious/Routes/Pattern.pm
+        Mojolicious/Sessions.pm
+        Mojolicious/Static.pm
+        Mojolicious/templates/exception.development.html.ep
+        Mojolicious/templates/exception.html.ep
+        Mojolicious/templates/mojobar.html.ep
+        Mojolicious/templates/not_found.development.html.ep
+        Mojolicious/templates/not_found.html.ep
+        Mojolicious/templates/perldoc.html.ep
+        Mojolicious/Types.pm
+        ojo.pm
+        Test/Mojo.pm
+        Text/PSTemplate.pm
+        Text/PSTemplate/Block.pm
+        Text/PSTemplate/DateTime.pm
+        Text/PSTemplate/Exception.pm
+        Text/PSTemplate/File.pm
+        Text/PSTemplate/Manual.pod
+        Text/PSTemplate/ManualJP.pod
+        Text/PSTemplate/Plugable.pm
+        Text/PSTemplate/Plugin/CGI.pm
+        Text/PSTemplate/Plugin/Control.pm
+        Text/PSTemplate/Plugin/Developer.pod
+        Text/PSTemplate/Plugin/Env.pm
+        Text/PSTemplate/Plugin/Extends.pm
+        Text/PSTemplate/Plugin/FS.pm
+        Text/PSTemplate/Plugin/HTML.pm
+        Text/PSTemplate/Plugin/Time.pm
+        Text/PSTemplate/Plugin/Time2.pm
+        Text/PSTemplate/Plugin/TSV.pm
+        Text/PSTemplate/Plugin/Util.pm
+        Text/PSTemplate/PluginBase.pm
+        MojoX/Tusu.pm
+        MojoX/Tusu/ComponentBase.pm
+        MojoX/Tusu/Plugin/Mojolicious.pm
+        MojoX/Tusu/Plugin/Util.pm
+        MojoX/Tusu/PluginBase.pm
+    );
+    
+    for my $file (@bundle) {
+        $self->bundle_lib($class, $file);
+    }
 }
 
 sub render_to_rel_file {
