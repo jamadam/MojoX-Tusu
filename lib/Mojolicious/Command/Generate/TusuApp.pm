@@ -16,30 +16,30 @@ EOF
 
 # "I say, you've damaged our servants quarters... and our servants."
 sub run {
-  my ($self, $class) = @_;
-  $class ||= 'MyMojoxTusuApp';
-
-  # Prevent bad applications
-  die <<EOF unless $class =~ /^[A-Z](?:\w|\:\:)+$/;
+    my ($self, $class) = @_;
+    $class ||= 'MyMojoxTusuApp';
+    
+    # Prevent bad applications
+    die <<EOF unless $class =~ /^[A-Z](?:\w|\:\:)+$/;
 Your application name has to be a well formed (camel case) Perl module name
 like "MyApp".
 EOF
 
-  # Script
-  my $app = $self->class_to_file($class);
-  $self->render_to_rel_file($class, "script/my_app", 'script/<<% $app %>>');
-  $self->chmod_file("$app/script/$app", 0744);
-  $self->render_to_rel_file($class, "lib/MyApp.pm", 'lib/<<% $class %>>.pm');
-  $self->render_to_rel_file($class, "lib/MyApp/YourComponent.pm", 'lib/<<% $class %>>/YourComponent.pm');
-  $self->render_to_rel_file($class, "t/basic.t");
-  $self->render_to_rel_file($class, 'public_html/index.html');
-  $self->render_to_rel_file($class, 'public_html/copyright.html');
-  $self->render_to_rel_file($class, 'public_html/htmlhead.html');
-  $self->render_to_rel_file($class, 'public_html/commons/index.css');
-  $self->render_to_rel_file($class, 'public_html/inquiry/index.html');
-  $self->render_to_rel_file($class, 'public_html/inquiry/thanks.html');
-  $self->create_rel_dir("$app/log");
-  $self->bundle_lib($class, 'Mojolicious.pm');
+    # Script
+    my $app = $self->class_to_file($class);
+    $self->render_to_rel_file($class, "script/my_app", 'script/<<% $app %>>');
+    $self->chmod_file("$app/script/$app", 0744);
+    $self->render_to_rel_file($class, "lib/MyApp.pm", 'lib/<<% $class %>>.pm');
+    $self->render_to_rel_file($class, "lib/MyApp/YourComponent.pm", 'lib/<<% $class %>>/YourComponent.pm');
+    $self->render_to_rel_file($class, "t/basic.t");
+    $self->render_to_rel_file($class, 'public_html/index.html');
+    $self->render_to_rel_file($class, 'public_html/copyright.html');
+    $self->render_to_rel_file($class, 'public_html/htmlhead.html');
+    $self->render_to_rel_file($class, 'public_html/commons/index.css');
+    $self->render_to_rel_file($class, 'public_html/inquiry/index.html');
+    $self->render_to_rel_file($class, 'public_html/inquiry/thanks.html');
+    $self->create_rel_dir("$app/log");
+    $self->bundle_lib($class, 'Mojolicious.pm');
     $self->bundle_lib($class, 'Mojo.pm');
     $self->bundle_lib($class, 'Mojo/Asset.pm');
     $self->bundle_lib($class, 'Mojo/Asset/File.pm');
@@ -185,19 +185,40 @@ EOF
     $self->bundle_lib($class, 'Mojolicious/Types.pm');
     $self->bundle_lib($class, 'ojo.pm');
     $self->bundle_lib($class, 'Test/Mojo.pm');
+    
+    $self->bundle_lib($class, 'Text/PSTemplate.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Block.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/DateTime.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Exception.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/File.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Manual.pod');
+    $self->bundle_lib($class, 'Text/PSTemplate/ManualJP.pod');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugable.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/CGI.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Control.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Developer.pod');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Env.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Extends.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/FS.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/HTML.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Time.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Time2.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/TSV.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/Plugin/Util.pm');
+    $self->bundle_lib($class, 'Text/PSTemplate/PluginBase.pm');
 }
 
 sub render_to_rel_file {
-  my ($self, $class, $path, $path_to) = @_;
-  my $app = $self->class_to_file($class);
-  my $parser = Text::PSTemplate->new;
-  $parser->set_delimiter('<<%', '%>>');
-  $parser->set_var(class => $class, app => $app);
-  my $template = File::Spec->rel2abs(File::Spec->catfile(dirname(__FILE__), 'TusuApp', $path));
-  my $content = $parser->parse_file($template);
-  $path_to = $path_to ? $parser->parse($path_to) : $path;
-  $self->write_file("$app/". $path_to, $content);
-  return $self;
+    my ($self, $class, $path, $path_to) = @_;
+    my $app = $self->class_to_file($class);
+    my $parser = Text::PSTemplate->new;
+    $parser->set_delimiter('<<%', '%>>');
+    $parser->set_var(class => $class, app => $app);
+    my $template = File::Spec->rel2abs(File::Spec->catfile(dirname(__FILE__), 'TusuApp', $path));
+    my $content = $parser->parse_file($template);
+    $path_to = $path_to ? $parser->parse($path_to) : $path;
+    $self->write_file("$app/". $path_to, $content);
+    return $self;
 }
 
 sub bundle_lib {
@@ -211,14 +232,14 @@ sub bundle_lib {
 }
 
 sub find_lib {
-  
-  my $name = shift;
-  for my $base (@INC) {
-    if (-e "$base/$name") {
-      return "$base/$name";
+    
+    my $name = shift;
+    for my $base (@INC) {
+        if (-e "$base/$name") {
+            return "$base/$name";
+        }
     }
-  }
-  return;
+    return;
 }
 
 1;
