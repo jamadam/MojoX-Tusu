@@ -59,8 +59,8 @@ use Test::Mojo;
 						plugins => {
 							'SomeComponent' => undef,
 						},
+						document_root => 't/public_html'
 					});
-					$tusu->document_root('t/public_html');
 					
 					my $r = $self->routes;
 					$r->route('/07/some_component')->to(cb => sub {

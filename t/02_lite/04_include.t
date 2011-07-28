@@ -13,8 +13,9 @@ use Test::Mojo;
 use Mojolicious::Lite;
 
 use Test::More tests => 12;
-    my $tusu = MojoX::Tusu->new(app);
-    $tusu->document_root('t/public_html');
+    my $tusu = MojoX::Tusu->new(app, {
+		document_root => 't/public_html',
+    });
     my $t = Test::Mojo->new;
     $t->get_ok('/04/')->status_is(200)->content_is('sub ok');
     $t->get_ok('/04/index2.html')->status_is(200)->content_is('sub2 ok');

@@ -35,8 +35,7 @@ use MojoX::Tusu;
 sub startup {
     my $self = shift;
 
-    my $tusu = MojoX::Tusu->new($self);
-    $tusu->document_root('t/public_html/06');
+    my $tusu = MojoX::Tusu->new($self, {document_root => 't/public_html/06'});
     $tusu->extensions_to_render([qw(html htm xml txt)]);
 }
 

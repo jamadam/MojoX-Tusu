@@ -18,8 +18,8 @@ use Test::More tests => 9;
 		plugins => {
 			'SomeComponent' => undef,
 		},
+		document_root => 't/public_html',
 	});
-    $tusu->document_root('t/public_html');
     
     any '/03/03_ComponentBase02.html' => sub {
         $tusu->bootstrap($_[0], 'SomeComponent', 'post');

@@ -14,8 +14,9 @@ use Mojolicious::Lite;
 
 use Test::More tests => 24;
 
-    my $tusu = MojoX::Tusu->new(app);
-    $tusu->document_root(app->home->rel_dir('../public_html'));
+    my $tusu = MojoX::Tusu->new(app, {
+		document_root => app->home->rel_dir('../public_html'),
+    });
     
     my $t = Test::Mojo->new;
     $t->get_ok('/09/img/a.gif')

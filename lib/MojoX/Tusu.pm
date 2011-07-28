@@ -20,7 +20,6 @@ $VERSION = eval $VERSION; ## no critic
     __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
     __PACKAGE__->attr('error_document', sub {{}});
     __PACKAGE__->attr('encoding', 'utf8');
-    __PACKAGE__->attr('apache_document_root', '');
     
     # internal use
     __PACKAGE__->attr('_app');
@@ -49,10 +48,15 @@ $VERSION = eval $VERSION; ## no critic
         
         $self->_app($app);
         
-        $self->document_root($app->home->rel_dir('public_html'));
+        $args->{document_root} ||= $app->home->rel_dir('public_html');
+        $app->static->root($args->{document_root});
+        $app->renderer->root($args->{document_root});
+        $self->engine->set_filename_trans_coderef(sub {
+            _filename_trans($args->{document_root}, $self->directory_index, @_);
+        });
         
         {
-            local $APP = $self->_app;
+            local $APP = $app;
             $self->engine->plug(
                 'MojoX::Tusu::ComponentBase' => undef,
                 'MojoX::Tusu::Plugin::Util' => '',
@@ -67,24 +71,6 @@ $VERSION = eval $VERSION; ## no critic
         
         weaken $self->{_app};
         return $self;
-    }
-    
-    ### ---
-    ### document_root is combined path for both static and renderer
-    ### ---
-    sub document_root {
-        
-        my ($self, $value) = @_;
-        my $app = $self->_app;
-        if ($value) {
-            $app->static->root($value);
-            $app->renderer->root($value);
-            weaken $self;
-            $self->engine->set_filename_trans_coderef(sub {
-                _filename_trans($value, $self->directory_index, @_);
-            });
-        }
-        return $app->renderer->root;
     }
     
     ### ---

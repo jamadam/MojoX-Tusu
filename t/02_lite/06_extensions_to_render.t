@@ -13,8 +13,9 @@ use Test::Mojo;
 use Mojolicious::Lite;
 
 use Test::More tests => 6;
-    my $tusu = MojoX::Tusu->new(app);
-    $tusu->document_root('t/public_html/06');
+    my $tusu = MojoX::Tusu->new(app, {
+		document_root => 't/public_html/06',
+    });
     $tusu->extensions_to_render([qw(html htm xml txt)]);
     my $t = Test::Mojo->new;
     $t->get_ok('/')->status_is(200)->content_is('06 default a');

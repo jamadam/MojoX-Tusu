@@ -58,8 +58,7 @@ use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self);
-    $tusu->document_root('t/public_html');
+    my $tusu = MojoX::Tusu->new($self, {document_root => 't/public_html'});
 }
 
 package ErrorDocument;
@@ -70,13 +69,12 @@ use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self);
+    my $tusu = MojoX::Tusu->new($self, {document_root => 't/public_html'});
 	$tusu->error_document({
 		404 => '/08/err/404.html',
 		403 => '/08/err/403.html',
 		500 => '/08/err/500.html',
 	});
-    $tusu->document_root('t/public_html');
 }
 
 __END__

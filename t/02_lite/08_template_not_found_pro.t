@@ -13,8 +13,9 @@ use Test::Mojo;
 use Mojolicious::Lite;
 use Test::More tests => 10;
 
-    my $tusu = MojoX::Tusu->new(app);
-    $tusu->document_root('t/public_html');
+    my $tusu = MojoX::Tusu->new(app, {
+		document_root => 't/public_html',
+    });
     
     my $t = Test::Mojo->new;
     

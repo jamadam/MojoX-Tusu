@@ -52,8 +52,8 @@ use MojoX::Tusu;
 			plugins => {
 				'SomeComponent' => undef,
 			},
+			document_root => 't/public_html'
 		});
-        $tusu->document_root('t/public_html');
         
         my $r = $self->routes;
         $r->route('/03/03_ComponentBase02.html')->to(cb => sub {

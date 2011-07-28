@@ -29,8 +29,7 @@ use Encode::Guess;
 			
 			sub startup {
 				my $self = shift;
-				my $tusu = MojoX::Tusu->new($self);
-				$tusu->document_root('t/public_html');
+				my $tusu = MojoX::Tusu->new($self, {document_root => 't/public_html'});
 			}
 		}
 	

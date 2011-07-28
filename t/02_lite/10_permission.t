@@ -28,8 +28,7 @@ use Mojolicious::Lite;
         chmod(0700, 't/00_partial/f/t01/permission_ng/permission_ng.html');
     }
 
-    my $tusu = MojoX::Tusu->new(app);
-    $tusu->document_root('t/public_html');
+    my $tusu = MojoX::Tusu->new(app, {document_root => 't/public_html'});
     
     my $t = Test::Mojo->new;
     $t->get_ok('/10/permission_ok/permission_ok.html')->status_is(200);

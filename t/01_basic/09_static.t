@@ -62,8 +62,7 @@ use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self);
-    $tusu->document_root($self->home->rel_dir('../public_html'));
+    my $tusu = MojoX::Tusu->new($self, {document_root => $self->home->rel_dir('../public_html')});
 }
 
 package SomeApp2;
@@ -74,8 +73,7 @@ use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self);
-    $tusu->document_root($self->home->rel_dir('../public_html'));
+    my $tusu = MojoX::Tusu->new($self, {document_root => $self->home->rel_dir('../public_html')});
     $tusu->directory_index(['a.gif']);
 }
 
