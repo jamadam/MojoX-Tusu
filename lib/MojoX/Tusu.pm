@@ -10,6 +10,7 @@ our $VERSION = '0.25';
 $VERSION = eval $VERSION; ## no critic
     
     our $APP;
+    our $CONTROLLER;
     
     __PACKAGE__->attr('engine', sub {
         my $engine = Text::PSTemplate->new;
@@ -30,7 +31,7 @@ $VERSION = eval $VERSION; ## no critic
     ### ---
     sub new {
         
-        my ($class, $app) = @_;
+        my ($class, $app, $args) = @_;
         my $self = $class->SUPER::new;
         
         $app->hook(after_build_tx => sub {
@@ -50,11 +51,17 @@ $VERSION = eval $VERSION; ## no critic
         
         $self->document_root($app->home->rel_dir('public_html'));
         
-        $self->plug(
-            'MojoX::Tusu::ComponentBase' => undef,
-            'MojoX::Tusu::Plugin::Util' => '',
-            'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
-        );
+        {
+            local $APP = $self->_app;
+            $self->engine->plug(
+                'MojoX::Tusu::ComponentBase' => undef,
+                'MojoX::Tusu::Plugin::Util' => '',
+                'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
+            );
+            if (exists $args->{plugins}) {
+                $self->engine->plug(%{$args->{plugins}});
+            }
+        }
         
         $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
         
@@ -81,23 +88,13 @@ $VERSION = eval $VERSION; ## no critic
     }
     
     ### ---
-    ### Delegate method to Text::PSTemplate::plug with init hook for component
-    ### ---
-    sub plug {
-        
-        my ($self, @plugins) = @_;
-        local $APP = $self->_app;
-        return $self->engine->plug(@plugins);
-    }
-    
-    ### ---
     ### bootstrap for frameworking
     ### ---
     sub bootstrap {
         
         my ($self, $c, $plugin, $action) = @_;
         
-        local $MojoX::Tusu::controller = $c;
+        local $CONTROLLER = $c;
         return $self->engine->get_plugin($plugin)->$action($c);
     }
     
@@ -300,7 +297,7 @@ $VERSION = eval $VERSION; ## no critic
         
         my ($self, $renderer, $c, $output, $options) = @_;
         
-        local $MojoX::Tusu::controller = $c;
+        local $CONTROLLER = $c;
         
         my $engine = Text::PSTemplate->new($self->engine);
         

@@ -14,9 +14,12 @@ use Mojolicious::Lite;
 
 use Test::More tests => 6;
 
-    my $tusu = MojoX::Tusu->new(app);
+    my $tusu = MojoX::Tusu->new(app, {
+		plugins => {
+			'SomeComponent' => undef,
+		},
+	});
     $tusu->document_root('t/public_html');
-    $tusu->plug('SomeComponent');
     
     my $r = app->routes;
     $r->route('/07/some_component')->to(cb => sub {

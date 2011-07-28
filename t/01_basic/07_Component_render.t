@@ -24,8 +24,12 @@ use Test::Mojo;
 				
 				sub startup {
 					my $self = shift;
-					my $tusu = MojoX::Tusu->new($self);
-					my $SomeComponent = $tusu->plug('SomeComponent');
+					my $tusu = MojoX::Tusu->new($self, {
+						plugins => {
+							'SomeComponent' => undef,
+						},
+					});
+					my $SomeComponent = $tusu->engine->get_plugin('SomeComponent');
 					is($SomeComponent->key1, 'value1');
 					is($SomeComponent->app, $self);
 				}
@@ -51,9 +55,12 @@ use Test::Mojo;
 				sub startup {
 					my $self = shift;
 				
-					my $tusu = MojoX::Tusu->new($self);
+					my $tusu = MojoX::Tusu->new($self, {
+						plugins => {
+							'SomeComponent' => undef,
+						},
+					});
 					$tusu->document_root('t/public_html');
-					$tusu->plug('SomeComponent');
 					
 					my $r = $self->routes;
 					$r->route('/07/some_component')->to(cb => sub {

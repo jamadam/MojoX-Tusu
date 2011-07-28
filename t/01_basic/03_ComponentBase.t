@@ -48,9 +48,12 @@ use MojoX::Tusu;
     sub startup {
         my $self = shift;
     
-        my $tusu = MojoX::Tusu->new($self);
+        my $tusu = MojoX::Tusu->new($self, {
+			plugins => {
+				'SomeComponent' => undef,
+			},
+		});
         $tusu->document_root('t/public_html');
-        $tusu->engine->plug('SomeComponent');
         
         my $r = $self->routes;
         $r->route('/03/03_ComponentBase02.html')->to(cb => sub {

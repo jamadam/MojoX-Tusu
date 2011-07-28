@@ -5,7 +5,7 @@ use base qw(Text::PSTemplate::PluginBase);
     
     sub controller {
         
-        return $MojoX::Tusu::controller;
+        return $MojoX::Tusu::CONTROLLER;
     }
 
 1;

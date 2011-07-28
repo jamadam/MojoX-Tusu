@@ -14,9 +14,12 @@ use Mojolicious::Lite;
     
 use Test::More tests => 9;
 
-    my $tusu = MojoX::Tusu->new(app);
+    my $tusu = MojoX::Tusu->new(app, {
+		plugins => {
+			'SomeComponent' => undef,
+		},
+	});
     $tusu->document_root('t/public_html');
-    $tusu->engine->plug('SomeComponent');
     
     any '/03/03_ComponentBase02.html' => sub {
         $tusu->bootstrap($_[0], 'SomeComponent', 'post');
