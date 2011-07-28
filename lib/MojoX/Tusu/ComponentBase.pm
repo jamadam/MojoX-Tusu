@@ -3,6 +3,13 @@ use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
     
+    sub new {
+        my $class = shift;
+        my $self = $class->SUPER::new(@_);
+        $self->init($MojoX::Tusu::APP);
+        return $self;
+    }
+    
     sub init {
         ### Must be implemented on sub classes.
     }

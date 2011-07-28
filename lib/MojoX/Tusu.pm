@@ -9,6 +9,8 @@ use Mojo::Util;
 our $VERSION = '0.25';
 $VERSION = eval $VERSION; ## no critic
     
+    our $APP;
+    
     __PACKAGE__->attr('engine', sub {
         my $engine = Text::PSTemplate->new;
         $engine->set_filter('=', \&Mojo::Util::html_escape);
@@ -84,17 +86,8 @@ $VERSION = eval $VERSION; ## no critic
     sub plug {
         
         my ($self, @plugins) = @_;
-        my $plugin;
-        my $engine = $self->engine;
-        while (scalar @plugins) {
-            my $plugin_name = shift @plugins;
-            my $as = shift @plugins;
-            $plugin = $engine->plug($plugin_name, $as);
-            if ($plugin->isa('MojoX::Tusu::ComponentBase')) {
-                $plugin->init($self->_app);
-            }
-        }
-        return $plugin;
+        local $APP = $self->_app;
+        return $self->engine->plug(@plugins);
     }
     
     ### ---
