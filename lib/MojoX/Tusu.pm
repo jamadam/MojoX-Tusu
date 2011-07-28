@@ -30,7 +30,12 @@ $VERSION = eval $VERSION; ## no critic
     sub new {
         
         my ($class, $app, $args) = @_;
+        
         my $self = $class->SUPER::new;
+        my $engine = $self->engine;
+        
+        $args->{document_root} ||= $app->home->rel_dir('public_html');
+        $args->{encoding} ||= 'utf8';
         
         $app->hook(after_build_tx => sub {
             my $app = $_[1];
@@ -47,26 +52,23 @@ $VERSION = eval $VERSION; ## no critic
         
         $self->_app($app);
         
-        $args->{document_root} ||= $app->home->rel_dir('public_html');
         $app->static->root($args->{document_root});
         $app->renderer->root($args->{document_root});
-        $self->engine->set_filename_trans_coderef(sub {
+        $engine->set_filename_trans_coderef(sub {
             _filename_trans($args->{document_root}, $self->directory_index, @_);
         });
         
         {
             local $APP = $app;
-            $self->engine->plug(
+            $engine->plug(
                 'MojoX::Tusu::ComponentBase' => undef,
                 'MojoX::Tusu::Plugin::Util' => '',
                 'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
+                %{$args->{plugins}}
             );
-            if (exists $args->{plugins}) {
-                $self->engine->plug(%{$args->{plugins}});
-            }
         }
         
-        $self->engine->set_encoding($args->{encoding} || 'utf8');
+        $engine->set_encoding($args->{encoding});
         
         $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
         
