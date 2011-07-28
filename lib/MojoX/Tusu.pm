@@ -327,11 +327,14 @@ OR
 
     sub startup {
         my $self = shift;
-        my $tusu = MojoX::Tusu->new($self);
+        my $tusu = MojoX::Tusu->new($self, {
+            document_root => $self->home->rel_dir('www2'),
+            plugins => {
+                'Your::Component' => 'YC',
+            },
+        });
         
-        $tusu->document_root($self->home->rel_dir('www2'));
         $tusu->extensions_to_render([qw(html htm xml txt)]);
-        $tusu->plug('Your::Component', 'YC');
         
         $r->route('/specific/path')->to(cb => sub {
             $tusu->bootstrap($_[0], 'Your::Component', 'your_method');
@@ -447,8 +450,11 @@ To activate this component, you must plug-in this at mojolicious startup method.
 
     sub startup {
         my $self = shift;
-        my $tusu = MojoX::Tusu->new($self);
-        $tusu->plug('Product');
+        my $tusu = MojoX::Tusu->new($self, {
+            plugins => {
+                Product => undef
+            },
+        });
     }
 
 The only difference between plugins and components is that components can have
@@ -463,13 +469,26 @@ MojoX::Tusu instance.
     
     $tusu = MojoX::Tusu->new($app)
 
-=head2 $instance->document_root($directory)
+new also takes extra arguments in hash.
 
-This method sets root directory for templates and static files. Following
+=head3 document_root => string
+
+This argument sets root directory for templates and static files. Following
 example is default setting.
-    
-    my $tusu = MojoX::Tusu->new($app);
-    $tusu->document_root($self->home->rel_dir('public_html'));
+
+    my $tusu = MojoX::Tusu->new($app, {
+        document_root => $self->home->rel_dir('public_html')
+    });
+
+=head3 plugins => hash
+
+    my $tusu = MojoX::Tusu->new($self, {
+        plugins => {
+            'Namespace::A' => 'A',   # namespace is A
+            'Namespace::B' => '',    # namespace is ''
+            'Namespace::C' => undef, # namespace is Namespace::C
+        },
+    });
 
 =head2 $instance->directory_index($candidate1 [, $candidate2])
 
@@ -489,24 +508,6 @@ behavior by calling parser methods directly.
     my $tusu = MojoX::Tusu->new($app);
     my $pst = $tusu->engine;
     $pst->set_delimiter('<!--', '-->');
-
-=head2 $instance->plug($plug_name, [$namespace])
-
-This is a delegate method for Text::PSTemplate->plug just for hooking
-init method for components. All arguments are thrown at
-Text::PSTemplate->plug.
-
-    my $tusu = MojoX::Tusu->new($self);
-    $tusu->plug('Text::PSTemplate::Plugin::HTML', 'HTML');
-
-You also can plug multiple plugins at once.
-
-    my $tusu = MojoX::Tusu->new($self);
-    $tusu->plug(
-        'Namespace::A' => 'A',   # namespace is A
-        'Namespace::B' => '',    # namespace is ''
-        'Namespace::C' => undef, # namespace is Namespace::C
-    );
 
 =head2 $instance->bootstrap($controller, $component, $method)
 
