@@ -207,11 +207,11 @@ EOF
         Text/PSTemplate/Plugin/TSV.pm
         Text/PSTemplate/Plugin/Util.pm
         Text/PSTemplate/PluginBase.pm
-        Momolicious/Plugin/Tusu.pm
-        Momolicious/Plugin/Tusu/ComponentBase.pm
-        Momolicious/Plugin/Tusu/Plugin/Mojolicious.pm
-        Momolicious/Plugin/Tusu/Plugin/Util.pm
-        Momolicious/Plugin/Tusu/PluginBase.pm
+        Mojolicious/Plugin/Tusu.pm
+        Mojolicious/Plugin/Tusu/ComponentBase.pm
+        Mojolicious/Plugin/Tusu/Plugin/Mojolicious.pm
+        Mojolicious/Plugin/Tusu/Plugin/Util.pm
+        Mojolicious/Plugin/Tusu/PluginBase.pm
     );
     
     for my $file (@bundle) {
