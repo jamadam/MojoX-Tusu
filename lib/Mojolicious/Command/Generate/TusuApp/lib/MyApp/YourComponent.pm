@@ -1,5 +1,5 @@
 package <<% $class %>>::YourComponent;
-use base 'Mojolicious::Plugin::Tusu::ComponentBase';
+use base 'MojoX::Tusu::ComponentBase';
 
   # This function can be called inside templates.
   sub your_function : TplExport {

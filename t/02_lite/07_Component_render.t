@@ -34,7 +34,7 @@ use Test::More tests => 6;
 package SomeComponent;
 use strict;
 use warnings;
-use base 'Mojolicious::Plugin::Tusu::ComponentBase';
+use base 'MojoX::Tusu::ComponentBase';
 
     sub get {
         

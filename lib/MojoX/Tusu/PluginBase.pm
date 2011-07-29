@@ -1,4 +1,4 @@
-package Mojolicious::Plugin::Tusu::PluginBase;
+package MojoX::Tusu::PluginBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
@@ -14,22 +14,22 @@ __END__
 
 =head1 NAME
 
-Mojolicious::Plugin::Tusu::PluginBase - Base Class for template plugins for Mojolicious::Plugin::Tusu
+MojoX::Tusu::PluginBase - Base Class for template plugins for MojoX::Tusu
 
 =head1 SYNOPSIS
     
     package YourPlugin;
     use strict;
     use warnings;
-    use base qw(Mojolicious::Plugin::Tusu::PluginBase);
+    use base qw(MojoX::Tusu::PluginBase);
     
     # inside template..
     # <% YourPlugin::some_func(@your_args) %>
 
 =head1 DESCRIPTION
 
-C<Mojolicious::Plugin::Tusu::PluginBase> is a Plugin Base class for
-Mojolicious::Plugin::Tusu sub framework on mojolicious. This class inherits
+C<MojoX::Tusu::PluginBase> is a Plugin Base class for
+MojoX::Tusu sub framework on mojolicious. This class inherits
 all method from Text::PSTemplate::PluginBase.
 
 =head1 METHODS

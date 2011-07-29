@@ -97,7 +97,7 @@ Document root directory. Defaults to the current directory.
 
 =head1 AUTHOR
 
-Tatsuhiko Miyagawa
+Sugama Keita
 
 =head1 SEE ALSO
 

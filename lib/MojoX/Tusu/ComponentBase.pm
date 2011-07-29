@@ -1,4 +1,4 @@
-package Mojolicious::Plugin::Tusu::ComponentBase;
+package MojoX::Tusu::ComponentBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
@@ -53,14 +53,14 @@ __END__
 
 =head1 NAME
 
-Mojolicious::Plugin::Tusu::ComponentBase - Base Class for WAF component
+MojoX::Tusu::ComponentBase - Base Class for WAF component
 
 =head1 SYNOPSIS
     
     package YourComponent;
     use strict;
     use warnings;
-    use base qw(Mojolicious::Plugin::Tusu::ComponentBase);
+    use base qw(MojoX::Tusu::ComponentBase);
     
     sub your_action1 {
         my ($self, $controller) = @_;
@@ -85,8 +85,8 @@ Mojolicious::Plugin::Tusu::ComponentBase - Base Class for WAF component
 
 =head1 DESCRIPTION
 
-C<Mojolicious::Plugin::Tusu::ComponentBase> is a Component Base class for
-Mojolicious::Plugin::Tusu sub framework on mojolicious. This class inherits
+C<MojoX::Tusu::ComponentBase> is a Component Base class for
+MojoX::Tusu sub framework on mojolicious. This class inherits
 all methods from Text::PSTemplate::PluginBase.
 
 =head1 METHODS
@@ -106,7 +106,7 @@ Sets ini data with hash ref.
 =head2 $self->init($app)
 
 This is a hook method for initializing component. This will automatically be
-called from Mojolicious::Plugin::Tusu->plug method.
+called from constructor.
 
 =head1 SEE ALSO
 

@@ -1,7 +1,7 @@
-package Mojolicious::Plugin::Tusu::Plugin::Mojolicious;
+package MojoX::Tusu::Plugin::Mojolicious;
 use strict;
 use warnings;
-use base qw(Mojolicious::Plugin::Tusu::PluginBase);
+use base qw(MojoX::Tusu::PluginBase);
     
     sub param : TplExport {
         
@@ -21,7 +21,7 @@ __END__
 
 =head1 NAME
 
-Mojolicious::Plugin::Tusu::Plugin::Mojolicious - Plugin port to Mojolicious helpers
+MojoX::Tusu::Plugin::Mojolicious - Plugin port to Mojolicious helpers
 
 =head1 SYNOPSIS
     

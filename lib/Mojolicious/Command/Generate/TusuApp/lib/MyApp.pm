@@ -1,6 +1,5 @@
 package <<% $class %>>;
 use Mojo::Base 'Mojolicious';
-use Mojolicious::Plugin::Tusu;
 
 # This method will run once at server start
 sub startup {

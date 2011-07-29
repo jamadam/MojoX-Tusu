@@ -6,8 +6,6 @@ use Text::PSTemplate;
 use Mojo::Base 'Mojolicious::Plugin';
 use Scalar::Util qw(weaken);
 use Mojo::Util;
-our $VERSION = '0.25';
-$VERSION = eval $VERSION; ## no critic
     
     our $APP;
     our $CONTROLLER;
@@ -66,9 +64,9 @@ $VERSION = eval $VERSION; ## no critic
         {
             local $APP = $app;
             $engine->plug(
-                'Mojolicious::Plugin::Tusu::ComponentBase'      => undef,
-                'Mojolicious::Plugin::Tusu::Plugin::Util'       => '',
-                'Mojolicious::Plugin::Tusu::Plugin::Mojolicious' => 'Mojolicious',
+                'MojoX::Tusu::ComponentBase'      => undef,
+                'MojoX::Tusu::Plugin::Util'       => '',
+                'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
                 %{$args->{plugins}}
             );
         }
@@ -368,104 +366,6 @@ features such as directory_index, error_document and file permissions checking.
 One of the intent of this module is to enhance existing static websites into
 dynamic with minimal effort. The chances are that most typical website data are
 transplantable with no change at all.
-
-=head2 Installation
-
-    $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.35
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Mojolicious-Plugin-Tusu/tarball/master/v0.25
-
-=head2 Getting Started
-
-    $ mojo generate tusu_app MyApp
-    $ cd ./my_app
-    $ prove
-    $ ./script/my_app daemon
-    Server available at http://127.0.0.1:3000.
-
-=head2 Template Syntax
-
-See L<https://github.com/jamadam/Text-PSTemplate> for detail.
-
-In addition to Text::PSTemplate's default syntax, Mojolicious::Plugin::Tusu
-provides short cut for html escaping as follows
-
-    <% $var %> normal
-    <%= $var %> escaped
-    <%= some_func(...) %> escaped
-
-=head2 Components & Plugins
-
-Mojo::Tusu provides object oriented component & plugin framework. You can
-easily add your custom features into your website. The following is an example
-for plugin development.
-
-    <span><% questionize('Hello') %></span>
-
-To make it possible, you should write a module like this. 
-
-    package MyUtility;
-    use strict;
-    use warnings;
-    use base 'Mojolicious::Plugin::Tusu::PluginBase';
-    
-    sub questionize : TplExport {
-        my ($self, $sentence) = @_;
-        my $c = $self->controller; # mojolicious controller in case you need
-        return $sentence . '?';
-    }
-
-To activate this plugin, you must plug-in this at mojolicious startup method.
-
-    sub startup {
-        my $self = shift;
-        my $tusu = $self->plugin(tusu => {
-            plugins => {
-                'YourUtility' =>  '' ## namespace is ''
-            }
-        });
-    }
-
-The following is an example for component development.
-
-    <div id="productContainer">
-        <% Product::list_by_category('books', 10) %>
-    </div>
-
-To make it possible, you should write a module like this.
-
-    package Product;
-    use strict;
-    use warnings;
-    use base 'Mojolicious::Plugin::Tusu::ComponentBase';
-    
-    sub init {
-        my ($self, $app) = @_;
-        $self->set_ini({...}); ### DB SETTING OR SOMETHING
-    }
-    
-    sub list_by_category : TplExport {
-        my ($self, $category, $limit) = @_;
-        my $c = $self->controller; # mojolicious controller in case you need
-        
-        # MAY BE ACCESS TO YOUR DB HERE
-        
-        return $html_snippet;
-    }
-
-To activate this component, you must plug-in this at mojolicious startup method.
-
-    sub startup {
-        my $self = shift;
-        my $tusu = $self->plugin(tusu => {
-            plugins => {
-                Product => undef
-            },
-        });
-    }
-
-The only difference between plugins and components is that components can have
-an init method to have own data.
 
 =head1 OPTIONS
 

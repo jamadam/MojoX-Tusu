@@ -13,7 +13,7 @@ my $t = Test::Mojo->new('<<% $class %>>');
 
 $t->get_ok('/')->status_is(200)
   ->content_type_is('text/html;charset=UTF-8')
-  ->content_like(qr/Mojolicious::Plugin::Tusu Web Framework/i);
+  ->content_like(qr/MojoX::Tusu Web Framework/i);
 
 $t->post_ok('/inquiry/')->status_is(200)
   ->content_type_is('text/html;charset=UTF-8')

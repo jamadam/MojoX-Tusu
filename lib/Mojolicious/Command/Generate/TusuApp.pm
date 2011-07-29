@@ -8,7 +8,7 @@ use File::Path;
 use File::Copy;
 
 has description => <<'EOF';
-Generate Mojolicious::Plugin::Tusu application directory structure.
+Generate MojoX::Tusu application directory structure.
 EOF
 has usage => <<"EOF";
 usage: $0 generate tusu app [NAME]
@@ -208,10 +208,10 @@ EOF
         Text/PSTemplate/Plugin/Util.pm
         Text/PSTemplate/PluginBase.pm
         Mojolicious/Plugin/Tusu.pm
-        Mojolicious/Plugin/Tusu/ComponentBase.pm
-        Mojolicious/Plugin/Tusu/Plugin/Mojolicious.pm
-        Mojolicious/Plugin/Tusu/Plugin/Util.pm
-        Mojolicious/Plugin/Tusu/PluginBase.pm
+        MojoX/Tusu/ComponentBase.pm
+        MojoX/Tusu/Plugin/Mojolicious.pm
+        MojoX/Tusu/Plugin/Util.pm
+        MojoX/Tusu/PluginBase.pm
     );
     
     for my $file (@bundle) {
@@ -259,8 +259,7 @@ __END__
 
 =head1 NAME
 
-Mojolicious::Command::Generate::TusuApp -
-Mojolicious::PluginL::Tusu App Generator Command
+Mojolicious::Command::Generate::TusuApp - MojoX::Tusu App Generator Command
 
 =head1 SYNOPSIS
 

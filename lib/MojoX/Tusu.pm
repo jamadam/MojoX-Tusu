@@ -1,3 +1,13 @@
+package MojoX::Tusu;
+use strict;
+use warnings;
+our $VERSION = '0.25';
+$VERSION = eval $VERSION; ## no critic
+
+1;
+
+__END__
+
 =head1 NAME
 
 MojoX::Tusu - Apache-like dispatcher for Mojolicious

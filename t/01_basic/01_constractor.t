@@ -17,8 +17,8 @@ use Test::Mojo;
         is(ref $r, 'Mojolicious::Plugin::Tusu');
         my $engine = $r->engine;
         is(ref $engine, 'Text::PSTemplate');
-        is(ref $engine->get_plugin('Mojolicious::Plugin::Tusu::ComponentBase'), 'Mojolicious::Plugin::Tusu::ComponentBase');
-        is(ref $engine->get_plugin('Mojolicious::Plugin::Tusu::Plugin::Mojolicious'), 'Mojolicious::Plugin::Tusu::Plugin::Mojolicious');
+        is(ref $engine->get_plugin('MojoX::Tusu::ComponentBase'), 'MojoX::Tusu::ComponentBase');
+        is(ref $engine->get_plugin('MojoX::Tusu::Plugin::Mojolicious'), 'MojoX::Tusu::Plugin::Mojolicious');
     }
 
 package Test::App;

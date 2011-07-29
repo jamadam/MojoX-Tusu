@@ -69,7 +69,7 @@ use Test::Mojo;
 		package SomeComponent;
 		use strict;
 		use warnings;
-		use base 'Mojolicious::Plugin::Tusu::ComponentBase';
+		use base 'MojoX::Tusu::ComponentBase';
 			
 			my $inited;
 			
