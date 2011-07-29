@@ -351,19 +351,19 @@ For lite app
 
 =head1 DESCRIPTION
 
-C<Mojolicious::Plugin::Tusu> is a sub framework on Mojolicious using Text::PSTemplate
-for renderer. With this framework, you can deploy directory based web sites
-onto Mojolicious at once.
+C<Mojolicious::Plugin::Tusu> is a sub framework on Mojolicious using
+Text::PSTemplate for renderer. With this framework, you can deploy directory
+based web sites onto Mojolicious at once.
 
 This framework automatically activate own dispatcher which behaves like apache
 web server. You can build your web site into single document root directory
 named public_html in hierarchal structure. The document root directory can
 contain both server-parsed-documents and static files such as images.
 
-Mojolicious::Plugin::Tusu doesn't require files to be named like index.html.ep style but just
-like index.html. You can specify which files to be server parsable by telling
-it the extensions. It also provides some more apache-like features such as
-directory_index, error_document and file permissions checking.
+Mojolicious::Plugin::Tusu doesn't require files to be named like index.html.ep
+style but just like index.html. You can specify which files to be server
+parsable by telling it the extensions. It also provides some more apache-like
+features such as directory_index, error_document and file permissions checking.
 
 One of the intent of this module is to enhance existing static websites into
 dynamic with minimal effort. The chances are that most typical website data are
@@ -373,7 +373,7 @@ transplantable with no change at all.
 
     $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
     $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.34
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Mojolicious-Plugin-Tusu/tarball/master/v0.24
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Mojolicious-Plugin-Tusu/tarball/master/v0.25
 
 =head2 Getting Started
 
@@ -387,8 +387,8 @@ transplantable with no change at all.
 
 See L<https://github.com/jamadam/Text-PSTemplate> for detail.
 
-In addition to Text::PSTemplate's default syntax, Mojolicious::Plugin::Tusu provides short cut
-for html escaping as follows
+In addition to Text::PSTemplate's default syntax, Mojolicious::Plugin::Tusu
+provides short cut for html escaping as follows
 
     <% $var %> normal
     <%= $var %> escaped
@@ -467,28 +467,18 @@ To activate this component, you must plug-in this at mojolicious startup method.
 The only difference between plugins and components is that components can have
 an init method to have own data.
 
-=head1 METHODS
+=head1 OPTIONS
 
-=head2 Mojolicious::Plugin::Tusu->new($app)
+=head2 document_root => string
 
-Constructor. 
-    
-    $tusu = Mojolicious::Plugin::Tusu->new($app)
-
-=head2 $instance->register($app)
-
-This method internally called. It takes following arguments in hash.
-
-=head3 document_root => string
-
-This argument sets root directory for templates and static files. Following
+This option sets root directory for templates and static files. Following
 example is default setting.
 
     my $tusu = $self->plugin(tusu => {
         document_root => $self->home->rel_dir('public_html')
     });
 
-=head3 plugins => hash
+=head2 plugins => hash
 
     my $tusu = $self->plugin(tusu => {
         plugins => {
@@ -498,7 +488,7 @@ example is default setting.
         },
     });
 
-=head3 encoding => string or array ref
+=head2 encoding => string or array ref
 
 This option sets encoding for template files. Array ref causes auto detection
 active.
@@ -513,7 +503,7 @@ active.
         encoding => ['Shift-JIS', 'utf8'],
     });
 
-=head3 directory_index => array ref
+=head2 directory_index => array ref
 
 This option sets default file names for searching files in directory when
 the request path doesn't ended with file name. And this setting also affects to
@@ -523,7 +513,7 @@ the default setting.
     my $tusu = Mojolicious::Plugin::Tusu->new($app);
     $tusu->directory_index(['index.html', 'index.htm']);
 
-=head3 extensions_to_render => array ref
+=head2 extensions_to_render => array ref
 
 This option sets the extensions to be parsed by tusu renderer. If request
 doesn't match any of extensions, dispatcher try to render it as static file.
@@ -532,7 +522,7 @@ Following setting is the default.
     my $tusu = Mojolicious::Plugin::Tusu->new($self);
     $tusu->extensions_to_render(['html','htm','xml'])
 
-=head3 error_document => hash ref
+=head2 error_document => hash ref
 
 This option setup custom error pages like apache's ErrorDocument.
 
@@ -541,6 +531,18 @@ This option setup custom error pages like apache's ErrorDocument.
         403 => '/errors/403.html',
         500 => '/errors/405.html',
     })
+
+=head1 METHODS
+
+=head2 Mojolicious::Plugin::Tusu->new($app)
+
+Constructor. 
+    
+    $tusu = Mojolicious::Plugin::Tusu->new($app)
+
+=head2 $instance->register($app)
+
+This method internally called.
 
 =head2 $instance->engine
 
