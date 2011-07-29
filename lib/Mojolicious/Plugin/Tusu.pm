@@ -16,9 +16,9 @@ $VERSION = eval $VERSION; ## no critic
         my $engine = Text::PSTemplate->new;
         $engine->set_filter('=', \&Mojo::Util::html_escape);
     });
-    __PACKAGE__->attr('extensions_to_render', sub {['html','htm','xml']});
-    __PACKAGE__->attr('directory_index', sub {['index.html','index.htm']});
-    __PACKAGE__->attr('error_document', sub {{}});
+    __PACKAGE__->attr('extensions_to_render');
+    __PACKAGE__->attr('directory_index');
+    __PACKAGE__->attr('error_document');
     
     # internal use
     __PACKAGE__->attr('_app');
@@ -29,12 +29,19 @@ $VERSION = eval $VERSION; ## no critic
         
         my $engine = $self->engine;
         
-        $args->{document_root} ||= $app->home->rel_dir('public_html');
-        $args->{encoding} ||= 'utf8';
-        $args->{extensions_to_render} ||= $self->extensions_to_render;
-        if ($args->{error_document}) {
-            $self->error_document($args->{error_document});
-        }
+        $args = {
+            document_root           => $app->home->rel_dir('public_html'),
+            encoding                => 'utf8',
+            extensions_to_render    => ['html','htm','xml'],
+            directory_index         => ['index.html','index.htm'],
+            error_document          => {},
+            %$args,
+        };
+        
+        $self->directory_index($args->{directory_index});
+        $self->error_document($args->{error_document});
+        $self->extensions_to_render($args->{extensions_to_render});
+        
         $app->hook(after_build_tx => sub {
             my $app = $_[1];
             if (! $self->_default_route_set) {
@@ -48,10 +55,6 @@ $VERSION = eval $VERSION; ## no critic
         
         $app->on_process(sub {$self->_dispatch(@_)});
         
-        if ($args->{directory_index}) {
-            $self->directory_index($args->{directory_index});
-        }
-        
         $self->_app($app);
         
         $app->static->root($args->{document_root});
@@ -63,16 +66,13 @@ $VERSION = eval $VERSION; ## no critic
         {
             local $APP = $app;
             $engine->plug(
-                'Mojolicious::Plugin::Tusu::ComponentBase' => undef,
-                'Mojolicious::Plugin::Tusu::Plugin::Util' => '',
+                'Mojolicious::Plugin::Tusu::ComponentBase'      => undef,
+                'Mojolicious::Plugin::Tusu::Plugin::Util'       => '',
                 'Mojolicious::Plugin::Tusu::Plugin::Mojolicious' => 'Mojolicious',
                 %{$args->{plugins}}
             );
         }
         
-        if ($args->{extensions_to_render}) {
-            $self->extensions_to_render($args->{extensions_to_render});
-        }
         $engine->set_encoding($args->{encoding});
         
         $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
