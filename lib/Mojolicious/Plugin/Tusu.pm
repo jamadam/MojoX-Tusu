@@ -1,9 +1,9 @@
-package MojoX::Tusu;
+package Mojolicious::Plugin::Tusu;
 use strict;
 use warnings;
 use Try::Tiny;
 use Text::PSTemplate;
-use base qw(Mojo::Base);
+use Mojo::Base 'Mojolicious::Plugin';
 use Scalar::Util qw(weaken);
 use Mojo::Util;
 our $VERSION = '0.25';
@@ -23,20 +23,18 @@ $VERSION = eval $VERSION; ## no critic
     # internal use
     __PACKAGE__->attr('_app');
     __PACKAGE__->attr('_default_route_set');
-    
-    ### ---
-    ### Constructor
-    ### ---
-    sub new {
+
+    sub register {
+        my ($self, $app, $args) = @_;
         
-        my ($class, $app, $args) = @_;
-        
-        my $self = $class->SUPER::new;
         my $engine = $self->engine;
         
         $args->{document_root} ||= $app->home->rel_dir('public_html');
         $args->{encoding} ||= 'utf8';
-        
+        $args->{extensions_to_render} ||= $self->extensions_to_render;
+        if ($args->{error_document}) {
+            $self->error_document($args->{error_document});
+        }
         $app->hook(after_build_tx => sub {
             my $app = $_[1];
             if (! $self->_default_route_set) {
@@ -50,6 +48,10 @@ $VERSION = eval $VERSION; ## no critic
         
         $app->on_process(sub {$self->_dispatch(@_)});
         
+        if ($args->{directory_index}) {
+            $self->directory_index($args->{directory_index});
+        }
+        
         $self->_app($app);
         
         $app->static->root($args->{document_root});
@@ -61,13 +63,16 @@ $VERSION = eval $VERSION; ## no critic
         {
             local $APP = $app;
             $engine->plug(
-                'MojoX::Tusu::ComponentBase' => undef,
-                'MojoX::Tusu::Plugin::Util' => '',
-                'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
+                'Mojolicious::Plugin::Tusu::ComponentBase' => undef,
+                'Mojolicious::Plugin::Tusu::Plugin::Util' => '',
+                'Mojolicious::Plugin::Tusu::Plugin::Mojolicious' => 'Mojolicious',
                 %{$args->{plugins}}
             );
         }
         
+        if ($args->{extensions_to_render}) {
+            $self->extensions_to_render($args->{extensions_to_render});
+        }
         $engine->set_encoding($args->{encoding});
         
         $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
@@ -82,7 +87,6 @@ $VERSION = eval $VERSION; ## no critic
     sub bootstrap {
         
         my ($self, $c, $plugin, $action) = @_;
-        
         local $CONTROLLER = $c;
         return $self->engine->get_plugin($plugin)->$action($c);
     }
@@ -311,31 +315,30 @@ __END__
 
 =head1 NAME
 
-MojoX::Tusu - Apache-like dispatcher for Mojolicious
+Mojolicious::Plugin::Tusu - Apache-like dispatcher for Mojolicious
 
 =head1 SYNOPSIS
 
-    use MojoX::Tusu;
+    use Mojolicious::Plugin::Tusu;
 
 For non lite app
 
     sub startup {
         my $self = shift;
-        my $tusu = MojoX::Tusu->new($self);
+        my $tusu = $self->plugin(tusu => {});
     }
 
 OR
 
     sub startup {
         my $self = shift;
-        my $tusu = MojoX::Tusu->new($self, {
+        my $tusu = $self->plugin(tusu => {
             document_root => $self->home->rel_dir('www2'),
             plugins => {
                 'Your::Component' => 'YC',
             },
+            extensions_to_render => [qw(html htm xml txt)],
         });
-        
-        $tusu->extensions_to_render([qw(html htm xml txt)]);
         
         $r->route('/specific/path')->to(cb => sub {
             $tusu->bootstrap($_[0], 'Your::Component', 'your_method');
@@ -344,11 +347,11 @@ OR
 
 For lite app
 
-    my $tusu = MojoX::Tusu->new(app);
+    my $tusu = plugin tusu => {...};
 
 =head1 DESCRIPTION
 
-C<MojoX::Tusu> is a sub framework on Mojolicious using Text::PSTemplate
+C<Mojolicious::Plugin::Tusu> is a sub framework on Mojolicious using Text::PSTemplate
 for renderer. With this framework, you can deploy directory based web sites
 onto Mojolicious at once.
 
@@ -357,7 +360,7 @@ web server. You can build your web site into single document root directory
 named public_html in hierarchal structure. The document root directory can
 contain both server-parsed-documents and static files such as images.
 
-MojoX::Tusu doesn't require files to be named like index.html.ep style but just
+Mojolicious::Plugin::Tusu doesn't require files to be named like index.html.ep style but just
 like index.html. You can specify which files to be server parsable by telling
 it the extensions. It also provides some more apache-like features such as
 directory_index, error_document and file permissions checking.
@@ -370,7 +373,7 @@ transplantable with no change at all.
 
     $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
     $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.34
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.24
+    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Mojolicious-Plugin-Tusu/tarball/master/v0.24
 
 =head2 Getting Started
 
@@ -384,7 +387,7 @@ transplantable with no change at all.
 
 See L<https://github.com/jamadam/Text-PSTemplate> for detail.
 
-In addition to Text::PSTemplate's default syntax, MojoX::Tusu provides short cut
+In addition to Text::PSTemplate's default syntax, Mojolicious::Plugin::Tusu provides short cut
 for html escaping as follows
 
     <% $var %> normal
@@ -404,7 +407,7 @@ To make it possible, you should write a module like this.
     package MyUtility;
     use strict;
     use warnings;
-    use base 'MojoX::Tusu::PluginBase';
+    use base 'Mojolicious::Plugin::Tusu::PluginBase';
     
     sub questionize : TplExport {
         my ($self, $sentence) = @_;
@@ -416,8 +419,11 @@ To activate this plugin, you must plug-in this at mojolicious startup method.
 
     sub startup {
         my $self = shift;
-        my $tusu = MojoX::Tusu->new($self);
-        $tusu->plug('YourUtility', ''); ## second argument is the namespace
+        my $tusu = $self->plugin(tusu => {
+            plugins => {
+                'YourUtility' =>  '' ## namespace is ''
+            }
+        });
     }
 
 The following is an example for component development.
@@ -431,7 +437,7 @@ To make it possible, you should write a module like this.
     package Product;
     use strict;
     use warnings;
-    use base 'MojoX::Tusu::ComponentBase';
+    use base 'Mojolicious::Plugin::Tusu::ComponentBase';
     
     sub init {
         my ($self, $app) = @_;
@@ -451,7 +457,7 @@ To activate this component, you must plug-in this at mojolicious startup method.
 
     sub startup {
         my $self = shift;
-        my $tusu = MojoX::Tusu->new($self, {
+        my $tusu = $self->plugin(tusu => {
             plugins => {
                 Product => undef
             },
@@ -463,27 +469,28 @@ an init method to have own data.
 
 =head1 METHODS
 
-=head2 MojoX::Tusu->new($app)
+=head2 Mojolicious::Plugin::Tusu->new($app)
 
-Constructor. This method takes Mojolicious app for argument and returns
-MojoX::Tusu instance.
+Constructor. 
     
-    $tusu = MojoX::Tusu->new($app)
+    $tusu = Mojolicious::Plugin::Tusu->new($app)
 
-new also takes extra arguments in hash.
+=head2 $instance->register($app)
+
+This method internally called. It takes following arguments in hash.
 
 =head3 document_root => string
 
 This argument sets root directory for templates and static files. Following
 example is default setting.
 
-    my $tusu = MojoX::Tusu->new($app, {
+    my $tusu = $self->plugin(tusu => {
         document_root => $self->home->rel_dir('public_html')
     });
 
 =head3 plugins => hash
 
-    my $tusu = MojoX::Tusu->new($self, {
+    my $tusu = $self->plugin(tusu => {
         plugins => {
             'Namespace::A' => 'A',   # namespace is A
             'Namespace::B' => '',    # namespace is ''
@@ -491,37 +498,56 @@ example is default setting.
         },
     });
 
-=head2 encoding => string or array ref
+=head3 encoding => string or array ref
 
 This option sets encoding for template files. Array ref causes auto detection
 active.
 
-    my $tusu = MojoX::Tusu->new($self, {
+    my $tusu = $self->plugin(tusu => {
         encoding => 'Shift-JIS',
     });
     
     or..
     
-    my $tusu = MojoX::Tusu->new($self, {
+    my $tusu = $self->plugin(tusu => {
         encoding => ['Shift-JIS', 'utf8'],
     });
 
-=head2 $instance->directory_index($candidate1 [, $candidate2])
+=head3 directory_index => array ref
 
-This method sets default file names for searching files in directory when
+This option sets default file names for searching files in directory when
 the request path doesn't ended with file name. And this setting also affects to
 inside template context such as include('path') function. Following example is
 the default setting.
 
-    my $tusu = MojoX::Tusu->new($app);
+    my $tusu = Mojolicious::Plugin::Tusu->new($app);
     $tusu->directory_index(['index.html', 'index.htm']);
+
+=head3 extensions_to_render => array ref
+
+This option sets the extensions to be parsed by tusu renderer. If request
+doesn't match any of extensions, dispatcher try to render it as static file.
+Following setting is the default.
+
+    my $tusu = Mojolicious::Plugin::Tusu->new($self);
+    $tusu->extensions_to_render(['html','htm','xml'])
+
+=head3 error_document => hash ref
+
+This option setup custom error pages like apache's ErrorDocument.
+
+    $instance->error_document({
+        404 => '/errors/404.html',
+        403 => '/errors/403.html',
+        500 => '/errors/405.html',
+    })
 
 =head2 $instance->engine
 
 This returns Text::PSTemplate instance. You can customize the template system
 behavior by calling parser methods directly.
     
-    my $tusu = MojoX::Tusu->new($app);
+    my $tusu = Mojolicious::Plugin::Tusu->new($app);
     my $pst = $tusu->engine;
     $pst->set_delimiter('<!--', '-->');
 
@@ -530,29 +556,10 @@ behavior by calling parser methods directly.
 This method is a sub dispatcher method. You can specify a class and a method the
 route to be dispatched to.
 
-    my $tusu = MojoX::Tusu->new($self);
+    my $tusu = Mojolicious::Plugin::Tusu->new($self);
     $r->route('/some/path')->via('post')->to(cb => sub {
         $tusu->bootstrap($c, 'Your::Component', 'post');
     });
-
-=head2 $instance->extensions_to_render($array_ref)
-
-This method sets the extensions to be parsed by tusu renderer. If request
-doesn't match any of extensions, dispatcher try to render it as static file.
-Following setting is the default.
-
-    my $tusu = MojoX::Tusu->new($self);
-    $tusu->extensions_to_render(['html','htm','xml'])
-
-=head2 $instance->error_document($hash_ref)
-
-This method setup custom error pages like apache's ErrorDocument.
-
-    $instance->error_document({
-        404 => '/errors/404.html',
-        403 => '/errors/403.html',
-        500 => '/errors/405.html',
-    })
 
 =head1 What does Tusu mean?
 

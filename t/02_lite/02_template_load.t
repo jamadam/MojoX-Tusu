@@ -8,13 +8,12 @@ use lib 'lib';
     BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'development' }
 
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
     
 use Test::More tests => 9;
 
-    my $tusu = MojoX::Tusu->new(app, {document_root => 't/public_html'});
+    my $tusu = plugin 'tusu' => {document_root => 't/public_html'};
     
     my $t = Test::Mojo->new;
     $t->get_ok('/')

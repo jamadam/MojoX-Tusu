@@ -1,7 +1,7 @@
-package MojoX::Tusu::Plugin::Mojolicious;
+package Mojolicious::Plugin::Tusu::Plugin::Mojolicious;
 use strict;
 use warnings;
-use base qw(MojoX::Tusu::PluginBase);
+use base qw(Mojolicious::Plugin::Tusu::PluginBase);
     
     sub param : TplExport {
         
@@ -21,7 +21,7 @@ __END__
 
 =head1 NAME
 
-MojoX::Tusu::Plugin::Mojolicious - Plugin port to Mojolicious helpers
+Mojolicious::Plugin::Tusu::Plugin::Mojolicious - Plugin port to Mojolicious helpers
 
 =head1 SYNOPSIS
     
@@ -44,7 +44,7 @@ Generate a portable Mojo::URL object with base for a route, path or URL.
 
 =head1 SEE ALSO
 
-L<Mojolicious::Controller>, L<Text::PSTemplate>, L<MojoX::Renderer>
+L<Mojolicious::Controller>, L<Text::PSTemplate>, L<Mojolicious::Plugin::Renderer>
 
 =head1 AUTHOR
 

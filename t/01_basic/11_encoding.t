@@ -4,7 +4,6 @@ use warnings;
 use lib 'lib';
 use base 'Test::Class';
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 use utf8;
 use Encode;
@@ -29,11 +28,10 @@ use Encode::Guess;
 			use strict;
 			use warnings;
 			use base 'Mojolicious';
-			use MojoX::Tusu;
 			
 			sub startup {
 				my $self = shift;
-				my $tusu = MojoX::Tusu->new($self, {
+				my $tusu = $self->plugin(tusu => {
 					document_root => 't/public_html',
 					encoding => ['Shift-JIS', 'utf8'],
 				});

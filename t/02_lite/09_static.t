@@ -8,15 +8,15 @@ use lib 'lib';
     BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'production' }
 
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
 
 use Test::More tests => 24;
 
-    my $tusu = MojoX::Tusu->new(app, {
+    my $tusu = plugin tusu => {
 		document_root => app->home->rel_dir('../public_html'),
-    });
+        directory_index => ['a.gif'],
+    };
     
     my $t = Test::Mojo->new;
     $t->get_ok('/09/img/a.gif')
@@ -26,8 +26,6 @@ use Test::More tests => 24;
     $t->get_ok('/09/img/not_found.gif')
 		->status_is(404)
 		->text_is('title', 'Page Not Found');
-
-    $tusu->directory_index(['a.gif']);
 
     $t->get_ok('/09/img/a.gif')
 		->status_is(200)

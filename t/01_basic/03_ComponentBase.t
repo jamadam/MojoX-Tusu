@@ -4,7 +4,6 @@ use warnings;
 use lib 'lib';
 use base 'Test::Class';
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 
     my $backup = $ENV{MOJO_MODE} || '';
@@ -43,18 +42,16 @@ package SomeApp;
 use strict;
 use warnings;
 use base 'Mojolicious';
-use MojoX::Tusu;
     
     sub startup {
         my $self = shift;
     
-        my $tusu = MojoX::Tusu->new($self, {
+        my $tusu = $self->plugin(tusu => {
 			plugins => {
 				'SomeComponent' => undef,
 			},
-			document_root => 't/public_html'
+			document_root => 't/public_html',
 		});
-        
         my $r = $self->routes;
         $r->route('/03/03_ComponentBase02.html')->to(cb => sub {
             $tusu->bootstrap($_[0], 'SomeComponent', 'post');
@@ -64,7 +61,7 @@ use MojoX::Tusu;
 package SomeComponent;
 use strict;
 use warnings;
-use base 'MojoX::Tusu::ComponentBase';
+use base 'Mojolicious::Plugin::Tusu::ComponentBase';
 
     sub post {
         

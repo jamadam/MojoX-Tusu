@@ -8,18 +8,17 @@ use lib 'lib';
     BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'development' }
 
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
     
 use Test::More tests => 9;
 
-    my $tusu = MojoX::Tusu->new(app, {
+    my $tusu = plugin tusu => {
 		plugins => {
 			'SomeComponent' => undef,
 		},
 		document_root => 't/public_html',
-	});
+	};
     
     any '/03/03_ComponentBase02.html' => sub {
         $tusu->bootstrap($_[0], 'SomeComponent', 'post');
@@ -41,7 +40,7 @@ use Test::More tests => 9;
 package SomeComponent;
 use strict;
 use warnings;
-use base 'MojoX::Tusu::ComponentBase';
+use base 'Mojolicious::Plugin::Tusu::ComponentBase';
 
     sub post {
         my ($self, $c) = @_;

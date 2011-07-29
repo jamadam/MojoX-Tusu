@@ -4,7 +4,6 @@ use warnings;
 use lib 'lib';
 use base 'Test::Class';
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 
     my $backup = $ENV{MOJO_MODE} || '';
@@ -94,26 +93,26 @@ package SomeApp;
 use strict;
 use warnings;
 use base 'Mojolicious';
-use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self, {document_root => 't/public_html'});
+    my $tusu = $self->plugin(tusu => {document_root => 't/public_html'});
 }
 
 package ErrorDocument;
 use strict;
 use warnings;
 use base 'Mojolicious';
-use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self, {document_root => 't/public_html'});
-	$tusu->error_document({
-		404 => '/08/err/404.html',
-		403 => '/08/err/403.html',
-		500 => '/08/err/500.html',
+    my $tusu = $self->plugin(tusu => {
+		document_root => 't/public_html',
+		error_document => {
+			404 => '/08/err/404.html',
+			403 => '/08/err/403.html',
+			500 => '/08/err/500.html',
+		}
 	});
 }
 

@@ -1,7 +1,7 @@
-package MojoX::Tusu::Plugin::Util;
+package Mojolicious::Plugin::Tusu::Plugin::Util;
 use strict;
 use warnings;
-use base qw(MojoX::Tusu::PluginBase);
+use base qw(Mojolicious::Plugin::Tusu::PluginBase);
 use Mojo::Util;
     
     sub escape : TplExport {
@@ -37,7 +37,7 @@ use Mojo::Util;
         my ($self) = @_;
         my $c = $self->controller;
         my $path = $c->url_for(@_[1.. scalar (@_) - 1])->to_abs;
-        return bless $path, 'MojoX::Tusu::Plugin::Util::URL';
+        return bless $path, 'Mojolicious::Plugin::Tusu::Plugin::Util::URL';
     }
     
     sub url_for : TplExport {
@@ -45,10 +45,10 @@ use Mojo::Util;
         my ($self) = @_;
         my $c = $self->controller;
         my $path = $c->url_for(@_[1.. scalar (@_) - 1]);
-        return bless $path, 'MojoX::Tusu::Plugin::Util::URL';
+        return bless $path, 'Mojolicious::Plugin::Tusu::Plugin::Util::URL';
     }
 
-package MojoX::Tusu::Plugin::Util::URL;
+package Mojolicious::Plugin::Tusu::Plugin::Util::URL;
 use strict;
 use warnings;
 use Mojo::Base -base;
@@ -78,7 +78,7 @@ __END__
 
 =head1 NAME
 
-MojoX::Tusu::Plugin::Util - Utility functions for template
+Mojolicious::Plugin::Tusu::Plugin::Util - Utility functions for template
 
 =head1 SYNOPSIS
     
@@ -122,7 +122,7 @@ Short cut for url_for($path)->to_abs()
 
 =head1 SEE ALSO
 
-L<Mojolicious::Controller>, L<Text::PSTemplate>, L<MojoX::Renderer>
+L<Mojolicious::Controller>, L<Text::PSTemplate>, L<Mojolicious::Plugin::Renderer>
 
 =head1 AUTHOR
 

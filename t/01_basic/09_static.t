@@ -4,7 +4,6 @@ use warnings;
 use lib 'lib';
 use base 'Test::Class';
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 
     my $backup = $ENV{MOJO_MODE} || '';
@@ -58,23 +57,23 @@ package SomeApp;
 use strict;
 use warnings;
 use base 'Mojolicious';
-use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self, {document_root => $self->home->rel_dir('../public_html')});
+    my $tusu = $self->plugin(tusu => {document_root => $self->home->rel_dir('../public_html')});
 }
 
 package SomeApp2;
 use strict;
 use warnings;
 use base 'Mojolicious';
-use MojoX::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self, {document_root => $self->home->rel_dir('../public_html')});
-    $tusu->directory_index(['a.gif']);
+    my $tusu = $self->plugin(tusu => {
+		document_root => $self->home->rel_dir('../public_html'),
+		directory_index => ['a.gif'],
+	});
 }
 
 __END__

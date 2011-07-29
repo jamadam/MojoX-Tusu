@@ -4,7 +4,7 @@ use warnings;
 use lib 'lib';
 use base 'Test::Class';
 use Test::More;
-use MojoX::Tusu;
+use Mojolicious::Plugin::Tusu;
 use Test::Mojo;
     
     BEGIN {
@@ -23,22 +23,22 @@ use Test::Mojo;
 	}
     
     sub t01_permission_ok : Test(4) {
-        is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ok.html'), 1);
-        is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ng.html'), 0);
-        is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ng/permission_ok.html'), 0);
-        is(MojoX::Tusu::_permission_ok('t/00_partial/f/t01/permission_ng/permission_ng.html'), 0);
+        is(Mojolicious::Plugin::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ok.html'), 1);
+        is(Mojolicious::Plugin::Tusu::_permission_ok('t/00_partial/f/t01/permission_ok/permission_ng.html'), 0);
+        is(Mojolicious::Plugin::Tusu::_permission_ok('t/00_partial/f/t01/permission_ng/permission_ok.html'), 0);
+        is(Mojolicious::Plugin::Tusu::_permission_ok('t/00_partial/f/t01/permission_ng/permission_ng.html'), 0);
     }
     
     sub t02_fill_filename : Test(9) {
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02', ['index.html']), 't/00_partial/f/t02/index.html');
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02/', ['index.html']), 't/00_partial/f/t02/index.html');
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02/a', ['index.html']), 't/00_partial/f/t02/a/index.html');
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02/a/', ['index.html']), 't/00_partial/f/t02/a/index.html');
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02/b/', ['index.html']), undef);
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02', ['index2.html']), undef);
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02/', ['index2.html']), undef);
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02/a', ['index2.html']), undef);
-        is(MojoX::Tusu::_fill_filename('t/00_partial/f/t02/a/', ['index2.html']), undef);
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02', ['index.html']), 't/00_partial/f/t02/index.html');
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02/', ['index.html']), 't/00_partial/f/t02/index.html');
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02/a', ['index.html']), 't/00_partial/f/t02/a/index.html');
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02/a/', ['index.html']), 't/00_partial/f/t02/a/index.html');
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02/b/', ['index.html']), undef);
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02', ['index2.html']), undef);
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02/', ['index2.html']), undef);
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02/a', ['index2.html']), undef);
+        is(Mojolicious::Plugin::Tusu::_fill_filename('t/00_partial/f/t02/a/', ['index2.html']), undef);
     }
 
 __END__

@@ -3,10 +3,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %params = (
-    NAME          => 'MojoX::Tusu',
+    NAME          => 'Mojolicious::Plugin::Tusu',
     AUTHOR        => 'sugama <sugama@jamadam.com>',
-    VERSION_FROM  => 'lib/MojoX/Tusu.pm',
-    ABSTRACT_FROM => 'lib/MojoX/Tusu.pm',
+    VERSION_FROM  => 'lib/Mojolicious/Plugin/Tusu.pm',
+    ABSTRACT_FROM => 'lib/Mojolicious/Plugin/Tusu.pm',
     LICENSE       => 'perl',
     PREREQ_PM     => {
     },

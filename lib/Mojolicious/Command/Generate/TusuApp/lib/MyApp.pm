@@ -1,11 +1,11 @@
 package <<% $class %>>;
 use Mojo::Base 'Mojolicious';
-use MojoX::Tusu;
+use Mojolicious::Plugin::Tusu;
 
 # This method will run once at server start
 sub startup {
   my $self = shift;
-  my $tusu = MojoX::Tusu->new($self);
+  my $tusu = Mojolicious::Plugin::Tusu->new($self);
   $tusu->plug('<<% $class %>>::YourComponent', 'YC');
   
   # Following lines are optional

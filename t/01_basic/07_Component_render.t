@@ -4,7 +4,6 @@ use warnings;
 use lib 'lib';
 use base 'Test::Class';
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 
     my $backup = $ENV{MOJO_MODE} || '';
@@ -19,12 +18,11 @@ use Test::Mojo;
 			use strict;
 			use warnings;
 			use base 'Mojolicious';
-			use MojoX::Tusu;
 			use Test::More;
 				
 				sub startup {
 					my $self = shift;
-					my $tusu = MojoX::Tusu->new($self, {
+					my $tusu = $self->plugin(tusu => {
 						plugins => {
 							'SomeComponent' => undef,
 						},
@@ -41,7 +39,7 @@ use Test::Mojo;
         $t->get_ok('/')
 			->status_is(200)
 			->content_is('default');
-        $t->get_ok('/07/some_component/')
+        $t->get_ok('/07/some_component/index2.html')
 			->status_is(200)
 			->content_is('index2');
     }
@@ -50,12 +48,11 @@ use Test::Mojo;
 			use strict;
 			use warnings;
 			use base 'Mojolicious';
-			use MojoX::Tusu;
 				
 				sub startup {
 					my $self = shift;
 				
-					my $tusu = MojoX::Tusu->new($self, {
+					my $tusu = $self->plugin(tusu => {
 						plugins => {
 							'SomeComponent' => undef,
 						},
@@ -63,7 +60,7 @@ use Test::Mojo;
 					});
 					
 					my $r = $self->routes;
-					$r->route('/07/some_component')->to(cb => sub {
+					$r->route('/07/some_component/index2.html')->to(cb => sub {
 						$tusu->bootstrap($_[0], 'SomeComponent', 'get');
 					});
 				}
@@ -72,7 +69,7 @@ use Test::Mojo;
 		package SomeComponent;
 		use strict;
 		use warnings;
-		use base 'MojoX::Tusu::ComponentBase';
+		use base 'Mojolicious::Plugin::Tusu::ComponentBase';
 			
 			my $inited;
 			

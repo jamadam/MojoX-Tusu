@@ -8,14 +8,13 @@ use lib 'lib';
     BEGIN { $backup = $ENV{MOJO_MODE} || ''; $ENV{MOJO_MODE} = 'development' }
 
 use Test::More;
-use MojoX::Tusu;
 use Test::Mojo;
 use Mojolicious::Lite;
 use Test::More tests => 11;
 
-    my $tusu = MojoX::Tusu->new(app, {
+    my $tusu = plugin tusu => {
 		document_root => 't/public_html',
-    });
+    };
     
     my $t = Test::Mojo->new;
     $t->get_ok('/08/not_found.html')

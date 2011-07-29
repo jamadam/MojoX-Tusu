@@ -1,11 +1,11 @@
-package MojoX::Tusu::PluginBase;
+package Mojolicious::Plugin::Tusu::PluginBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
     
     sub controller {
         
-        return $MojoX::Tusu::CONTROLLER;
+        return $Mojolicious::Plugin::Tusu::CONTROLLER;
     }
 
 1;
@@ -14,22 +14,22 @@ __END__
 
 =head1 NAME
 
-MojoX::Tusu::PluginBase - Base Class for template plugins for MojoX::Tusu
+Mojolicious::Plugin::Tusu::PluginBase - Base Class for template plugins for Mojolicious::Plugin::Tusu
 
 =head1 SYNOPSIS
     
     package YourPlugin;
     use strict;
     use warnings;
-    use base qw(MojoX::Tusu::PluginBase);
+    use base qw(Mojolicious::Plugin::Tusu::PluginBase);
     
     # inside template..
     # <% YourPlugin::some_func(@your_args) %>
 
 =head1 DESCRIPTION
 
-C<MojoX::Tusu::PluginBase> is a Plugin Base class for
-MojoX::Tusu sub framework on mojolicious. This class inherits
+C<Mojolicious::Plugin::Tusu::PluginBase> is a Plugin Base class for
+Mojolicious::Plugin::Tusu sub framework on mojolicious. This class inherits
 all method from Text::PSTemplate::PluginBase.
 
 =head1 METHODS
@@ -40,7 +40,7 @@ Returns current Mojolicious::Controller instance.
 
 =head1 SEE ALSO
 
-L<Text::PSTemplate>, L<MojoX::Renderer>
+L<Text::PSTemplate>, L<Mojolicious::Plugin::Renderer>
 
 =head1 AUTHOR
 

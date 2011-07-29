@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::Memory::Cycle;
 use Test::More;
-use MojoX::Tusu;
+use Mojolicious::Plugin::Tusu;
 
 use Test::More tests => 1;
 
@@ -14,11 +14,11 @@ package SomeApp;
 use strict;
 use warnings;
 use base 'Mojolicious';
-use MojoX::Tusu;
+use Mojolicious::Plugin::Tusu;
 
 sub startup {
     my $self = shift;
-    my $tusu = MojoX::Tusu->new($self);
+    my $tusu = $self->plugin(tusu => {});
 }
 
 __END__
