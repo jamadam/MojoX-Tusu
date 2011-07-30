@@ -302,16 +302,12 @@ use Carp;
         
         my ($self, $renderer, $c, $output, $options) = @_;
         
-        local $CONTROLLER = $c;
-        
-        my $engine = Text::PSTemplate->new($self->engine);
-        
-        local $SIG{__DIE__} = undef;
-        
         try {
-            $$output = $engine->parse_file('/'. $options->{template});
-        }
-        catch {
+            local $SIG{__DIE__} = undef;
+            local $CONTROLLER = $c;
+            $$output = Text::PSTemplate ->new($self->engine)
+                                        ->parse_file('/'. $options->{template});
+        } catch {
             my $err = $_ || 'Unknown Error';
             $c->app->log->error(qq(Template error in "$options->{template}": $err));
             $self->_render_error_document($c, 500, "$err");
