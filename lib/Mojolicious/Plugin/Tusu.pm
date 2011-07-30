@@ -4,7 +4,6 @@ use warnings;
 use Try::Tiny;
 use Text::PSTemplate;
 use Mojo::Base 'Mojolicious::Plugin';
-use Scalar::Util qw(weaken);
 use Mojo::Util;
     
     our $APP;
@@ -17,9 +16,9 @@ use Mojo::Util;
     __PACKAGE__->attr('extensions_to_render');
     __PACKAGE__->attr('directory_index');
     __PACKAGE__->attr('error_document');
+    __PACKAGE__->attr('document_root');
     
     # internal use
-    __PACKAGE__->attr('_app');
     __PACKAGE__->attr('_default_route_set');
 
     sub register {
@@ -39,6 +38,7 @@ use Mojo::Util;
         $self->directory_index($args->{directory_index});
         $self->error_document($args->{error_document});
         $self->extensions_to_render($args->{extensions_to_render});
+        $self->document_root($args->{document_root});
         
         $app->hook(after_build_tx => sub {
             my $app = $_[1];
@@ -53,12 +53,10 @@ use Mojo::Util;
         
         $app->on_process(sub {$self->_dispatch(@_)});
         
-        $self->_app($app);
-        
         $app->static->root($args->{document_root});
         $app->renderer->root($args->{document_root});
         $engine->set_filename_trans_coderef(sub {
-            _filename_trans($args->{document_root}, $self->directory_index, @_);
+            _filename_trans($args->{document_root}, $args->{directory_index}, @_);
         });
         
         {
@@ -75,7 +73,6 @@ use Mojo::Util;
         
         $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
         
-        weaken $self->{_app};
         return $self;
     }
     
@@ -174,7 +171,7 @@ use Mojo::Util;
         
         $c->app->log->debug($debug_message);
         
-        if ($self->_app->mode eq 'production') {
+        if ($c->app->mode eq 'production') {
             if (my $template = $self->error_document->{$code}) {
                 $c->render(handler => 'tusu', template => $template);
                 $c->rendered($code);
@@ -214,7 +211,7 @@ use Mojo::Util;
         my $leading_slash  = (substr($name, 0, 1) eq '/');
         my $trailing_slash = (substr($name, -1, 1) eq '/');
         $name =~ s{^/}{};
-        my $path = File::Spec->catfile($self->_app->renderer->root, $name);
+        my $path = File::Spec->catfile($self->document_root, $name);
         if (-f $path) {
             return {type => 'file', path => $path};
         }
