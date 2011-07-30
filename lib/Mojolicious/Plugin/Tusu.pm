@@ -5,7 +5,8 @@ use Try::Tiny;
 use Text::PSTemplate;
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojo::Util;
-    
+use Carp;
+
     our $APP;
     our $CONTROLLER;
     
@@ -17,18 +18,35 @@ use Mojo::Util;
     
     # internal use
     __PACKAGE__->attr('_default_route_set');
+    
+    sub check_hash_key {
+        my ($hash_ref, @keys) = @_;
+        my %keys;
+        $keys{$_} = 1 foreach(@keys);
+        for my $key (keys %$hash_ref) {
+            if (! $keys{$key}) {
+                return $key;
+            }
+        }
+    }
 
     sub register {
         my ($self, $app, $args) = @_;
         
-        $args = {
+        my $default_args = {
             document_root           => $app->home->rel_dir('public_html'),
             encoding                => 'utf8',
             extensions_to_render    => ['html','htm','xml'],
             directory_index         => ['index.html','index.htm'],
             error_document          => {},
-            %$args,
+            components              => {},
         };
+        
+        if (my $key = check_hash_key($args, keys %$default_args)) {
+            croak "Unknown argument $key";
+        }
+        
+        $args = {%$default_args, %$args};
         
         $app->hook(after_build_tx => sub {
             my $app = $_[1];
@@ -55,9 +73,9 @@ use Mojo::Util;
         {
             local $APP = $app;
             $engine->plug(
-                'MojoX::Tusu::ComponentBase'      => undef,
-                'MojoX::Tusu::Plugin::Util'       => '',
-                'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
+                'MojoX::Tusu::ComponentBase'            => undef,
+                'MojoX::Tusu::Component::Util'          => '',
+                'MojoX::Tusu::Component::Mojolicious'   => 'Mojolicious',
                 %{$args->{components}}
             );
         }

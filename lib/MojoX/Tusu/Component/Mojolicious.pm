@@ -1,4 +1,4 @@
-package MojoX::Tusu::Plugin::Mojolicious;
+package MojoX::Tusu::Component::Mojolicious;
 use strict;
 use warnings;
 use base qw(MojoX::Tusu::ComponentBase);
