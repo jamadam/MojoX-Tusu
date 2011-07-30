@@ -14,7 +14,7 @@ use Mojolicious::Lite;
 use Test::More tests => 9;
 
     my $tusu = plugin tusu => {
-		plugins => {
+		components => {
 			'SomeComponent' => undef,
 		},
 		document_root => 't/public_html',

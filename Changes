@@ -2,6 +2,7 @@ Revision history for Mojolicious-Plugin-Tusu
 
 0.25 2011/07/14
   - Tusu now is a Mojolicious plugin
+  - PluginBase removed. ComponentBase is available instead.
 
 0.24 2011/07/14
   - Short cut for html escape activated

@@ -5,7 +5,7 @@ use Mojo::Base 'Mojolicious';
 sub startup {
     my $self = shift;
     my $tusu = $self->plugin(tusu => {
-        plugins => {
+        components => {
             'Hoge::YourComponent' => 'YC'
         },
         error_document => {

@@ -211,7 +211,6 @@ EOF
         MojoX/Tusu/ComponentBase.pm
         MojoX/Tusu/Plugin/Mojolicious.pm
         MojoX/Tusu/Plugin/Util.pm
-        MojoX/Tusu/PluginBase.pm
     );
     
     for my $file (@bundle) {

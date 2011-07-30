@@ -1,7 +1,7 @@
 package MojoX::Tusu::Plugin::Mojolicious;
 use strict;
 use warnings;
-use base qw(MojoX::Tusu::PluginBase);
+use base qw(MojoX::Tusu::ComponentBase);
     
     sub param : TplExport {
         

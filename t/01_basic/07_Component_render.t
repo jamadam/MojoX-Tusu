@@ -23,7 +23,7 @@ use Test::Mojo;
 				sub startup {
 					my $self = shift;
 					my $tusu = $self->plugin(tusu => {
-						plugins => {
+						components => {
 							'SomeComponent' => undef,
 						},
 					});
@@ -53,7 +53,7 @@ use Test::Mojo;
 					my $self = shift;
 				
 					my $tusu = $self->plugin(tusu => {
-						plugins => {
+						components => {
 							'SomeComponent' => undef,
 						},
 						document_root => 't/public_html'

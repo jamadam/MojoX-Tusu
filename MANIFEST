@@ -17,7 +17,6 @@ lib/MojoX/Tusu.pm
 lib/MojoX/Tusu/ComponentBase.pm
 lib/MojoX/Tusu/Plugin/Mojolicious.pm
 lib/MojoX/Tusu/Plugin/Util.pm
-lib/MojoX/Tusu/PluginBase.pm
 lib/Plack/App/File/Extended.pm
 lib/Plack/Middleware/AutoCompletePath.pm
 lib/Plack/Middleware/Static/Extended.pm

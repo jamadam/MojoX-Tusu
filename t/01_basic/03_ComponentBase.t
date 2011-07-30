@@ -47,7 +47,7 @@ use base 'Mojolicious';
         my $self = shift;
     
         my $tusu = $self->plugin(tusu => {
-			plugins => {
+			components => {
 				'SomeComponent' => undef,
 			},
 			document_root => 't/public_html',

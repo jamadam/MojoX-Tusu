@@ -9,10 +9,7 @@ use Mojo::Util;
     our $APP;
     our $CONTROLLER;
     
-    __PACKAGE__->attr('engine', sub {
-        my $engine = Text::PSTemplate->new;
-        $engine->set_filter('=', \&Mojo::Util::html_escape);
-    });
+    __PACKAGE__->attr('engine');
     __PACKAGE__->attr('extensions_to_render');
     __PACKAGE__->attr('directory_index');
     __PACKAGE__->attr('error_document');
@@ -24,8 +21,6 @@ use Mojo::Util;
     sub register {
         my ($self, $app, $args) = @_;
         
-        my $engine = $self->engine;
-        
         $args = {
             document_root           => $app->home->rel_dir('public_html'),
             encoding                => 'utf8',
@@ -34,11 +29,6 @@ use Mojo::Util;
             error_document          => {},
             %$args,
         };
-        
-        $self->directory_index($args->{directory_index});
-        $self->error_document($args->{error_document});
-        $self->extensions_to_render($args->{extensions_to_render});
-        $self->document_root($args->{document_root});
         
         $app->hook(after_build_tx => sub {
             my $app = $_[1];
@@ -55,6 +45,9 @@ use Mojo::Util;
         
         $app->static->root($args->{document_root});
         $app->renderer->root($args->{document_root});
+        
+        my $engine = Text::PSTemplate->new;
+        $engine->set_filter('=', \&Mojo::Util::html_escape);
         $engine->set_filename_trans_coderef(sub {
             _filename_trans($args->{document_root}, $args->{directory_index}, @_);
         });
@@ -65,11 +58,17 @@ use Mojo::Util;
                 'MojoX::Tusu::ComponentBase'      => undef,
                 'MojoX::Tusu::Plugin::Util'       => '',
                 'MojoX::Tusu::Plugin::Mojolicious' => 'Mojolicious',
-                %{$args->{plugins}}
+                %{$args->{components}}
             );
         }
         
         $engine->set_encoding($args->{encoding});
+        
+        $self->engine($engine);
+        $self->directory_index($args->{directory_index});
+        $self->error_document($args->{error_document});
+        $self->extensions_to_render($args->{extensions_to_render});
+        $self->document_root($args->{document_root});
         
         $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
         
@@ -81,9 +80,9 @@ use Mojo::Util;
     ### ---
     sub bootstrap {
         
-        my ($self, $c, $plugin, $action) = @_;
+        my ($self, $c, $component, $action) = @_;
         local $CONTROLLER = $c;
-        return $self->engine->get_plugin($plugin)->$action($c);
+        return $self->engine->get_plugin($component)->$action($c);
     }
     
     ### ---
@@ -329,7 +328,7 @@ OR
         my $self = shift;
         my $tusu = $self->plugin(tusu => {
             document_root => $self->home->rel_dir('www2'),
-            plugins => {
+            components => {
                 'Your::Component' => 'YC',
             },
             extensions_to_render => [qw(html htm xml txt)],
@@ -375,10 +374,10 @@ example is default setting.
         document_root => $self->home->rel_dir('public_html')
     });
 
-=head2 plugins => hash
+=head2 components => hash
 
     my $tusu = $self->plugin(tusu => {
-        plugins => {
+        components => {
             'Namespace::A' => 'A',   # namespace is A
             'Namespace::B' => '',    # namespace is ''
             'Namespace::C' => undef, # namespace is Namespace::C

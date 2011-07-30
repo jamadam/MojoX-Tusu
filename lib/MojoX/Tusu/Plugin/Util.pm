@@ -1,7 +1,7 @@
 package MojoX::Tusu::Plugin::Util;
 use strict;
 use warnings;
-use base qw(MojoX::Tusu::PluginBase);
+use base qw(MojoX::Tusu::ComponentBase);
 use Mojo::Util;
     
     sub escape : TplExport {

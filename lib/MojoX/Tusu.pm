@@ -27,7 +27,7 @@ OR
         my $self = shift;
         my $tusu = $self->plugin(tusu => {
             document_root => $self->home->rel_dir('www2'),
-            plugins => {
+            components => {
                 'Your::Component' => 'YC',
             },
             extensions_to_render => [qw(html htm xml txt)],
@@ -87,11 +87,11 @@ provides short cut for html escaping as follows
     <%= $var %> escaped
     <%= some_func(...) %> escaped
 
-=head2 Components & Plugins
+=head2 Components
 
-Mojo::Tusu provides object oriented component & plugin framework. You can
-easily add your custom features into your website. The following is an example
-for plugin development.
+Mojo::Tusu provides object oriented component framework. You can easily add your
+custom features into your website. The following is an example for component
+development.
 
     <span><% questionize('Hello') %></span>
 
@@ -100,7 +100,7 @@ To make it possible, you should write a module like this.
     package MyUtility;
     use strict;
     use warnings;
-    use base 'MojoX::Tusu::PluginBase';
+    use base 'MojoX::Tusu::ComponentBase';
     
     sub questionize : TplExport {
         my ($self, $sentence) = @_;
@@ -108,12 +108,12 @@ To make it possible, you should write a module like this.
         return $sentence . '?';
     }
 
-To activate this plugin, you must plug-in this at mojolicious startup method.
+To activate this component, you must plug-in this at mojolicious startup method.
 
     sub startup {
         my $self = shift;
         my $tusu = $self->plugin(tusu => {
-            plugins => {
+            components => {
                 'YourUtility' =>  '' ## namespace is ''
             }
         });
@@ -151,14 +151,11 @@ To activate this component, you must plug-in this at mojolicious startup method.
     sub startup {
         my $self = shift;
         my $tusu = $self->plugin(tusu => {
-            plugins => {
+            components => {
                 Product => undef
             },
         });
     }
-
-The only difference between plugins and components is that components can have
-an init method to have own data.
 
 =head1 What does Tusu mean?
 
