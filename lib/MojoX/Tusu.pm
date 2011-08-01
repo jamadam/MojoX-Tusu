@@ -64,9 +64,7 @@ transplantable with no change at all.
 
 =head2 Installation
 
-    $ sudo -s 'curl -L cpanmin.us | perl - Mojolicious'
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Text-PSTemplate/tarball/master/v0.35
-    $ curl -L cpanmin.us | perl - https://github.com/jamadam/Mojolicious-Plugin-Tusu/tarball/master/v0.25
+    $ sudo -s 'curl -L cpanmin.us | perl - https://github.com/jamadam/Mojolicious-Plugin-Tusu/tarball/master/v0.25'
 
 =head2 Getting Started
 
