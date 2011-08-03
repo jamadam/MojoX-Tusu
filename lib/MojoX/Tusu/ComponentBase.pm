@@ -19,8 +19,11 @@ use base qw(Text::PSTemplate::PluginBase);
     ### ---
     sub set_ini {
         
-        my ($self, $hash) = (@_);
-        $self->{ini} = $hash || {};
+        my ($self, @key_value) = (@_);
+        $self->{ini} = {
+            %{$self->{ini} || {}},
+            ref $key_value[0] ? %{$key_value[0]} : @key_value,
+        };
         return $self;
     }
     

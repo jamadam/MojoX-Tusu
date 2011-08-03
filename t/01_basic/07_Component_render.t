@@ -10,6 +10,28 @@ use Test::Mojo;
 
     __PACKAGE__->runtests;
 	
+	sub ini_basic : Test(6) {
+		my $tpl = Text::PSTemplate->new;
+		my $component = IniTest->new($tpl);
+		$component->set_ini(a => 'b');
+		is($component->ini('a'), 'b', 'set ini');
+		$component->set_ini(c => 'd');
+		is($component->ini('a'), 'b', 'append ini');
+		is($component->ini('c'), 'd', 'append ini');
+		$component = IniTest->new($tpl);
+		$component->set_ini({a => 'b'});
+		is($component->ini('a'), 'b', 'set ini');
+		$component->set_ini({c => 'd'});
+		is($component->ini('a'), 'b', 'append ini');
+		is($component->ini('c'), 'd', 'append ini');
+	}
+		{
+			package IniTest;
+			use strict;
+			use warnings;
+			use base 'MojoX::Tusu::ComponentBase';
+		}
+	
 	sub ini_set : Test(2) {
 		my $app = SomeApp2->new;
 	}
@@ -94,7 +116,6 @@ use Test::Mojo;
 				$c->render(handler => 'tusu', template => '07/some_component/index2.html');
 			}
 	}
-		
     
     END {
         $ENV{MOJO_MODE} = $backup;
