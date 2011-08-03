@@ -19,13 +19,13 @@ use Carp;
     # internal use
     __PACKAGE__->attr('_default_route_set');
     
-    sub check_hash_key {
-        my ($hash_ref, @keys) = @_;
+    sub validate_hash {
+        my ($hash_ref, @allow) = @_;
         my %keys;
-        $keys{$_} = 1 foreach(@keys);
+        $keys{$_} = 1 foreach(@allow);
         for my $key (keys %$hash_ref) {
             if (! $keys{$key}) {
-                return $key;
+                croak "Unknown argument $key";
             }
         }
     }
@@ -42,33 +42,11 @@ use Carp;
             components              => {},
         };
         
-        if (my $key = check_hash_key($args, keys %$default_args)) {
-            croak "Unknown argument $key";
-        }
+        validate_hash($args, keys %$default_args);
         
         $args = {%$default_args, %$args};
         
-        $app->hook(after_build_tx => sub {
-            my $app = $_[1];
-            if (! $self->_default_route_set) {
-                $self->_default_route_set(1);
-                $app->routes
-                    ->route('/:template', template => qr{.*})
-                    ->name('')
-                    ->to(cb => sub {$_[0]->render(handler => 'tusu')});
-            }
-        });
-        
-        $app->on_process(sub {$self->_dispatch(@_)});
-        
-        $app->static->root($args->{document_root});
-        $app->renderer->root($args->{document_root});
-        
         my $engine = Text::PSTemplate->new;
-        $engine->set_filter('=', \&Mojo::Util::html_escape);
-        $engine->set_filename_trans_coderef(sub {
-            _filename_trans($args->{document_root}, $args->{directory_index}, @_);
-        });
         
         {
             local $APP = $app;
@@ -88,7 +66,17 @@ use Carp;
         $self->extensions_to_render($args->{extensions_to_render});
         $self->document_root($args->{document_root});
         
-        $app->renderer->add_handler(tusu => sub { $self->_render(@_) });
+        $app->plugin(plack_middleware => [
+            AutoCompletePath => {
+                names => $self->directory_index
+            },
+            'Tusu' => {
+                parser                  => $engine,
+                directory_index         => $self->directory_index,
+                document_root           => $self->document_root,
+                extensions_to_render    => $self->extensions_to_render,
+            },
+        ]);
         
         return $self;
     }
@@ -101,220 +89,6 @@ use Carp;
         my ($self, $c, $component, $action) = @_;
         local $CONTROLLER = $c;
         return $self->engine->get_plugin($component)->$action($c);
-    }
-    
-    ### ---
-    ### Custom dispatcher
-    ### ---
-    sub _dispatch {
-        
-        my ($self, $app, $c) = @_;
-        
-        my $tx = $c->tx;
-        if ($tx->is_websocket) {
-            $c->res->code(undef);
-        }
-        $app->sessions->load($c);
-        my $plugins = $app->plugins;
-        $plugins->run_hook(before_dispatch => $c);
-        
-        my $path = $tx->req->url->path->to_string || '/';
-        
-        my $not_found;
-        
-        my $check_result = $self->_check_file_type($path);
-        
-        if (! $check_result->{type}) {
-            $not_found = 1;
-        } elsif ($check_result->{type} eq 'directory') {
-            $c->redirect_to($path. '/');
-            $tx->res->code(301);
-            return;
-        } elsif (! _permission_ok($check_result->{path}, $app->static->root)) {
-            $self->_render_error_document($c, 403);
-            return;
-        }
-        
-        if (! $not_found) {
-            
-            my $path = $check_result->{path};
-            
-            ### dynamic content
-            for my $ext (@{$self->extensions_to_render}) {
-                if ($path !~ m{\.} || $path =~ m{\.$ext$}) {
-                    my $res = $tx->res;
-                    if (my $code = ($tx->req->error)[1]) {
-                        $res->code($code)
-                    } elsif ($tx->is_websocket) {
-                        $res->code(426)
-                    }
-                    if (! $app->routes->dispatch($c) || ! $res->code) {
-                        $c->render_not_found;
-                    }
-                    return;
-                }
-            }
-            
-            ## This must not be happen
-            if ($path =~ m{((\.(cgi|php|rb))|/)$}) {
-                $self->_render_error_document($c, 403);
-                return;
-            }
-        }
-        
-        my $relpath =
-            ($check_result->{path})
-                ? File::Spec->abs2rel($check_result->{path}, $app->static->root)
-                : $path;
-        ### defaults to static content
-        if ($app->static->serve($c, $relpath)) {
-            $c->stash->{'mojo.static'} = 1;
-            $c->rendered;
-        }
-        if (! $tx->res->code) {
-            $self->_render_error_document($c, 404);
-        }
-        $plugins->run_hook_reverse(after_static_dispatch => $c);
-    }
-    
-    ### ---
-    ### Render Error document
-    ### ---
-    sub _render_error_document {
-        
-        my ($self, $c, $code, $debug_message) = @_;
-        
-        $debug_message ||= 'Unknown Error';
-        
-        $c->app->log->debug($debug_message);
-        
-        if ($c->app->mode eq 'production') {
-            if (my $template = $self->error_document->{$code}) {
-                $c->render(handler => 'tusu', template => $template);
-                $c->rendered($code);
-                return;
-            }
-        }
-        if ($code == 404) {
-            $c->render_not_found;
-        } else {
-            $c->render_exception($debug_message);
-        }
-        $c->res->code($code);
-    }
-    
-    ### ---
-    ### fill directory_index candidate
-    ### ---
-    sub _fill_filename {
-        
-        my ($path, $directory_index) = @_;
-        for my $default (@{$directory_index}) {
-            my $path = File::Spec->catfile($path, $default);
-            if (-f $path) {
-                return $path;
-            }
-        }
-        return;
-    }
-    
-    ### ---
-    ### find file and type
-    ### ---
-    sub _check_file_type {
-        
-        my ($self, $name) = @_;
-        $name ||= '';
-        my $leading_slash  = (substr($name, 0, 1) eq '/');
-        my $trailing_slash = (substr($name, -1, 1) eq '/');
-        $name =~ s{^/}{};
-        my $path = File::Spec->catfile($self->document_root, $name);
-        if (-f $path) {
-            return {type => 'file', path => $path};
-        }
-        if ($trailing_slash) {
-            if (my $fixed_path = _fill_filename($path, $self->directory_index)) {
-                return {type => 'file', path => $fixed_path};
-            }
-        } elsif (-d $path) {
-            return {type => 'directory'};
-        }
-        return {};
-    }
-    
-    ### ---
-    ### foo/bar.html    -> public_html/foo/bar.html
-    ### foo/            -> public_html/foo/index.html
-    ### foo             -> public_html/foo
-    ### ---
-    sub _filename_trans {
-        
-        my ($template_base, $directory_index, $name) = @_;
-        $name ||= '';
-        my $leading_slash = substr($name, 0, 1) eq '/';
-        my $trailing_slash = substr($name, -1, 1) eq '/';
-        $name =~ s{^/}{};
-        my $dir;
-        if ($leading_slash) {
-            $dir = $template_base;
-        } else {
-            $dir = (File::Spec->splitpath(Text::PSTemplate->get_current_filename))[1];
-        }
-        my $path = File::Spec->catfile($dir, $name);
-        if ($trailing_slash) {
-            if (my $fixed_path = _fill_filename($path, $directory_index)) {
-                return $fixed_path;
-            }
-        }
-        return $path;
-    }
-    
-    ### ---
-    ### Check if others readable
-    ### ---
-    sub _permission_ok {
-        
-        my ($name, $base) = @_;
-        $base ||= '';
-        if ($^O eq 'MSWin32') {
-            return 1;
-        }
-        if ($name && -f $name && ((stat($name))[2] & 4)) {
-            $name =~ s{(^|/)[^/]+$}{};
-            while (-d $name) {
-                if ($name eq $base) {
-                    return 1;
-                }
-                if (! ((stat($name))[2] & 1)) {
-                    return 0;
-                }
-                $name =~ s{(^|/)[^/]+$}{};
-            }
-            return 1;
-        }
-        return 0;
-    }
-    
-    ### ---
-    ### tusu renderer
-    ### ---
-    sub _render {
-        
-        my ($self, $renderer, $c, $output, $options) = @_;
-        
-        try {
-            local $SIG{__DIE__} = undef;
-            local $CONTROLLER = $c;
-            $$output = Text::PSTemplate ->new($self->engine)
-                                        ->parse_file('/'. $options->{template});
-        } catch {
-            my $err = $_ || 'Unknown Error';
-            $c->app->log->error(qq(Template error in "$options->{template}": $err));
-            $self->_render_error_document($c, 500, "$err");
-            $$output = '';
-            return 0;
-        };
-        return 1;
     }
 
 1;
