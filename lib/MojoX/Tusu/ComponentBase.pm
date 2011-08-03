@@ -102,9 +102,11 @@ Returns current Mojolicious::Controller instance.
 
 Returns ini data for given key.
 
-=head2 $self->set_ini($hash_ref)
+=head2 $self->set_ini($key_value)
 
-Sets ini data with hash ref.
+Sets or appends ini data with hash.
+
+    $self->set_ini(key1 => value1, key2 => value2)
 
 =head2 $self->init($app)
 
