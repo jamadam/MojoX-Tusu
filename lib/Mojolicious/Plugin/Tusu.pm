@@ -6,6 +6,7 @@ use Text::PSTemplate;
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojo::Util;
 use Carp;
+use Mojolicious::Plugin::PlackMiddleware;
 
     our $APP;
     our $CONTROLLER;
@@ -61,20 +62,33 @@ use Carp;
         $engine->set_encoding($args->{encoding});
         
         $self->engine($engine);
-        $self->directory_index($args->{directory_index});
-        $self->error_document($args->{error_document});
-        $self->extensions_to_render($args->{extensions_to_render});
-        $self->document_root($args->{document_root});
         
         $app->plugin(plack_middleware => [
+            'StackTrace::ParseMessage' => sub {$ENV{MOJO_MODE} eq 'development'}, {
+                
+            },
+            'ErrorDocument::App' => sub {$ENV{MOJO_MODE} eq 'production'}, {
+                map {
+                    my $key = $_;
+                    $key => sub {
+                        my $body = $engine->parse_file($args->{error_document}->{$key});
+                        return [
+                            $key,
+                            ['Content-Length' => length($body)],
+                            [$body],
+                        ];
+                    }
+                } keys %{$args->{error_document}},
+            },
             AutoCompletePath => {
-                names => $self->directory_index
+                names => $args->{directory_index},
             },
             'Tusu' => {
                 parser                  => $engine,
-                directory_index         => $self->directory_index,
-                document_root           => $self->document_root,
-                extensions_to_render    => $self->extensions_to_render,
+                directory_index         => $args->{directory_index},
+                document_root           => $args->{document_root},
+                extensions_to_render    => $args->{extensions_to_render},
+                encoding                => $args->{encoding},
             },
         ]);
         

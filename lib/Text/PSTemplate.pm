@@ -511,6 +511,14 @@ $Carp::Internal{ (__PACKAGE__) }++;
     }
     
     ### ---
+    ### Translate file name
+    ### ---
+    sub file_name_trans {
+        my ($self, $org) = @_;
+        $self->{$MEM_FILENAME_TRANS}->($org);
+    }
+    
+    ### ---
     ### couunt recursion
     ### ---
     sub _count_recursion {
@@ -1057,6 +1065,10 @@ This example allows common extension to be omitted.
     $tpl->set_filename_trans_coderef($trans)
 
 This also let you set a default template in case the template not found.
+
+=head2 file_name_trans($name)
+
+Translate file name with prepared code reference.
 
 =head2 Text::PSTemplate::dump($object)
 

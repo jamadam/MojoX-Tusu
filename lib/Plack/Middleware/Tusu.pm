@@ -2,7 +2,7 @@ package Plack::Middleware::Tusu;
 use strict;
 use warnings;
 use parent qw(Plack::Middleware);
-use Plack::Util::Accessor qw(parser directory_index document_root extensions_to_render);
+use Plack::Util::Accessor qw(parser directory_index document_root extensions_to_render encoding);
 use Text::PSTemplate;
 use Plack::App::TextPstemplate;
 use Plack::App::File::Extended;
@@ -28,6 +28,7 @@ our $VERSION = '0.01';
             parser          => $self->parser,
             directory_index => $self->directory_index,
             document_root   => $self->document_root,
+            encoding        => $self->encoding,
         })->to_app;
         
         $self->{_static} = Plack::App::File::Extended->new({

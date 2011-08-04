@@ -19,6 +19,10 @@ use Encode::Guess;
             die "file name is empty\n";
         }
         
+        if (! -f $name) {
+            die "$name is not found\n";
+        }
+        
         open(my $fh, "<", $name) || die "File '$name' cannot be opened\n";
         
         if ($fh and flock($fh, LOCK_EX)) {
