@@ -252,6 +252,27 @@ sub find_lib {
     return;
 }
 
+sub _get_lib_names {
+    my $dist = shift;
+    my $uri = "http://cpanmetadb.appspot.com/v1.0/package/$dist";
+    if (my $yaml = LWP::Simple::get($uri)) {
+        if ($yaml =~ qr{distfile:\s+(.+)\-[\d\.]+\.tar.gz}) {
+            my @paths = split(qr{/}, $1);
+            my $path = (uc $paths[-2]). '/'. $paths[-1];
+            no strict 'refs';
+            my $dist_file = $dist;
+            $dist_file =~ s{::}{/}g;
+            eval {
+                require "$dist_file.pm";
+            };
+            my $ver = ${"$dist\::VERSION"};
+            my $uri2 = "http://cpansearch.perl.org/src/$path-$ver/MANIFEST";
+            my $manifest = LWP::Simple::get($uri2);
+            return grep {$_ =~ qr{^lib/}} split(qr{\s+}s, $manifest);
+        }
+    }
+}
+
 1;
 
 __END__
