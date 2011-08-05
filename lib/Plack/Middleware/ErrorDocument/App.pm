@@ -13,7 +13,7 @@ sub call {
 
     $self->response_cb($r, sub {
         my $r = shift;
-        if (exists $self->{$r->[0]}) {
+        if (is_error($r->[0]) && exists $self->{$r->[0]}) {
             my $error_res = $self->{$r->[0]}->($env);
             $r->[1] = $error_res->[1];
             $r->[2] = $error_res->[2];
