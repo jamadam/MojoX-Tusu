@@ -4,9 +4,6 @@ use warnings;
 use parent qw(Plack::Middleware);
 use Plack::MIME;
 use Plack::Util;
-use Plack::Util::Accessor qw( apps );
-
-use HTTP::Status qw(is_error);
 
 sub call {
     my $self = shift;
@@ -30,57 +27,44 @@ __END__
 
 =head1 NAME
 
-Plack::Middleware::ErrorDocument - Set Error Document based on HTTP status code
+Plack::Middleware::ErrorDocument::App - Set Error Document by plack app
 
 =head1 SYNOPSIS
-
-  # in app.psgi
-  use Plack::Builder;
-
-  builder {
-      enable "Plack::Middleware::ErrorDocument",
-          500 => '/uri/errors/500.html', 404 => '/uri/errors/404.html',
-          subrequest => 1;
-      $app;
-  };
+    
+    # in app.psgi
+    use Plack::Builder;
+    
+    builder {
+        enable "ErrorDocument::App",
+        404 => sub {
+            my $env = shift;
+            local $env->{PATH_INFO} = '/error_document/404.html',
+            $app->($env);
+        },
+        500 => sub {
+            ...
+        },
+        $app;
+    };
 
 =head1 DESCRIPTION
 
 Plack::Middleware::ErrorDocument allows you to customize error screen
-by setting paths (file system path or URI path) of error pages per
-status code.
-
-=head1 CONFIGURATIONS
-
-=over 4
-
-=item subrequest
-
-A boolean flag to serve error pages using a new GET sub request.
-Defaults to false, which means it serves error pages using file
-system path.
-
-  builder {
-      enable "Plack::Middleware::ErrorDocument",
-          502 => '/home/www/htdocs/errors/maint.html';
-      enable "Plack::Middleware::ErrorDocument",
-          404 => '/static/404.html', 403 => '/static/403.html', subrequest => 1;
-      $app;
-  };
-
-This configuration serves 502 error pages from file system directly
-assuming that's when you probably maintain database etc. but serves
-404 and 403 pages using a sub request so your application can do some
-logic there like logging or doing suggestions.
-
-When using a subrequest, the subrequest should return a regular '200' response.
-
-=back
+by setting plack app per status code.
 
 =head1 AUTHOR
 
-Tatsuhiko Miyagawa
+sugama, E<lt>sugama@jamadam.comE<gt>
 
 =head1 SEE ALSO
+
+L<Plack::Middleware::ErrorDocument>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2011 by sugama.
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
 
 =cut
