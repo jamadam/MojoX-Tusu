@@ -29,7 +29,7 @@ The template functions look like this.
         return $some_string;
     }
 
-Template functions should returns string values. However returning undef is ok.
+Template functions should returns string values. However returning undef is OK.
 Plugins automatically returns '' instead of undef.
 
 TplExport attribute also can take following options.

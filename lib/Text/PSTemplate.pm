@@ -5,7 +5,7 @@ use Fcntl qw(:flock);
 use Text::PSTemplate::Exception;
 use Text::PSTemplate::Block;
 use Text::PSTemplate::File;
-our $VERSION = '0.35';
+our $VERSION = '0.36';
 use 5.005;
 use Carp;
 use Try::Tiny;
@@ -508,6 +508,14 @@ $Carp::Internal{ (__PACKAGE__) }++;
         
         my ($self, $coderef) = @_;
         $self->{$MEM_FILENAME_TRANS} = $coderef;
+    }
+    
+    ### ---
+    ### Translate file name
+    ### ---
+    sub file_name_trans {
+        my ($self, $org) = @_;
+        $self->{$MEM_FILENAME_TRANS}->($org);
     }
     
     ### ---
@@ -1057,6 +1065,10 @@ This example allows common extension to be omitted.
     $tpl->set_filename_trans_coderef($trans)
 
 This also let you set a default template in case the template not found.
+
+=head2 file_name_trans($name)
+
+Translate file name with prepared code reference.
 
 =head2 Text::PSTemplate::dump($object)
 

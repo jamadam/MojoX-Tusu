@@ -19,6 +19,10 @@ use Encode::Guess;
             die "file name is empty\n";
         }
         
+        if (! -f $name) {
+            die "$name is not found\n";
+        }
+        
         open(my $fh, "<", $name) || die "File '$name' cannot be opened\n";
         
         if ($fh and flock($fh, LOCK_EX)) {
@@ -27,8 +31,19 @@ use Encode::Guess;
             
             if (ref $encode) {
                 my $guess = guess_encoding($out, @$encode);
-                $out = Encode::decode($guess, $out);
-                $encode = $guess->name;
+                if (ref $guess) {
+                    $out = Encode::decode($guess, $out);
+                    $encode = $guess->name;
+                } else {
+                    if (my $parent = $Text::PSTemplate::current_file) {
+                        my $parent_encode = $parent->detected_encoding;
+                        $out = Encode::decode($parent_encode, $out);
+                        $encode = $parent_encode;
+                    } else {
+                        $out = Encode::decode($encode->[0], $out);
+                        $encode = $encode->[0];
+                    }
+                }
             } else {
                 $out = Encode::decode($encode, $out);
             }

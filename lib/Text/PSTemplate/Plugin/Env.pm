@@ -70,7 +70,7 @@ Since this has promoted to core plugin, you don't have to explicitly load it.
 Note that this document contains many keywords for specifying block endings such
 as THEN or ELSE etc. These keywords are just examples. As the matter of
 fact, you can say 'EOF' for any of them. The template engine only matters the
-order of BLOCKs. Think of Perl's here document. That's it. 
+order of blocks. Think of Perl's here document. That's it. 
 So do not attempt to memorize them. 
 
 =head2 env($name)
