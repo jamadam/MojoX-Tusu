@@ -6,7 +6,7 @@ sub startup {
     my $self = shift;
     my $tusu = $self->plugin(tusu => {
         components => {
-            'Hoge::YourComponent' => 'YC'
+            '<<% $class %>>::YourComponent' => 'YC'
         },
         error_document => {
             404 => '/error_document/404.html',
