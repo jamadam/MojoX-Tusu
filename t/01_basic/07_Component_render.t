@@ -7,29 +7,19 @@ use Test::More;
 use Test::Mojo;
 
     my $backup = $ENV{MOJO_MODE} || '';
-
-    __PACKAGE__->runtests;
 	
 	sub ini_basic : Test(6) {
 		my $tpl = Text::PSTemplate->new;
 		my $component = IniTest->new($tpl);
-		$component->set_ini(a => 'b');
-		is($component->ini('a'), 'b', 'set ini');
-		$component->set_ini(c => 'd');
-		is($component->ini('a'), 'b', 'append ini');
-		is($component->ini('c'), 'd', 'append ini');
-		$component = IniTest->new($tpl);
-		$component->set_ini({a => 'b'});
-		is($component->ini('a'), 'b', 'set ini');
-		$component->set_ini({c => 'd'});
-		is($component->ini('a'), 'b', 'append ini');
-		is($component->ini('c'), 'd', 'append ini');
+		$component->foo('b');
+		is($component->foo, 'b', 'set attr');
 	}
 		{
 			package IniTest;
 			use strict;
 			use warnings;
 			use base 'MojoX::Tusu::ComponentBase';
+			__PACKAGE__->attr('foo');
 		}
 	
 	sub ini_set : Test(2) {
@@ -93,25 +83,18 @@ use Test::Mojo;
 		use warnings;
 		use base 'MojoX::Tusu::ComponentBase';
 			
+			__PACKAGE__->attr('key1');
+			__PACKAGE__->attr('app');
+			
 			my $inited;
 			
 			sub init {
 				my ($self, $app) = @_;
-				$self->set_ini({'key1' => 'value1', app => $app});
-			}
-			
-			sub key1 {
-				my ($self) = @_;
-				return $self->ini('key1');
-			}
-			
-			sub app {
-				my ($self) = @_;
-				return $self->ini('app');
+				$self->key1('value1');
+				$self->app($app);
 			}
 		
 			sub get {
-				
 				my ($self, $c) = @_;
 				$c->render(handler => 'tusu', template => '07/some_component/index2.html');
 			}
@@ -120,5 +103,7 @@ use Test::Mojo;
     END {
         $ENV{MOJO_MODE} = $backup;
     }
+
+    __PACKAGE__->runtests;
     
 __END__

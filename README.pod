@@ -120,9 +120,11 @@ To make it possible, you should write a module like this.
     use warnings;
     use base 'MojoX::Tusu::ComponentBase';
     
+    __PACKAGE__->attr('some_data');
+    
     sub init {
         my ($self, $app) = @_;
-        $self->set_ini({...}); ### DB SETTING OR SOMETHING
+        $self->some_data('value'); ### DB SETTING OR SOMETHING
     }
     
     sub list_by_category : TplExport {

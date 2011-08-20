@@ -2,7 +2,8 @@ package MojoX::Tusu::ComponentBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
-    
+use Mojo::Base -base;
+
     sub new {
         my $class = shift;
         my $self = $class->SUPER::new(@_);
@@ -12,33 +13,6 @@ use base qw(Text::PSTemplate::PluginBase);
     
     sub init {
         ### Must be implemented on sub classes.
-    }
-    
-    ### ---
-    ### Set ini
-    ### ---
-    sub set_ini {
-        
-        my ($self, @key_value) = (@_);
-        $self->{ini} = {
-            %{$self->{ini} || {}},
-            ref $key_value[0] ? %{$key_value[0]} : @key_value,
-        };
-        return $self;
-    }
-    
-    ### ---
-    ### Get ini
-    ### ---
-    sub ini {
-        
-        my ($self, $name) = (@_);
-        
-        if (exists $self->{ini}->{$name}) {
-            return $self->{ini}->{$name};
-        }
-        return (undef) if wantarray;
-        return;
     }
     
     sub _dummy : TplExport {
@@ -97,16 +71,6 @@ all methods from Text::PSTemplate::PluginBase.
 =head2 controller
 
 Returns current Mojolicious::Controller instance.
-
-=head2 $self->ini($key)
-
-Returns ini data for given key.
-
-=head2 $self->set_ini($key_value)
-
-Sets or appends ini data with hash.
-
-    $self->set_ini(key1 => value1, key2 => value2)
 
 =head2 $self->init($app)
 
