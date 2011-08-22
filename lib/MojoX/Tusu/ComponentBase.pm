@@ -2,6 +2,7 @@ package MojoX::Tusu::ComponentBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
+use Mojo::Base;
     
     sub attr {
         Mojo::Base::attr(@_);
