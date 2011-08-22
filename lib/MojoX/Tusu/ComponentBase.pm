@@ -2,7 +2,10 @@ package MojoX::Tusu::ComponentBase;
 use strict;
 use warnings;
 use base qw(Text::PSTemplate::PluginBase);
-use Mojo::Base -base;
+    
+    sub attr {
+        Mojo::Base::attr(@_);
+    }
 
     sub new {
         my $class = shift;
