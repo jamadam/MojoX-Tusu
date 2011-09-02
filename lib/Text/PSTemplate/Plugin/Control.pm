@@ -243,7 +243,7 @@ use Text::PSTemplate;
     ### set variable[deprecated]
     ### ---
     sub set_var : TplExport(chop => 1) {
-        
+        warn 'set_var is deprecated. Use assign instead.';
         my $self = shift;
         Text::PSTemplate->get_current_file_parser->set_var(@_);
         return;

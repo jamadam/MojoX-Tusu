@@ -123,6 +123,14 @@ use Fcntl qw(:flock);
         
         return $self;
     }
+    
+    ### ---
+    ### get template parser instance which $self belongs to
+    ### ---
+    sub get_engine {
+        my ($self) = shift;
+        return $self->{$MEM_TPL};
+    }
 
 1;
 
@@ -188,6 +196,13 @@ Constructor. This takes template instance as argument.
 
 Note that in list context, this always returns an array with 1 element.
 If the key doesn't exists, this returns (undef).
+
+=head2 $self->get_engine()
+
+Thims method returns the template parser instance which is the one the plugin
+belongs to.
+
+    my $engine = $get_engine()
 
 =head1 ATTRIBUTE
 

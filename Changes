@@ -2,6 +2,7 @@ Revision history for Mojolicious-Plugin-Tusu
 
 0.26 2011/08/20
   M::T::ComponentBase::ini and set_ini removed. Use Mojo::Base::attr instead.
+  - Text::PSTemplate v0.38 bundled.
   
 0.25 2011/07/14
   - Tusu now is a Mojolicious plugin
