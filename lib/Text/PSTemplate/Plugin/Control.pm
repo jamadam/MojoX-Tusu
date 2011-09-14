@@ -130,7 +130,7 @@ use Text::PSTemplate;
                 return $case_ref->{$target};
             }
         }
-        return $tpl->parse($default);
+        return $default;
     }
     
     ### ---
