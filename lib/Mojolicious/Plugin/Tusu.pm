@@ -116,7 +116,7 @@ use Carp;
         }
         $app->sessions->load($c);
         my $plugins = $app->plugins;
-        $plugins->run_hook(before_dispatch => $c);
+        $plugins->emit_hook(before_dispatch => $c);
         
         my $path = $tx->req->url->path->to_string || '/';
         
@@ -174,7 +174,7 @@ use Carp;
         if (! $tx->res->code) {
             $self->_render_error_document($c, 404);
         }
-        $plugins->run_hook_reverse(after_static_dispatch => $c);
+        $plugins->emit_hook_reverse(after_static_dispatch => $c);
     }
     
     ### ---
