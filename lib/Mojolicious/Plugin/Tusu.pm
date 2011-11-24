@@ -61,7 +61,7 @@ use Carp;
         
         $app->hook('around_dispatch' => sub {
             my ($next, $c) = @_;
-            $self->_dispatch($app, $c);
+            $self->_dispatch($c->app, $c);
         });
         
         $app->static->root($args->{document_root});
