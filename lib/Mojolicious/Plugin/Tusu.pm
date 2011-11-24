@@ -59,7 +59,10 @@ use Carp;
             }
         });
         
-        $app->on_process(sub {$self->_dispatch(@_)});
+        $app->hook('around_dispatch' => sub {
+            my ($next, $c) = @_;
+            $self->_dispatch($app, $c);
+        });
         
         $app->static->root($args->{document_root});
         $app->renderer->root($args->{document_root});
