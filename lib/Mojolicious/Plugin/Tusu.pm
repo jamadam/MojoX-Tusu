@@ -48,6 +48,10 @@ use Carp;
         
         $args = {%$default_args, %$args};
         
+        if (! -d $args->{document_root}) {
+            die qq{Document root "$args->{document_root}" is not a directory};
+        }
+        
         $app->hook(after_build_tx => sub {
             my $app = $_[1];
             if (! $self->_default_route_set) {
