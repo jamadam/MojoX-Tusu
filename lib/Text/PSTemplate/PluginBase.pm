@@ -199,7 +199,7 @@ If the key doesn't exists, this returns (undef).
 
 =head2 $self->get_engine()
 
-Thims method returns the template parser instance which is the one the plugin
+This method returns the template parser instance which is the one the plugin
 belongs to.
 
     my $engine = $get_engine()

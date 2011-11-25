@@ -19,7 +19,7 @@ use Carp;
     # internal use
     __PACKAGE__->attr('_default_route_set');
     
-    sub check_hash_key {
+    sub _check_hash_key {
         my ($hash_ref, @keys) = @_;
         my %keys;
         $keys{$_} = 1 foreach(@keys);
@@ -42,7 +42,7 @@ use Carp;
             components              => {},
         };
         
-        if (my $key = check_hash_key($args, keys %$default_args)) {
+        if (my $key = _check_hash_key($args, keys %$default_args)) {
             croak "Unknown argument $key";
         }
         

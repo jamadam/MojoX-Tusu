@@ -36,9 +36,9 @@ use Mojo::Util;
 <%= $i %>
 <% BLOCK %>
 EOF1
-<% for my $i (1..3) {
-%= $i
-} =%>
+%  for my $i (1..3) {
+%=    $i
+%  }
 EOF2
 		
 		is($pst_countit->(<<'EOF1') >= $mt_countit->(<<'EOF2'), 1);

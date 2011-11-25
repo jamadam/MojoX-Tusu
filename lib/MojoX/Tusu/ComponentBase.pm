@@ -81,6 +81,10 @@ Returns current Mojolicious::Controller instance.
 This is a hook method for initializing component. This will automatically be
 called from constructor.
 
+=head2 $instance->attr
+
+=head2 $class->new
+
 =head1 SEE ALSO
 
 L<Text::PSTemplate>, L<Mojolicious::Plugin::Renderer>

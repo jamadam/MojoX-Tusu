@@ -77,7 +77,7 @@ use overload (
     
     my $datetime;
     eval {
-        require 'DateTime';
+        require DateTime;
         $datetime = 1;
     };
     
@@ -1414,6 +1414,8 @@ available.
 =head2 $instance->wday
 
 =head2 $instance->wday_0
+
+=head2 $instance->today
 
 =head1 AUTHOR
 

@@ -1,4 +1,6 @@
 package Mojolicious::Command::Generate::TusuApp;
+use strict;
+use warnings;
 use Mojo::Base 'Mojolicious::Command::Generate::App';
 use Text::PSTemplate;
 use Text::PSTemplate::File;
@@ -29,7 +31,7 @@ EOF
     # Script
     my $app = $self->class_to_file($class);
     $self->render_to_rel_file($class, "script/my_app", 'script/<<% $app %>>');
-    $self->chmod_file("$app/script/$app", 0744);
+    $self->chmod_file("$app/script/$app", 744);
     $self->render_to_rel_file($class, "lib/MyApp.pm", 'lib/<<% $class %>>.pm');
     $self->render_to_rel_file($class, "lib/MyApp/YourComponent.pm", 'lib/<<% $class %>>/YourComponent.pm');
     $self->render_to_rel_file($class, "t/basic.t");
@@ -139,12 +141,12 @@ sub _get_lib_names {
             my $dist_file = $dist;
             $dist_file =~ s{::}{/}g;
             eval {
-                require "$dist_file.pm";
+                require "$dist_file.pm"; ## no critic
             };
             my $ver = ${"$dist\::VERSION"};
             my $uri2 = "http://cpansearch.perl.org/src/$path-$ver/MANIFEST";
             my $manifest = LWP::Simple::get($uri2);
-            return grep {$_ =~ s{^lib/}{}} split(qr{\s+}s, $manifest);
+            return grep {my $a = $_; $a =~ s{^lib/}{}} split(qr{\s+}s, $manifest);
         }
     }
 }
@@ -204,7 +206,17 @@ Not written yet.
 
 Not written yet.
 
-Run this command.
+=head2 C<bundle_dist>
+
+Not written yet.
+
+=head2 C<bundle_lib>
+
+Not written yet.
+
+=head2 C<find_lib>
+
+Not written yet.
 
 =head1 SEE ALSO
 

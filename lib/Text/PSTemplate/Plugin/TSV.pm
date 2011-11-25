@@ -19,6 +19,14 @@ use base qw(Text::PSTemplate::PluginBase);
         return;
     }
     
+    sub load_record_set : TplExport {
+        
+        my ($self, $file, $args) = @_;
+        my %seek_args = $args ? (%$args) : ();
+        my $recordset = &seek_tsv(file => $file, %seek_args);
+        return $recordset;
+    }
+    
     sub load_record : TplExport {
         
         my ($self, $file, $column, $value , $namespace, $args) = @_;
@@ -76,6 +84,21 @@ use base qw(Text::PSTemplate::PluginBase);
     }
     
     ### ---
+    ### Total line number
+    ### ---
+    sub lines : TplExport {
+        
+        my ($self, $file) = @_;
+        open(my $fh, "<", $file) or die "open $file failed";
+        flock($fh, LOCK_EX) or die 'flock failed';
+        my $num = 0;
+        while(<$fh>) {
+            $num++;
+        }
+        return $num;
+    }
+    
+    ### ---
     ### TSV
     ### ---
     sub seek_tsv {
@@ -100,13 +123,12 @@ use base qw(Text::PSTemplate::PluginBase);
             @_);
         
         my @rows = ();
-        my $tsv = Text::PSTemplate::Plugin::_TSV->new({row_size => $args{row_size}});
+        my $tsv = Text::PSTemplate::Plugin::TSV::_TSV->new({row_size => $args{row_size}});
         open(my $fh, "<:". $args{encoding}, $args{file}) or die "open $args{file} failed";
         flock($fh, LOCK_EX) or die 'flock failed';
         
         if ($args{header_exist}) {
             my $rubbish = $tsv->getline($fh);
-            warn Text::PSTemplate::dump($rubbish);
         }
         my $limit_count = 0;
         FI: while (my $row = $tsv->getline($fh)) {
@@ -201,9 +223,9 @@ use base qw(Text::PSTemplate::PluginBase);
     }
 
 ### ---
-### TSVクラス
+### TSV class
 ### ---
-package Text::PSTemplate::Plugin::_TSV;
+package Text::PSTemplate::Plugin::TSV::_TSV;
     
     sub new {
         
@@ -259,6 +281,10 @@ To activate this plugin, your template have to load it as follows
 =head2 seek_tsv
 
 =head2 load_all_hashref
+
+=head2 lines
+
+=head2 load_record_set
 
 =head1 AUTHOR
 
