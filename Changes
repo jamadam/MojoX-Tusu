@@ -1,6 +1,8 @@
 Revision history for Mojolicious-Plugin-Tusu
 
-0.26 2011/08/20
+0.26 2011/11/25
+
+0.26 2011/11/25
   - M::T::ComponentBase::ini and set_ini removed. Use Mojo::Base::attr instead.
   - Text::PSTemplate v0.40 bundled.
   - Removed run_hook_reverse call in favor of emit_hook_reverse
