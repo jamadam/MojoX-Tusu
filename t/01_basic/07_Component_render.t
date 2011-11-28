@@ -38,6 +38,7 @@ use Test::Mojo;
 						components => {
 							'SomeComponent' => undef,
 						},
+						document_root => $self->home->rel_dir('../public_html'),
 					});
 					my $SomeComponent = $tusu->engine->get_plugin('SomeComponent');
 					is($SomeComponent->key1, 'value1');

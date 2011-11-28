@@ -11,9 +11,9 @@ use Test::Mojo;
     sub constractor : Test(4) {
         
         my $app = Test::App->new;
-        $app->plugin(tusu => {});
+        $app->plugin(tusu => {document_root => $app->home->rel_dir('../public_html')});
         my $r = Mojolicious::Plugin::Tusu->new($app);
-        $r->register($app, {});
+        $r->register($app, {document_root => $app->home->rel_dir('../public_html')});
         is(ref $r, 'Mojolicious::Plugin::Tusu');
         my $engine = $r->engine;
         is(ref $engine, 'Text::PSTemplate');
