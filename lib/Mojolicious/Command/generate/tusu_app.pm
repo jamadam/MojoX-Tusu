@@ -84,6 +84,7 @@ EOF
         lib/Text/PSTemplate/PluginBase.pm
     );
     for my $file (@bundle) {
+        $file =~ s{^lib/}{};
         $self->bundle_lib($class, $file);
     }
 }
@@ -94,7 +95,7 @@ sub render_to_rel_file {
     my $parser = Text::PSTemplate->new;
     $parser->set_delimiter('<<%', '%>>');
     $parser->set_var(class => $class, app => $app);
-    my $template = File::Spec->rel2abs(File::Spec->catfile(dirname(__FILE__), 'TusuApp', $path));
+    my $template = File::Spec->rel2abs(File::Spec->catfile(dirname(__FILE__), 'tusu_app', $path));
     my $content = $parser->parse_file($template);
     $path_to = $path_to ? $parser->parse($path_to) : $path;
     $self->write_file("$app/". $path_to, $content);
@@ -124,11 +125,18 @@ sub find_lib {
 
 sub bundle_dist {
     my ($self, $class, $dist_name) = @_;
-    for my $package (_get_lib_names($dist_name)) {
-        $self->bundle_lib($class, $package);
+    my @libs = eval {
+        _get_lib_names($dist_name);
+    };
+    if ($@) {
+        warn $@;
+    } else {
+        for my $modules (@libs) {
+            $self->bundle_lib($class, $modules);
+        }
+        print "  [bundle distribution] $dist_name\n";
+        return $self;
     }
-    print "  [bundle distribution] $dist_name\n";
-    return $self;
 }
 
 sub _get_lib_names {
@@ -146,8 +154,15 @@ sub _get_lib_names {
             };
             my $ver = ${"$dist\::VERSION"};
             my $uri2 = "http://cpansearch.perl.org/src/$path-$ver/MANIFEST";
-            my $manifest = LWP::Simple::get($uri2);
-            return grep {my $a = $_; $a =~ s{^lib/}{}} split(qr{\s+}s, $manifest);
+            if (my $manifest = LWP::Simple::get($uri2)) {
+                return
+                    map {my $a = $_; $a =~ s{^lib/}{}; $a}
+                    grep {$_ =~ qr{^lib/}}
+                    split(qr{\s+}s, $manifest);
+            } else {
+                die qq{Can't find manifest for $dist via CPAN (maybe your libs are too old?)."
+                    ."\nPlease copy your libs into extlib directorymanualy};
+            }
         }
     }
 }
