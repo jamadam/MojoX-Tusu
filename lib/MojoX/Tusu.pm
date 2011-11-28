@@ -117,7 +117,7 @@ To activate this component, you must plug-in this at mojolicious startup method.
         });
     }
 
-The following is an example for component development.
+Here is another example for component development.
 
     <div id="productContainer">
         <% Product::list_by_category('books', 10) %>

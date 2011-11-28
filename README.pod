@@ -54,7 +54,7 @@ transplantable with no change at all.
 
 =head2 Installation
 
-    $ sudo -s 'curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.27'
+    $ sudo -s 'curl -L cpanmin.us | perl - https://github.com/jamadam/MojoX-Tusu/tarball/master/v0.25'
 
 =head2 Getting Started
 
@@ -107,7 +107,7 @@ To activate this component, you must plug-in this at mojolicious startup method.
         });
     }
 
-The following is an example for component development.
+Here is another example for component development.
 
     <div id="productContainer">
         <% Product::list_by_category('books', 10) %>
