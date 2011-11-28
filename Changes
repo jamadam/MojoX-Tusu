@@ -1,6 +1,7 @@
 Revision history for Mojolicious-Plugin-Tusu
 
-0.26 2011/11/25
+0.27 2011/11/28
+  - Generator namespaces has changed
 
 0.26 2011/11/25
   - M::T::ComponentBase::ini and set_ini removed. Use Mojo::Base::attr instead.
