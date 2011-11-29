@@ -1,6 +1,6 @@
 Revision history for Mojolicious-Plugin-Tusu
 
-0.27 2011/11/29
+0.28 2011/11/29
   - Generator namespaces has changed
   - Fixed a bug on generator that some file's permission was wrong
 
