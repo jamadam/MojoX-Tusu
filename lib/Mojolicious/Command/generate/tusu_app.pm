@@ -43,6 +43,7 @@ EOF
     $self->render_to_rel_file($class, 'public_html/inquiry/index.html');
     $self->render_to_rel_file($class, 'public_html/inquiry/thanks.html');
     $self->render_to_rel_file($class, 'public_html/error_document/404.html');
+    $self->render_to_rel_file($class, 'public_html/.htaccess');
     $self->create_rel_dir("$app/log");
     
     $self->bundle_dist($class, 'Mojolicious');
