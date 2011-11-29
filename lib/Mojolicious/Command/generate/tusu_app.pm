@@ -31,7 +31,7 @@ EOF
     # Script
     my $app = $self->class_to_file($class);
     $self->render_to_rel_file($class, "script/my_app", 'script/<<% $app %>>');
-    $self->chmod_file("$app/script/$app", 744);
+    $self->chmod_file("$app/script/$app", oct(744));
     $self->render_to_rel_file($class, "lib/MyApp.pm", 'lib/<<% $class %>>.pm');
     $self->render_to_rel_file($class, "lib/MyApp/YourComponent.pm", 'lib/<<% $class %>>/YourComponent.pm');
     $self->render_to_rel_file($class, "t/basic.t");
