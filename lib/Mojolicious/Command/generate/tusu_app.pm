@@ -35,12 +35,14 @@ EOF
     $self->render_to_rel_file($class, "lib/MyApp.pm", 'lib/<<% $class %>>.pm');
     $self->render_to_rel_file($class, "lib/MyApp/YourComponent.pm", 'lib/<<% $class %>>/YourComponent.pm');
     $self->render_to_rel_file($class, "t/basic.t");
+    $self->render_to_rel_file($class, 'public_html/index.cgi');
     $self->render_to_rel_file($class, 'public_html/index.html');
     $self->render_to_rel_file($class, 'public_html/copyright.html');
     $self->render_to_rel_file($class, 'public_html/htmlhead.html');
     $self->render_to_rel_file($class, 'public_html/commons/index.css');
     $self->render_to_rel_file($class, 'public_html/inquiry/index.html');
     $self->render_to_rel_file($class, 'public_html/inquiry/thanks.html');
+    $self->render_to_rel_file($class, 'public_html/error_document/404.html');
     $self->create_rel_dir("$app/log");
     
     $self->bundle_dist($class, 'Mojolicious');
