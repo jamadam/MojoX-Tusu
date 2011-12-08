@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use base qw(MojoX::Tusu::ComponentBase);
 use Mojo::Util;
+use Mojo::DOM;
     
     sub escape : TplExport {
         my ($self, $val) = @_;
@@ -46,6 +47,12 @@ use Mojo::Util;
         my $c = $self->controller;
         my $path = $c->url_for(@_[1.. scalar (@_) - 1]);
         return bless $path, 'MojoX::Tusu::Component::Util::URL';
+    }
+    
+    sub html_to_text : TplExport {
+        
+        my ($self, $html) = @_;
+        return Mojo::DOM->new($html)->all_text;
     }
 
 package MojoX::Tusu::Component::Util::URL;
