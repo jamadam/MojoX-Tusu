@@ -100,6 +100,11 @@ use Carp;
         return $self;
     }
     
+    sub get_component {
+        my ($self, $name) = @_;
+        return $self->engine->get_plugin($name);
+    }
+    
     ### ---
     ### bootstrap for frameworking
     ### ---
@@ -479,6 +484,13 @@ route to be dispatched to.
     $r->route('/some/path')->via('post')->to(cb => sub {
         $tusu->bootstrap($c, 'Your::Component', 'post');
     });
+
+=head2 $instance->get_component($name)
+
+This is an alias to Text::PSTemplate->get_plugin. With this method, you can get
+component instance.
+
+    my $component = $tusu->get_component('Your::Component');
 
 =head1 What does Tusu mean?
 
