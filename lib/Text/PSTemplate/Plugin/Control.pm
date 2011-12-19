@@ -153,7 +153,7 @@ use Text::PSTemplate;
     }
     
     ### ---
-    ### Substr
+    ### each
     ### ---
     sub each : TplExport {
         
@@ -353,8 +353,6 @@ Text::PSTemplate::Plugin::Control - Common control structures
         a => 'path/to/tpl_a.txt',
         b => 'path/to/tpl_b.txt',
     }, 'path/to/tpl_default.txt') %>
-    
-    <% substr($some_var, 0, 2, '...') %>
     
     <% each($array_ref, 'name')<<TPL %>
     This is <%$name%>.

@@ -75,12 +75,6 @@ use overload (
     my $MEM_ASSET   = 3;
     my $MEM_OFFSET  = 4;
     
-    my $datetime;
-    eval {
-        require DateTime;
-        $datetime = 1;
-    };
-    
     sub today {
         my ($class) = @_;
         $class->new();
@@ -89,10 +83,6 @@ use overload (
     sub new {
         
         my ($class, %args) = @_;
-        
-        if ($datetime) {
-            return DateTime->new(%args);
-        }
         
         my $self = {
             $MEM_ASSET  => [$months, $wdays],
@@ -119,10 +109,6 @@ use overload (
         
         my ($class, %args) = @_;
         
-        if ($datetime) {
-            return DateTime->new(%args);
-        }
-        
         my $self = {
             $MEM_EPOCH  => $args{epoch},
             $MEM_PARTS  => [],
@@ -135,10 +121,6 @@ use overload (
     sub parse {
         
         my ($class, $str, $timezone) = @_;
-        
-        if ($datetime) {
-            return DateTime->new($str, $timezone);
-        }
         
         my @a;
         if ($str && $str =~ qr{^(\d{4})([\./-]?)(\d\d?)(?:\2(\d\d?)(?:( |T|\2)(\d\d?)([:-]?)(\d\d?)(?:\7(\d\d?)(\.\d+)?)?([\+\-]\d\d:?\d\d)?Z?)?)?$}) {

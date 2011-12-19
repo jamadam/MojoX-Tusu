@@ -15,15 +15,15 @@ use Fcntl qw(:flock);
     my %_attr_tpl_export_cache;
     my %_findsym2_tbl;
     
-    my $MEM_AS  = 2;
-    my $MEM_TPL = 3;
+    my $MEM_AS  = 1;
+    my $MEM_TPL = 2;
     
     ### ---
     ### Constructor
     ### ---
     sub new {
         
-        my ($class, $tpl, $as) = (@_);
+        my ($class, $tpl, $as) = @_;
         
         no strict 'refs';
         foreach my $pkg (@{$class. '::ISA'}) {
@@ -56,7 +56,7 @@ use Fcntl qw(:flock);
     
     sub _findsym2 {
         
-        my ($pkg, $ref) = @_;
+        my $pkg = shift;
         if (! exists $_findsym2_tbl{$pkg}) {
             no strict 'refs';
             my $out = {};

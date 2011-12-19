@@ -9,19 +9,25 @@ use overload (
     fallback => 1,
 );
 
+    my $MEM_MESSAGE     = 1;
+    my $MEM_LINE        = 2;
+    my $MEM_POSITION    = 3;
+    my $MEM_FILE        = 4;
+    my $MEM_LOCK        = 5;
+    
     sub _stringify {
         
         my ($self) = @_;
-        my $out = $self->{message} || 'Unknown Error';
-		my $file = $self->{file};
-		if (blessed($file) && $file->isa('Text::PSTemplate::File')) {
-			my $line = _line_number($file->content, $self->{position});
-			$out = (split(/ at /, $out))[0];
-			$out .= sprintf(" at %s line %s", $file->name, $line);
+        my $out = $self->{$MEM_MESSAGE} || 'Unknown Error';
+        my $file = $self->{$MEM_FILE};
+        if (blessed($file) && $file->isa('Text::PSTemplate::File')) {
+            my $line = _line_number($file->content, $self->{$MEM_POSITION});
+            $out = (split(/ at /, $out))[0];
+            $out .= sprintf(" at %s line %s", $file->name, $line);
         } elsif ($file) {
             $out .= " at ". $file;
-            if ($self->{line}) {
-                $out .= " line $self->{line}";
+            if ($self->{$MEM_LINE}) {
+                $out .= " line $self->{$MEM_LINE}";
             }
         }
         $out =~ s{\s+}{ }g;
@@ -35,13 +41,17 @@ use overload (
         if (ref $_[1] eq __PACKAGE__) {
             return $_[1];
         }
-        my $self = bless {message => $message}, $class;
-		
+        my $self = bless {$MEM_MESSAGE => $message}, $class;
+        
         if (! $Text::PSTemplate::current_file) {
-            my $at = Carp::shortmess_heavy();
-            if ($at =~ qr{at (.+?) line (\d+)}) {
-                $self->{file} = $1;
-                $self->{line} = $2;
+            my $at = eval {Carp::shortmess_heavy()};
+            if ($@) {
+                my @caller = caller(0);
+                $self->{$MEM_FILE} = $caller[1];
+                $self->{$MEM_LINE} = $caller[2];
+            } elsif ($at =~ qr{at (.+?) line (\d+)}) {
+                $self->{$MEM_FILE} = $1;
+                $self->{$MEM_LINE} = $2;
             }
         }
         $self;
@@ -49,51 +59,51 @@ use overload (
     
     sub set_message {
         my ($self, $value) = @_;
-		if ($self->{lock}) {
-			return $self;
-		}
-        $self->{message} = $value;
-		$self;
+        if ($self->{$MEM_LOCK}) {
+            return $self;
+        }
+        $self->{$MEM_MESSAGE} = $value;
+        $self;
     }
     
     sub set_position {
         my ($self, $value) = @_;
-		if ($self->{lock}) {
-			return $self;
-		}
-        $self->{position} = $value;
-		$self;
+        if ($self->{$MEM_LOCK}) {
+            return $self;
+        }
+        $self->{$MEM_POSITION} = $value;
+        $self;
     }
     
     sub set_file {
         my ($self, $value) = @_;
-		if ($self->{lock}) {
-			return $self;
-		}
-        $self->{file} = $value;
-		$self;
+        if ($self->{$MEM_LOCK}) {
+            return $self;
+        }
+        $self->{$MEM_FILE} = $value;
+        $self;
     }
     
-	sub finalize {
-		
-		my ($self) = @_;
-		$self->{lock} = 1;
-		$self;
-	}
-	
+    sub finalize {
+        
+        my ($self) = @_;
+        $self->{$MEM_LOCK} = 1;
+        $self;
+    }
+    
     sub message {
         my ($self) = @_;
-        $self->{message};
+        $self->{$MEM_MESSAGE};
     }
     
     sub position {
         my ($self) = @_;
-        $self->{position};
+        $self->{$MEM_POSITION};
     }
     
     sub file {
         my ($self) = @_;
-        $self->{file};
+        $self->{$MEM_FILE};
     }
     
     sub _line_number {
