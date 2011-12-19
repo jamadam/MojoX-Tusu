@@ -20,7 +20,6 @@ use Test::Mojo;
         is(ref $engine->get_plugin('MojoX::Tusu::ComponentBase'), 'MojoX::Tusu::ComponentBase');
         is(ref $engine->get_plugin('MojoX::Tusu::Component::Mojolicious'), 'MojoX::Tusu::Component::Mojolicious');
         my $a_plug = $engine->get_plugin('MojoX::Tusu::Component::Mojolicious');
-        warn $a_plug->app;
     }
 
 package Test::App;
