@@ -43,6 +43,6 @@ use warnings;
 use base 'MojoX::Tusu::ComponentBase';
 
     sub post {
-        my ($self, $c) = @_;
-        $c->render(handler => 'tusu', template => '/03/03_ComponentBase02.html')
+        my ($self) = @_;
+        $self->controller->render(handler => 'tusu', template => '/03/03_ComponentBase02.html')
     }

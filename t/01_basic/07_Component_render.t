@@ -96,8 +96,8 @@ use Test::Mojo;
 			}
 		
 			sub get {
-				my ($self, $c) = @_;
-				$c->render(handler => 'tusu', template => '07/some_component/index2.html');
+				my ($self) = @_;
+				$self->controller->render(handler => 'tusu', template => '07/some_component/index2.html');
 			}
 	}
     

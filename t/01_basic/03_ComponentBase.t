@@ -34,6 +34,38 @@ use Test::Mojo;
 			->content_is('/path/to/file path/to/file');
     }
     
+	sub redirect_to : Test(24) {
+        $ENV{MOJO_MODE} = 'production';
+        my $t = Test::Mojo->new('RedirectTo');
+        $t->get_ok('/03/03_ComponentBase04.html?a=/hoge.html')
+			->status_is(302)
+			->header_like('Location' => qr{http://localhost:\d+/hoge.html$});
+        $t->get_ok('/03/03_ComponentBase04.html?a=./hoge.html')
+			->status_is(302)
+			->header_like('Location' => qr{http://localhost:\d+/03/hoge.html$});
+        $t->get_ok('/03/03_ComponentBase04.html?a=http://example.com/a/b/c.html')
+			->status_is(302)
+			->header_like('Location' => qr{http://example.com/a/b/c.html});
+        $t->get_ok('/03/03_ComponentBase04.html?a=/')
+			->status_is(302)
+			->header_like('Location' => qr{http://localhost:\d+/$});
+		
+		local $ENV{REQUEST_URI} = '/dummy/';
+		
+        $t->get_ok('/03/03_ComponentBase04.html?a=./hoge2.html')
+			->status_is(302)
+			->header_like('Location' => qr{http://localhost:\d+/dummy/hoge2.html$});
+        $t->get_ok('/03/03_ComponentBase04.html?a=/hoge2.html')
+			->status_is(302)
+			->header_like('Location' => qr{http://localhost:\d+/hoge2.html$});
+        $t->get_ok('/03/03_ComponentBase04.html?a=http://example.com/a/b/c.html')
+			->status_is(302)
+			->header_like('Location' => qr{http://example.com/a/b/c.html});
+        $t->get_ok('/03/03_ComponentBase04.html?a=/')
+			->status_is(302)
+			->header_like('Location' => qr{http://localhost:\d+/$});
+	}
+	
     END {
         $ENV{MOJO_MODE} = $backup;
     }
@@ -58,15 +90,34 @@ use base 'Mojolicious';
         });
     }
 
+package RedirectTo;
+use strict;
+use warnings;
+use base 'Mojolicious';
+    
+    sub startup {
+        my $self = shift;
+    
+        my $tusu = $self->plugin(tusu => {
+			components => {
+				'SomeComponent' => undef,
+			},
+			document_root => 't/public_html',
+		});
+        my $r = $self->routes;
+        $r->route('/03/03_ComponentBase04.html')->to(cb => sub {
+            $tusu->bootstrap($_[0], 'SomeComponent', 'redirect_to', $_[0]->req->param('a'));
+        });
+    }
+
 package SomeComponent;
 use strict;
 use warnings;
 use base 'MojoX::Tusu::ComponentBase';
 
     sub post {
-        
-        my ($self, $c) = @_;
-        $c->render(handler => 'tusu', template => '/03/03_ComponentBase02.html')
+        my ($self) = @_;
+        $self->controller->render(handler => 'tusu', template => '/03/03_ComponentBase02.html')
     }
     
 __END__
