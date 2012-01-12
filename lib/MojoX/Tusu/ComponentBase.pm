@@ -18,6 +18,10 @@ use Mojo::Base;
     sub init {
         ### Must be implemented on sub classes.
     }
+	
+	sub component : TplExport {
+		return $_[0];
+	}
     
     sub _dummy : TplExport {
         

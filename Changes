@@ -1,6 +1,9 @@
 Revision history for Mojolicious-Plugin-Tusu
 
-0.30 2011/12/28
+0.31 2011/01/12
+  - Added component method for template.
+
+0.30 2011/01/11
   - Added redirect_to method.
 
 0.29 2011/12/28
