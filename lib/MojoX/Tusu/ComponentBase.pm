@@ -62,20 +62,6 @@ use base qw(Text::PSTemplate::PluginBase);
 	}
     
 	### ---
-	### put_user_err
-	### ---
-    sub put_user_err : TplExport {
-        my ($self, $id) = @_;
-        my $c = $self->controller;
-        if ($self->user_err->count) {
-            $id ||= 'error';
-            my @errs = map {'<li>'. $_. '</li>'} $self->user_err->array;
-            return '<ul id="'. $id. '">'. join('', @errs). '</ul>';
-        }
-        return;
-    }
-    
-	### ---
 	### user_error
 	### ---
     sub user_err {

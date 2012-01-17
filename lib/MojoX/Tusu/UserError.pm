@@ -21,6 +21,12 @@ use warnings;
         my ($self) = @_;
         return @$self;
     }
+    
+    sub each {
+        my ($self) = @_;
+        my @array = @$self;
+		return Text::PSTemplate::Plugin::Control->each(\@array, @_);
+    }
 
 1;
 
