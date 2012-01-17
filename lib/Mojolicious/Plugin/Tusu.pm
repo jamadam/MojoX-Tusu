@@ -66,6 +66,7 @@ use Carp;
         $app->hook('around_dispatch' => sub {
             my ($next, $c) = @_;
             $self->_dispatch($c->app, $c);
+            $next->();
         });
         
         $app->static->root($args->{document_root});
