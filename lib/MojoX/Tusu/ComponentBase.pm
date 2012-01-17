@@ -72,6 +72,11 @@ use base qw(Text::PSTemplate::PluginBase);
         }
         return $c->stash('user_err');
     }
+	
+	sub get_component {
+		my ($self, $name) = @_;
+		return $self->get_engine->get_plugin($name);
+	}
 
 1;
 
