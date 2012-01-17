@@ -64,7 +64,7 @@ use base qw(Text::PSTemplate::PluginBase);
 	### ---
 	### user_error
 	### ---
-    sub user_err {
+    sub user_err : TplExport {
         my ($self) = @_;
         my $c = $self->controller;
         if (! $c->stash('user_err')) {
