@@ -20,14 +20,14 @@ use Test::More tests => 10;
     
 	$t->get_ok('/08/not_found.html')
 		->status_is(404)
-		->text_is('title', 'Page Not Found');
+		->text_like('title', qr{Page not found}i);
 	$t->get_ok('/08/')
 		->status_is(500)
-		->text_is('title', 'Server Error')
+		->text_like('title', qr{Server error}i)
 		->element_exists('div#raptor');
 	$t->get_ok('/08/directory_index_fail/')
 		->status_is(404)
-		->text_is('title', 'Page Not Found');
+		->text_like('title', qr{Page not found}i);
 
     $ENV{MOJO_MODE} = $backup;
 

@@ -19,7 +19,7 @@ use Test::Mojo;
 			->content_like(qr/GIF89a/);
         $t->get_ok('/09/img/not_found.gif')
 			->status_is(404)
-			->text_is('title', 'Page Not Found');
+			->text_like('title', qr{Page not found}i);
     }
     
     sub directory_indexed : Test(8) {
