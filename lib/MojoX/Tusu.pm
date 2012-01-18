@@ -1,7 +1,7 @@
 package MojoX::Tusu;
 use strict;
 use warnings;
-our $VERSION = '0.33';
+our $VERSION = '0.34';
 $VERSION = eval $VERSION; ## no critic
 
 1;

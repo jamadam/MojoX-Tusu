@@ -1,5 +1,7 @@
 Revision history for Mojolicious-Plugin-Tusu
 
+0.34 2012/01/18
+
 0.33 2012/01/18
   - Added user_err function for templates.
   - Removed put_user_err function for templates.
