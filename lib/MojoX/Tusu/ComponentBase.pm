@@ -112,6 +112,7 @@ MojoX::Tusu::ComponentBase - Base Class for WAF component
     }
     
     <% YourComponent::some_func(@your_args) %>
+    <% YourComponent::component() %>
 
 =head1 DESCRIPTION
 
@@ -144,13 +145,12 @@ environment.
     $self->redirect_to('http://example.com/foo/bar.html');
     $self->redirect_to('/');
 
-=head2 $instance->component
+=head2 $instance->component($class)
 
-Returns component instance.
+Returns component instance of given class. If $class is null, this returns
+current class instance.
 
 =head2 $instance->user_error
-
-=head2 $instance->put_user_error
 
 =head1 SEE ALSO
 
