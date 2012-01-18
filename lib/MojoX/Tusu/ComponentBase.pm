@@ -21,7 +21,11 @@ use base qw(Text::PSTemplate::PluginBase);
     }
 	
 	sub component : TplExport {
-		return $_[0];
+		my ($self, $name) = @_;
+        if ($name) {
+    		return $self->get_engine->get_plugin($name);
+        }
+		return $self;
 	}
     
     sub _dummy : TplExport {
@@ -72,11 +76,6 @@ use base qw(Text::PSTemplate::PluginBase);
         }
         return $c->stash('user_err');
     }
-	
-	sub get_component {
-		my ($self, $name) = @_;
-		return $self->get_engine->get_plugin($name);
-	}
 
 1;
 
