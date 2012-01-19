@@ -110,7 +110,6 @@ use Carp;
     ### bootstrap for frameworking
     ### ---
     sub bootstrap {
-        
         my ($self, $c, $component, $action, @args) = @_;
         local $CONTROLLER = $c;
         return $self->engine->get_plugin($component)->$action(@args);
@@ -120,7 +119,6 @@ use Carp;
     ### Custom dispatcher
     ### ---
     sub _dispatch {
-        
         my ($self, $app, $c) = @_;
         
         my $tx = $c->tx;
@@ -194,7 +192,6 @@ use Carp;
     ### Render Error document
     ### ---
     sub _render_error_document {
-        
         my ($self, $c, $code, $debug_message) = @_;
         
         $debug_message ||= 'Unknown Error';
@@ -220,7 +217,6 @@ use Carp;
     ### fill directory_index candidate
     ### ---
     sub _fill_filename {
-        
         my ($path, $directory_index) = @_;
         for my $default (@{$directory_index}) {
             my $path = File::Spec->catfile($path, $default);
@@ -235,7 +231,6 @@ use Carp;
     ### find file and type
     ### ---
     sub _check_file_type {
-        
         my ($self, $name) = @_;
         $name ||= '';
         my $leading_slash  = (substr($name, 0, 1) eq '/');
@@ -261,7 +256,6 @@ use Carp;
     ### foo             -> public_html/foo
     ### ---
     sub _filename_trans {
-        
         my ($template_base, $directory_index, $name) = @_;
         $name ||= '';
         my $leading_slash = substr($name, 0, 1) eq '/';
@@ -286,7 +280,6 @@ use Carp;
     ### Check if others readable
     ### ---
     sub _permission_ok {
-        
         my ($name, $base) = @_;
         $base ||= '';
         if ($^O eq 'MSWin32') {
@@ -312,7 +305,6 @@ use Carp;
     ### tusu renderer
     ### ---
     sub _render {
-        
         my ($self, $renderer, $c, $output, $options) = @_;
         
         try {
