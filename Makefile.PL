@@ -15,7 +15,7 @@ my %params = (
  		'Test::Class'         => '0.36',
         'Test::UseAllModules' => '0.10',
         'LWP::Simple'    	  => '0',
-        'Mojolicious'    	  => '2.39',
+        'Mojolicious'    	  => '2.45',
     },
     META_MERGE => {
         resources => {

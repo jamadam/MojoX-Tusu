@@ -46,8 +46,6 @@ EOF
     $self->render_to_rel_file($class, 'public_html/.htaccess');
     $self->create_rel_dir("$app/log");
     
-    $self->bundle_dist($class, 'Mojolicious');
-    
     print "  [bundle distribution] MojoX::Tusu\n";
     my @bundle = qw(
         lib/Mojolicious/Command/generate/tusu_app.pm
