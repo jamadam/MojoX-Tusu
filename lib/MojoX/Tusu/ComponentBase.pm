@@ -22,9 +22,9 @@ use base qw(Text::PSTemplate::PluginBase);
 	
 	sub component : TplExport {
 		my ($self, $name) = @_;
-        if ($name) {
-    		return $self->get_engine->get_plugin($name);
-        }
+		if ($name) {
+			return $self->get_engine->get_plugin($name);
+		}
 		return $self;
 	}
     
@@ -64,7 +64,7 @@ use base qw(Text::PSTemplate::PluginBase);
 		$c->rendered($res->is_status_class(300) ? undef : 302);
 		return $c;
 	}
-    
+	
 	### ---
 	### user_error
 	### ---
