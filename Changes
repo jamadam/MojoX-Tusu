@@ -1,5 +1,7 @@
 Revision history for Mojolicious-Plugin-Tusu
 
+0.35 2012/02/08
+
 0.34 2012/02/08
   - Bundled Text::PSTemplate ver0.44 to fix error message for undefined funcs
   - Stoped bundling Mojolicious.
