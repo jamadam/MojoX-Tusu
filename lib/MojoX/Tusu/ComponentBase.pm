@@ -52,7 +52,9 @@ use base qw(Text::PSTemplate::PluginBase);
 		
 		my $base;
 		if ($ENV{REQUEST_URI}) {
-			$base = $c->req->url->base->clone->path($ENV{REQUEST_URI})->to_abs;
+            my $path = $ENV{REQUEST_URI};
+            $path =~ s{\?.+}{};
+			$base = $c->req->url->base->clone->path($path)->to_abs;
 		} else {
 			$base = $c->req->url->clone->to_abs;
 		}
