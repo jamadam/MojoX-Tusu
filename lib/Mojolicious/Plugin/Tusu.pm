@@ -69,8 +69,8 @@ use Carp;
             $next->();
         });
         
-        $app->static->root($args->{document_root});
-        $app->renderer->root($args->{document_root});
+        $app->static->paths([$args->{document_root}]);
+        $app->renderer->paths([$args->{document_root}]);
         
         my $engine = Text::PSTemplate->new;
         $engine->set_filter('=', \&Mojo::Util::html_escape);
@@ -141,7 +141,7 @@ use Carp;
             $c->redirect_to($path. '/');
             $tx->res->code(301);
             return;
-        } elsif (! _permission_ok($check_result->{path}, $app->static->root)) {
+        } elsif (! _permission_ok($check_result->{path}, $app->static->paths->[0])) {
             $self->_render_error_document($c, 403);
             return;
         }
@@ -175,7 +175,7 @@ use Carp;
         
         my $relpath =
             ($check_result->{path})
-                ? File::Spec->abs2rel($check_result->{path}, $app->static->root)
+                ? File::Spec->abs2rel($check_result->{path}, $app->static->paths->[0])
                 : $path;
         ### defaults to static content
         if ($app->static->serve($c, $relpath)) {
