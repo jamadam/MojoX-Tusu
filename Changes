@@ -1,5 +1,7 @@
 Revision history for Mojolicious-Plugin-Tusu
 
+0.36 2012/02/15
+
 0.35 2012/02/15
   - Changed internal codes in favor of Mojolicious v2.49
 
