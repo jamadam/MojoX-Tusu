@@ -1,6 +1,7 @@
 .*
 !.gitignore
 !.perltidyrc
+!.htaccess
 *~
 blib
 Makefile*
