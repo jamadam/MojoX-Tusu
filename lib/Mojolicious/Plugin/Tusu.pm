@@ -582,8 +582,18 @@ the request path doesn't ended with file name. And this setting also affects to
 inside template context such as include('path') function. Following example is
 the default setting.
 
-    my $tusu = Mojolicious::Plugin::Tusu->new($app);
-    $tusu->directory_index(['index.html', 'index.htm']);
+    my $tusu = $self->plugin(tusu => {
+        directory_index => ['index.html', 'index.htm'],
+    });
+
+=head2 indexes => bool
+
+This option emulates apache's indexes option. When the value is 1,
+the server generates file list page for directory access.
+
+    my $tusu = $self->plugin(tusu => {
+        indexes => 1,
+    });
 
 =head2 extensions_to_render => array ref
 
@@ -591,18 +601,21 @@ This option sets the extensions to be parsed by tusu renderer. If request
 doesn't match any of extensions, dispatcher try to render it as static file.
 Following setting is the default.
 
-    my $tusu = Mojolicious::Plugin::Tusu->new($self);
-    $tusu->extensions_to_render(['html','htm','xml'])
+    my $tusu = $self->plugin(tusu => {
+        extensions_to_render => ['html','htm','xml'],
+    });
 
 =head2 error_document => hash ref
 
 This option setup custom error pages like apache's ErrorDocument.
 
-    $instance->error_document({
-        404 => '/errors/404.html',
-        403 => '/errors/403.html',
-        500 => '/errors/405.html',
-    })
+    my $tusu = $self->plugin(tusu => {
+        error_document => {
+            404 => '/errors/404.html',
+            403 => '/errors/403.html',
+            500 => '/errors/405.html',
+        },
+    });
 
 =head1 METHODS
 
