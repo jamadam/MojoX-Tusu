@@ -201,8 +201,9 @@ use File::Spec;
     ### ---
     ### Asset directory
     ### ---
-    sub asset {
-        File::Spec->catdir(dirname(__FILE__), 'Tusu', 'Asset');
+    sub _asset {
+        my ($class, $path) = @_;
+        return File::Spec->catfile(dirname(__FILE__), 'Tusu', 'Asset', $path);
     }
     
     ### ---
@@ -242,8 +243,7 @@ use File::Spec;
         } @dataset;
         my $tpl = Text::PSTemplate->new;
         $tpl->set_var(dir => $req_path, dataset => \@dataset);
-        my $template = File::Spec->catfile($self->asset, 'file_list.html');
-        $c->render_text($tpl->parse_file($template));
+        $c->render_text($tpl->parse_file($self->_asset('file_list.html')));
     }
     
     ### ---
