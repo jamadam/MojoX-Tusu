@@ -6,6 +6,8 @@ use Text::PSTemplate;
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojo::Util;
 use Carp;
+use File::Basename;
+use File::Spec;
 
     our $APP;
     our $CONTROLLER;
@@ -195,6 +197,13 @@ use Carp;
         }
         $plugins->emit_hook_reverse(after_static_dispatch => $c);
     }
+
+    ### ---
+    ### Asset directory
+    ### ---
+    sub asset {
+        File::Spec->catdir(dirname(__FILE__), 'Tusu', 'Asset');
+    }
     
     ### ---
     ### Render file list
@@ -208,117 +217,6 @@ use Carp;
         my @file = readdir($DIR);
         closedir $DIR;
         
-        my $template = <<'EOF';
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
-<head>
-    <title>Index of <%= $dir %></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Content-Script-Type" content="text/javascript" />
-    <style type="text/css">
-        * {
-            margin:0;
-            padding:0;
-        }
-        body {
-            background-color:#F5F6F8;
-        }
-            code {
-                background-color: #EEF9FF;
-                border: 1px solid #CCE4FF;
-                border-radius: 5px;
-                color: #333;
-                font: 0.8em Consolas,Menlo,Monaco,Courier,monospace;
-                padding: 0.4em;
-            }
-            h1 {
-                position:absolute;
-                top:0;
-                width:100%;
-                z-index:1000;
-                line-height:60px;
-                box-shadow: 1px 1px 3px rgba(0,0,0,1);
-                background-color:#000;
-                font-size: 1em;
-                font-weight:bold;
-                color:#eee;
-                text-align: center;
-            }
-            #wrapper {
-                background-color:#fff;
-                min-width:600px;
-                max-width:800px;
-                margin:0 auto;
-                box-shadow: 0 0 2px #CCCCCC;
-                border-radius: 5px;
-                padding: 7em 1em 1em;
-            }
-                table {
-                    border-collapse:collapse;
-                    width:100%;
-                }
-                    thead th {
-                        text-align: left;
-                        font-weight:bold;
-                    }
-                    tbody tr:nth-child(odd) {
-                        background-color:#DDEEFF;
-                    }
-                    tbody tr:nth-child(even) {
-                        background-color:#EEF9FF;
-                    }
-                    tbody td:nth-child(1):hover {
-                        background-color:#eff;
-                    }
-                    td,
-                    th {
-                        padding: 2px 5px;
-                    }
-                a {
-                    display:block;
-                    min-height:22px;
-                    line-height:22px;
-                    text-decoration:none;
-                    background-repeat:no-repeat;
-                    padding-left: 25px;
-                }
-                    a.dir {
-                        background-image:url(data:image/gif;base64,R0lGODlhFAAWAMIAAP/////Mmcz//5lmMzMzMwAAAAAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADVCi63P4wyklZufjOErrvRcR9ZKYpxUB6aokGQyzHKxyO9RoTV54PPJyPBewNSUXhcWc8soJOIjTaSVJhVphWxd3CeILUbDwmgMPmtHrNIyxM8Iw7AQA7);
-                    }
-                    a.file {
-                        background-image:url(data:image/gif;base64,R0lGODlhFAAWAMIAAP///8z//5mZmTMzMwAAAAAAAAAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAABACwAAAAAFAAWAAADWDi6vPEwDECrnSO+aTvPEddVIriN1wVxROtSxBDPJwq7bo23luALhJqt8gtKbrsXBSgcEo2spBLAPDp7UKT02bxWRdrp94rtbpdZMrrr/A5+8LhPFpHajQkAOw==);
-                    }
-    </style>
-</head>
-<body>
-    <h1>
-        Index of <code><%= $dir %></code>
-    </h1>
-    <div id="wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Last modified</th>
-                    <th>Size</th>
-                </tr>
-            </thead>
-            <tbody>
-            <% each($dataset => 'data')<<LOOP %>
-                <tr>
-                    <td><a class="<%= $data->{type} %>" href="<% $data->{name} %>"><%= $data->{name} %></a></td>
-                    <td><%= $data->{timestamp} %></td>
-                    <td><%= commify($data->{size}) %></td>
-                </tr>
-            <% LOOP %>
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
-EOF
-        
         my @dataset = ();
         for my $file (@file) {
             if ($file =~ qr{^\.$} || $req_path =~ qr{^/$} && $file =~ qr{^\.\.$}) {
@@ -327,7 +225,9 @@ EOF
             my $path = $dir. $file;
             my @dt = localtime((stat($path))[9]);
             my $timestamp = sprintf('%d-%02d-%02d %02d:%02d', 1900 + $dt[5], $dt[4] + 1, $dt[3], $dt[2], $dt[1]);
-            my $size = (stat($path))[7] > 1000 ? int((stat($path))[7] / 1000) . 'KB' : (stat($path))[7]. 'B';
+            my $size = ((stat($path))[7] > 1000)
+                ? sprintf("%.1f",(stat($path))[7] / 1000) . 'KB'
+                : (stat($path))[7]. 'B';
             push(@dataset, {
                 name        => $file,
                 timestamp   => $timestamp,
@@ -342,7 +242,8 @@ EOF
         } @dataset;
         my $tpl = Text::PSTemplate->new;
         $tpl->set_var(dir => $req_path, dataset => \@dataset);
-        $c->render_text($tpl->parse($template));
+        my $template = File::Spec->catfile($self->asset, 'file_list.html');
+        $c->render_text($tpl->parse_file($template));
     }
     
     ### ---
