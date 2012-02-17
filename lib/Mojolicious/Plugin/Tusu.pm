@@ -8,6 +8,7 @@ use Mojo::Util;
 use Carp;
 use File::Basename;
 use File::Spec;
+use Mojolicious::Types;
 
     our $APP;
     our $CONTROLLER;
@@ -209,6 +210,25 @@ use File::Spec;
         return File::Spec->catdir(dirname(__FILE__), 'Tusu', 'Asset');
     }
     
+    sub _file_to_mime_class {
+        my $name = shift;
+        my $ext = ($name =~ qr{\.(\w+)$}) ? $1 : '';
+        return (split('/', Mojolicious::Types->type($ext) || 'text/plain'))[0];
+    }
+    
+    sub _file_timestamp {
+        my $path = shift;
+        my @dt = localtime((stat($path))[9]);
+        return sprintf('%d-%02d-%02d %02d:%02d', 1900 + $dt[5], $dt[4] + 1, $dt[3], $dt[2], $dt[1]);
+    }
+    
+    sub _file_size {
+        my $path = shift;
+        return ((stat($path))[7] > 1000)
+            ? sprintf("%.1f",(stat($path))[7] / 1000) . 'KB'
+            : (stat($path))[7]. 'B';
+    }
+    
     ### ---
     ### Render file list
     ### ---
@@ -228,16 +248,11 @@ use File::Spec;
                 next;
             }
             my $path = $dir. $file;
-            my @dt = localtime((stat($path))[9]);
-            my $timestamp = sprintf('%d-%02d-%02d %02d:%02d', 1900 + $dt[5], $dt[4] + 1, $dt[3], $dt[2], $dt[1]);
-            my $size = ((stat($path))[7] > 1000)
-                ? sprintf("%.1f",(stat($path))[7] / 1000) . 'KB'
-                : (stat($path))[7]. 'B';
             push(@dataset, {
                 name        => $file,
-                timestamp   => $timestamp,
-                size        => $size,
-                type        => -f $path ? 'file' : 'dir',
+                timestamp   => _file_timestamp($path),
+                size        => _file_size($path),
+                type        => -f $path ? _file_to_mime_class($file) : 'dir',
             });
         }
         @dataset = sort {
