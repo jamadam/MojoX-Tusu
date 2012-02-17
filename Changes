@@ -1,5 +1,7 @@
 Revision history for Mojolicious-Plugin-Tusu
 
+0.38 2012/02/17
+
 0.37 2012/02/17
   - Fixed a bug on installation.
 
