@@ -73,7 +73,7 @@ use File::Spec;
             $next->();
         });
         
-        $app->static->paths([$args->{document_root}]);
+        $app->static->paths([$args->{document_root}, $self->_asset]);
         $app->renderer->paths([$args->{document_root}]);
         
         my $engine = Text::PSTemplate->new;
@@ -203,7 +203,10 @@ use File::Spec;
     ### ---
     sub _asset {
         my ($class, $path) = @_;
-        return File::Spec->catfile(dirname(__FILE__), 'Tusu', 'Asset', $path);
+        if ($path) {
+            return File::Spec->catfile(dirname(__FILE__), 'Tusu', 'Asset', $path);
+        }
+        return File::Spec->catdir(dirname(__FILE__), 'Tusu', 'Asset');
     }
     
     ### ---
