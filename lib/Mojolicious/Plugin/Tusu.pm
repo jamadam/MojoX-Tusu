@@ -223,6 +223,7 @@ use File::Spec;
         
         my @dataset = ();
         for my $file (@file) {
+            utf8::decode($file);
             if ($file =~ qr{^\.$} || $req_path =~ qr{^/$} && $file =~ qr{^\.\.$}) {
                 next;
             }
