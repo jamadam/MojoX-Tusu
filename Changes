@@ -1,6 +1,9 @@
 Revision history for Mojolicious-Plugin-Tusu
 
+0.39 2012/02/17
+
 0.38 2012/02/17
+  - Fixed a bug on handling multibyte file names indexing.
 
 0.37 2012/02/17
   - Fixed a bug on installation.
