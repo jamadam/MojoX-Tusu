@@ -249,7 +249,7 @@ use Mojolicious::Types;
             }
             my $path = $dir. $file;
             push(@dataset, {
-                name        => $file,
+                name        => -f $path ? $file : $file. '/',
                 timestamp   => _file_timestamp($path),
                 size        => _file_size($path),
                 type        => -f $path ? _file_to_mime_class($file) : 'dir',

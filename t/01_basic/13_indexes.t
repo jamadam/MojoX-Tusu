@@ -20,13 +20,13 @@ use Encode::Guess;
 			->content_like(qr{<title>Index of /</title>})
 			->content_like(qr{4B})
 			->content_like(qr{1.7KB})
-			->content_unlike(qr{<a class="dir" href=".">})
-			->content_like(qr{<a class="dir" href="some_dir">some_dir</a>})
+			->content_unlike(qr{<a class="dir" href="./">})
+			->content_like(qr{<a class="dir" href="some_dir/">some_dir/</a>})
 			->content_like(qr{\d\d\d\d-\d\d-\d\d \d\d:\d\d})
 			->content_like(qr{日本語})
 			->content_like(qr{<a class="image" href="image.png">image.png</a>});
         $t->get_ok('/some_dir/')
-			->content_like(qr{<a class="dir" href="..">..</a>})
+			->content_like(qr{<a class="dir" href="../">../</a>})
 			->content_like(qr{test.html});
         $t->get_ok('/some_dir2/')
 			->content_is(q{index file exists});
