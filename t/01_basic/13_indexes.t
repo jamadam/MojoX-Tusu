@@ -13,7 +13,7 @@ use Encode::Guess;
     
     __PACKAGE__->runtests;
 	
-    sub auto_escape : Test(8) {
+    sub auto_escape : Test(13) {
         $ENV{MOJO_MODE} = 'production';
         my $t = Test::Mojo->new('TestCase1');
         $t->get_ok('/13/')
@@ -23,7 +23,11 @@ use Encode::Guess;
 			->content_like(qr{<a class="dir" href="..">..</a>})
 			->content_unlike(qr{<a class="dir" href=".">})
 			->content_like(qr{<a class="dir" href="some_dir">some_dir</a>})
-			->content_like(qr{\d\d\d\d-\d\d-\d\d \d\d:\d\d})
+			->content_like(qr{\d\d\d\d-\d\d-\d\d \d\d:\d\d});
+        $t->get_ok('/13/some_dir/')
+			->content_like(qr{test.html});
+        $t->get_ok('/13/some_dir2/')
+			->content_is(q{index file exists});
     }
 		{
 			package TestCase1;
