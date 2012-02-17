@@ -48,9 +48,11 @@ EOF
     
     print "  [bundle distribution] MojoX::Tusu\n";
     my @bundle = qw(
+        lib/Attribute/Handlers.pm
         lib/Mojolicious/Command/generate/tusu_app.pm
         lib/Mojolicious/Command/generate/tusu_app/lib/MyApp.pm
         lib/Mojolicious/Command/generate/tusu_app/lib/MyApp/YourComponent.pm
+        lib/Mojolicious/Command/generate/tusu_app/public_html/.htaccess
         lib/Mojolicious/Command/generate/tusu_app/public_html/commons/index.css
         lib/Mojolicious/Command/generate/tusu_app/public_html/copyright.html
         lib/Mojolicious/Command/generate/tusu_app/public_html/error_document/404.html
@@ -62,10 +64,12 @@ EOF
         lib/Mojolicious/Command/generate/tusu_app/script/my_app
         lib/Mojolicious/Command/generate/tusu_app/t/basic.t
         lib/Mojolicious/Plugin/Tusu.pm
+        lib/Mojolicious/Plugin/Tusu/Asset/file_list.html
         lib/MojoX/Tusu.pm
         lib/MojoX/Tusu/Component/Mojolicious.pm
         lib/MojoX/Tusu/Component/Util.pm
         lib/MojoX/Tusu/ComponentBase.pm
+        lib/MojoX/Tusu/UserError.pm
         lib/Text/PSTemplate.pm
         lib/Text/PSTemplate/Block.pm
         lib/Text/PSTemplate/DateTime.pm
@@ -83,6 +87,7 @@ EOF
         lib/Text/PSTemplate/Plugin/TSV.pm
         lib/Text/PSTemplate/Plugin/Util.pm
         lib/Text/PSTemplate/PluginBase.pm
+        lib/Try/Tiny.pm
     );
     for my $file (@bundle) {
         $file =~ s{^lib/}{};
