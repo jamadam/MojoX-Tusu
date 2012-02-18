@@ -30,7 +30,7 @@
                 <tr>
                     <td><a class="<%= $data->{type} %>" href="<% $data->{name} %>"><%= $data->{name} %></a></td>
                     <td><%= $data->{timestamp} %></td>
-                    <td><%= commify($data->{size}) %></td>
+                    <td><%= $data->{size} %></td>
                 </tr>
             <% LOOP %>
             </tbody>
