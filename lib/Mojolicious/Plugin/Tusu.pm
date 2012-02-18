@@ -224,8 +224,8 @@ use Mojolicious::Types;
     
     sub _file_size {
         my $path = shift;
-        return ((stat($path))[7] > 1000)
-            ? sprintf("%.1f",(stat($path))[7] / 1000) . 'KB'
+        return ((stat($path))[7] > 1024)
+            ? sprintf("%.1f",(stat($path))[7] / 1024) . 'KB'
             : (stat($path))[7]. 'B';
     }
     
