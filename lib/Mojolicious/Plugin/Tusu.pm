@@ -9,6 +9,7 @@ use Carp;
 use File::Basename;
 use File::Spec;
 use Mojolicious::Types;
+use Mojo::Util 'url_unescape';
 
     our $APP;
     our $CONTROLLER;
@@ -234,7 +235,8 @@ use Mojolicious::Types;
     ### ---
     sub _render_indexes {
         my ($self, $c) = @_;
-        my $req_path = $c->tx->req->url->path;
+        my $req_path = url_unescape($c->tx->req->url->path);
+        utf8::decode($req_path);
         my $dir = $self->document_root() . $req_path;
         
         opendir(my $DIR, $dir);
@@ -244,6 +246,7 @@ use Mojolicious::Types;
         my @dataset = ();
         for my $file (@file) {
             utf8::decode($file);
+            $file = url_unescape($file);
             if ($file =~ qr{^\.$} || $req_path =~ qr{^/$} && $file =~ qr{^\.\.$}) {
                 next;
             }
